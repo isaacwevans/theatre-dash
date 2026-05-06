@@ -11,7 +11,6 @@ async function bootTheatreDiary(){
   if(!response.ok){ throw new Error('Could not load theatre-data.json. Status: '+response.status); }
   const DB = await response.json();
 
-const app = document.getElementById('app');
 const people = DB.people, shows = DB.shows, venues = DB.venues, roles = DB.roles, performances = DB.performances;
 const appearances = DB.appearances, creativeCredits = DB.creativeCredits;
 const byPerf={}, byPerson={}, byShow={}, byVenue={}, byRole={}, creditsByPerf={}, creditsByPerson={};
