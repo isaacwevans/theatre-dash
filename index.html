@@ -161,6 +161,37 @@ function calendarBlock(years){var ys=keys(years);ys.sort();if(!state.calendarYea
 function monthBlock(year,month){var names=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],first=new Date(year,month,1),days=new Date(year,month+1,0).getDate(),offset=first.getDay(),map=perfsByDay(year,month),out='<div class="monthBox"><div class="monthName">'+names[month]+'</div><div class="days">',i,d,key,items;for(i=0;i<offset;i++)out+='<button class="day empty"></button>';for(d=1;d<=days;d++){key=year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');items=map[key]||[];out+='<button class="day '+(items.length?'has ':'')+(items.length>1?'multi':'')+'" '+(items.length?'onclick="TD.go(\'perf\','+items[0].id+')" title="'+esc(items.length+' show(s)')+'"':'')+'>'+d+'</button>';}return out+'</div></div>';}
 function perfsByDay(year,month){var ps=vals(db.performances),m={},i,p;for(i=0;i<ps.length;i++){p=ps[i];if(Number(String(p.date).slice(0,4))===year && Number(String(p.date).slice(5,7))-1===month){if(!m[p.date])m[p.date]=[];m[p.date].push(p);}}return m;}
 
+
+function groupedListing(filtered){
+  var limited=filtered.slice(0,state.limit), groups={}, order=[], i,p,y,out='';
+  for(i=0;i<limited.length;i++){
+    p=limited[i];
+    y=yearOf(p.date)||'Unknown';
+    if(!groups[y]){groups[y]=[];order.push(y);}
+    groups[y].push(p);
+  }
+  order.sort(function(a,b){
+    return state.sort==='old' ? String(a).localeCompare(String(b)) : String(b).localeCompare(String(a));
+  });
+  for(i=0;i<order.length;i++){
+    y=order[i];
+    out+='<details class="yearBox" open><summary><span>'+esc(y)+'</span><span class="chip">'+groups[y].length+'</span></summary><div class="yearInner">'+renderListing(groups[y])+'</div></details>';
+  }
+  if(filtered.length>state.limit) out+='<button class="btn loadMore" onclick="TD.more()">Load more</button>';
+  return out;
+}
+function renderListing(arr){
+  var i,out;
+  if(state.layout==='lines'){
+    out='<section class="lineList">';
+    for(i=0;i<arr.length;i++) out+=perfLine(arr[i]);
+    return out+'</section>';
+  }
+  out='<section class="grid">';
+  for(i=0;i<arr.length;i++) out+=perfCard(arr[i]);
+  return out+'</section>';
+}
+
 function opts(obj,sel,rev){var a=keys(obj),out='',i;a.sort();if(rev)a.reverse();for(i=0;i<a.length;i++)if(a[i])out+='<option value="'+esc(a[i])+'" '+(a[i]===sel?'selected':'')+'>'+esc(a[i])+'</option>';return out;}
 function perfCounts(p){var apps=idx.perfApps[p.id]||[],covers=0,i;for(i=0;i<apps.length;i++)if(apps[i].coverType||apps[i].coverLabel||apps[i].appearanceType==='swing')covers++;return{covers:covers,cast:apps.length};}
 function perfCard(p){var apps=idx.perfApps[p.id]||[],preview=[],i,a,person,role,c=perfCounts(p);for(i=0;i<apps.length&&preview.length<3;i++){a=apps[i];if(a.appearanceType==='ensemble')continue;person=by(db.people,a.personId);role=by(db.roles,a.roleId);preview.push((person?person.name:'Unknown')+(role?' as '+role.name:''));}return '<article class="card perfCard" onclick="TD.go(\'perf\','+p.id+')"><div class="showTitle">'+esc(showOf(p))+'</div><div class="meta">'+esc(fmtDate(p.date))+' · '+esc(p.time||'')+'</div><div class="meta">'+esc(venueOf(p))+'</div><div class="chips">'+showNumberChips(p)+'<span class="chip">'+esc(p.type||'Unknown')+'</span>'+(c.covers?'<span class="chip cover">'+c.covers+' cover/special</span>':'')+(hasNote(p)?'<span class="chip good">notes</span>':'')+'</div><p class="tiny">'+esc(preview.join(' · '))+'</p></article>';}
@@ -225,23 +256,4 @@ load();
 })();
 </script>
 </body>
-</html
-function groupedListing(filtered){
-  var limited=filtered.slice(0,state.limit), groups={}, order=[], i,p,y,out='';
-  for(i=0;i<limited.length;i++){
-    p=limited[i];
-    y=yearOf(p.date)||'Unknown';
-    if(!groups[y]){groups[y]=[];order.push(y);}
-    groups[y].push(p);
-  }
-  order.sort(function(a,b){
-    return state.sort==='old' ? String(a).localeCompare(String(b)) : String(b).localeCompare(String(a));
-  });
-  for(i=0;i<order.length;i++){
-    y=order[i];
-    out+='<details class="yearBox" open><summary><span>'+esc(y)+'</span><span class="chip">'+groups[y].length+'</span></summary><div class="yearInner">'+renderListing(groups[y])+'</div></details>';
-  }
-  if(filtered.length>state.limit) out+='<button class="btn loadMore" onclick="TD.more()">Load more</button>';
-  return out;
-}
->
+</html>
