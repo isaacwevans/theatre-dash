@@ -269,6 +269,19 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
   .lineRow{grid-template-columns:1fr!important}
 }
 
+
+/* Compact person pop-out pass */
+.panel{width:min(360px,calc(100vw - 24px))!important;padding:10px!important}
+.panel h2{font-size:16px!important;margin-right:64px!important}
+.panel .muted{font-size:12px!important}
+.panelRoleRow{border:1px solid var(--pb-line);background:#fff;border-radius:8px;padding:7px 8px;margin-bottom:5px}
+.panelRoleTop{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.panelShow{font-weight:900;text-transform:uppercase;font-size:12px;color:#111;text-decoration:none}
+.panelCount{font-size:11px;font-weight:900;background:#111;color:var(--pb-yellow);border-radius:999px;padding:2px 6px;white-space:nowrap}
+.panelRoleSub{font-size:12px;color:#111;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panelDates{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panelMore{font-size:11px;color:var(--muted);padding:4px 2px}
+
 </style>
 </head>
 <body>
@@ -494,7 +507,17 @@ function nextPrev(id){var ps=vals(db.performances);ps.sort(function(a,b){return 
 function relatedBlock(p){var same=(idx.showPerfs[p.showId]||[]).slice(),out='',i,count=0;same.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});for(i=0;i<same.length&&count<5;i++){if(same[i].id==p.id)continue;out+='<div class="row"><button class="linkish" onclick="TD.go(\'perf\','+same[i].id+')">'+esc(fmtDate(same[i].date))+'</button><div class="tiny">'+esc(venueOf(same[i]))+'</div></div>';count++;}return out?'<div class="section"><h2>Related Performances</h2><div class="list">'+out+'</div></div>':'';}
 
 function uniquePersonAppearances(personId){var apps=idx.personApps[personId]||[],map={},arr=[],i,a,p,r,k;for(i=0;i<apps.length;i++){a=apps[i];p=by(db.performances,a.performanceId);r=by(db.roles,a.roleId);if(!p)continue;k=String(p.id);if(!map[k])map[k]={perf:p,roles:[],covers:[]};if(r)map[k].roles.push(r.name);if(a.coverLabel||a.coverType)map[k].covers.push(a.coverLabel||a.coverType);}for(k in map)if(Object.prototype.hasOwnProperty.call(map,k))arr.push(map[k]);arr.sort(function(a,b){return String(b.perf.date).localeCompare(String(a.perf.date));});return arr;}
-function renderPanel(personId){var p=by(db.people,personId),arr=uniquePersonAppearances(personId),s=stat(personId,null),out='<aside class="panel"><button class="btn closeBtn" onclick="TD.closePerson()">Close</button><h2>'+esc(p?p.name:'Person')+'</h2><p class="muted">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' role/production combos</p><button class="btn" onclick="TD.go(\'person\','+personId+')">Open full profile</button><div class="section list">';for(var i=0;i<Math.min(arr.length,12);i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'perf\','+arr[i].perf.id+')">'+esc(showOf(arr[i].perf))+'</button><div class="tiny">'+esc(arr[i].roles.join(' / '))+' · '+esc(fmtDate(arr[i].perf.date))+'</div></div>';return out+'</div></aside>';}
+function renderPanel(personId){
+  var p=by(db.people,personId),arr=uniquePersonAppearances(personId),s=stat(personId,null),groups=personRoleGroups(arr),out,i,g,dates,j,max=8;
+  out='<aside class="panel"><button class="btn closeBtn" onclick="TD.closePerson()">Close</button><h2>'+esc(p?p.name:'Person')+'</h2><p class="muted">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' role/production combos</p><button class="btn" onclick="TD.go(\'person\','+personId+')">Open full profile</button><div class="section list">';
+  for(i=0;i<Math.min(groups.length,max);i++){
+    g=groups[i]; dates=[];
+    for(j=0;j<Math.min(g.perfs.length,3);j++) dates.push(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date));
+    out+='<div class="panelRoleRow"><div class="panelRoleTop"><button class="linkish panelShow" onclick="TD.go(\'show\','+g.showId+')">'+esc(g.show)+'</button><span class="panelCount">'+g.count+'x</span></div><div class="panelRoleSub">'+esc(g.roles)+'</div><div class="panelDates">'+esc(dates.join(' · '))+(g.perfs.length>3?' · +'+(g.perfs.length-3)+' more':'')+'</div></div>';
+  }
+  if(groups.length>max) out+='<div class="panelMore">+'+(groups.length-max)+' more role/show groups</div>';
+  return out+'</div></aside>';
+}
 function personPage(id){
   var p=by(db.people,id), arr=uniquePersonAppearances(id), s=stat(id,null), cr=idx.creativeByPerson[id]||[], summary=personSummary(id,arr), out='';
   out+='<main class="wrap"><section class="hero"><h1>'+esc(p?p.name:'Person')+'</h1><p class="muted">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' role/production combos</p><div class="personHeroGrid">'+
@@ -602,8 +625,8 @@ function readEdits(){try{return JSON.parse(localStorage.getItem('theatreDiaryEdi
 function saveEdits(){try{localStorage.setItem('theatreDiaryEdits',JSON.stringify(edits));}catch(e){}}
 function copyText(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t);else window.prompt('Copy this:',t);}
 function copyHtml(html,plain){if(navigator.clipboard&&window.ClipboardItem){try{var item=new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([plain],{type:'text/plain'})});navigator.clipboard.write([item]);return;}catch(e){}}copyText(plain);}
-function coverCode(a,formatted){
-  var role=by(db.roles,a.roleId), roleName=role?role.name:(a.roleRaw||''), c=coverName(a.coverLabel||a.coverType||'');
+function coverPrefix(a,plain){
+  var c=coverName(a.coverLabel||a.coverType||'');
   if(!c && a.appearanceType==='swing') c='Swing';
   if(!c) return '';
   var code='';
@@ -614,20 +637,22 @@ function coverCode(a,formatted){
   else if(c==='Emergency cover') code='e/c';
   else if(c==='Temporary replacement') code='t/r';
   else code=c;
-  return '('+(formatted?code:'*'+code)+(roleName?' '+roleName:'')+')';
+  return (plain?'*':'')+code+' ';
 }
 function castCopyRows(id,formatted){
-  var apps=(idx.perfApps[id]||[]).slice(), lines=[], ens=[], i,a,r,person,base,notator;
+  var apps=(idx.perfApps[id]||[]).slice(), lines=[], ens=[], i,a,r,person,roleName,roleText,line,isCover;
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
   for(i=0;i<apps.length;i++){
     a=apps[i]; r=by(db.roles,a.roleId); person=by(db.people,a.personId);
     if(a.appearanceType==='ensemble'){ens.push(upperName(person?person.name:personName(a.personId)));continue;}
-    base=(r?r.name:(a.roleRaw||''))+' - '+upperName(person?person.name:'Unknown');
-    notator=coverCode(a,formatted);
-    if(formatted) lines.push('**'+base+'**'+(notator?' '+notator:''));
-    else lines.push(base+(notator?' '+notator:''));
+    roleName=r?r.name:(a.roleRaw||'');
+    isCover=!!(coverName(a.coverLabel||a.coverType||'') || a.appearanceType==='swing');
+    roleText=coverPrefix(a,!formatted)+roleName;
+    line=roleText+' - '+upperName(person?person.name:'Unknown');
+    if(formatted && isCover) line='***'+line+'***';
+    lines.push(line);
   }
-  if(ens.length) lines.push((formatted?'**Ensemble - '+ens.join(', ')+'**':'Ensemble - '+ens.join(', ')));
+  if(ens.length) lines.push('Ensemble - '+ens.join(', '));
   return lines;
 }
 function copyPerf(id,mode){
@@ -638,7 +663,7 @@ function copyPerf(id,mode){
   plainLines.push(location);
   plainLines.push('');
   plainLines=plainLines.concat(castCopyRows(id,false));
-  formattedLines.push('**'+showOf(p)+' | '+fmtDate(p.date)+'**');
+  formattedLines.push(showOf(p)+' | '+fmtDate(p.date));
   formattedLines.push(location);
   formattedLines.push('');
   formattedLines=formattedLines.concat(castCopyRows(id,true));
@@ -646,7 +671,7 @@ function copyPerf(id,mode){
     html='<p><strong>'+esc(showOf(p)+' | '+fmtDate(p.date))+'</strong><br>'+esc(location)+'</p><p>';
     htmlLines=castCopyRows(id,true);
     for(i=0;i<htmlLines.length;i++){
-      html+=esc(htmlLines[i]).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')+(i<htmlLines.length-1?'<br>':'');
+      html+=esc(htmlLines[i]).replace(/\*\*\*([^*]+)\*\*\*/g,'<strong><em>$1</em></strong>')+(i<htmlLines.length-1?'<br>':'');
     }
     html+='</p>';
     copyHtml(html,formattedLines.join('\n'));
