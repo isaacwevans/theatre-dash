@@ -1,21 +1,127 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Theatre Attendance Diary</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#21130f">
+  <title>Theatre Diary</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;width:100%;overflow-x:hidden}
+    body{
+      background:radial-gradient(circle at top left,#5a321f 0,#21130f 42%,#120d0b 100%);
+      color:#f8efe2;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    .boot{
+      max-width:720px;
+      margin:0 auto;
+      padding:22px 16px;
+    }
+    .boot-card{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.075);
+      border-radius:20px;
+      padding:18px;
+      box-shadow:0 18px 60px rgba(0,0,0,.25);
+    }
+    .boot-title{
+      font-family:Georgia,serif;
+      font-size:34px;
+      font-weight:900;
+      line-height:1;
+      margin:0 0 8px;
+    }
+    .boot-small{
+      color:rgba(248,239,226,.72);
+      line-height:1.4;
+      margin:8px 0 0;
+    }
+    .boot-steps{
+      display:grid;
+      gap:8px;
+      margin-top:14px;
+      font-size:14px;
+    }
+    .boot-step{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.16);
+      border-radius:14px;
+      padding:9px 10px;
+    }
+    .ok{color:#bff0c7}
+    .warn{color:#ffe3a6}
+    .bad{color:#ffb3a6}
+    code{color:#ffe3a6}
+    a{color:#ffe3a6}
+  </style>
 </head>
 <body>
-  <div id="app" class="app">
-    <div class="main">
-      <section class="detailHero">
-        <div class="smallCaps">Loading dashboard</div>
-        <div class="detailTitle">Theatre Attendance Diary</div>
-        <div class="detailMeta"><span>Loading the theatre diary app…</span></div>
+  <div id="app">
+    <main class="boot">
+      <section class="boot-card">
+        <h1 class="boot-title">Theatre Diary</h1>
+        <p class="boot-small">Starting the dashboard…</p>
+        <div class="boot-steps">
+          <div id="boot-js" class="boot-step warn">1. Waiting for JavaScript startup test.</div>
+          <div id="boot-app" class="boot-step warn">2. Waiting for <code>app.js</code>.</div>
+          <div id="boot-data" class="boot-step warn">3. Waiting for <code>theatre-data.json</code>.</div>
+        </div>
+        <p class="boot-small">
+          If this stays here, Safari is not loading one of the files. This page was built to show exactly where it stalls.
+        </p>
       </section>
-    </div>
+    </main>
   </div>
-  <script src="app.js"></script>
+
+  <script>
+    (function(){
+      var el = document.getElementById('boot-js');
+      if (el) {
+        el.className = 'boot-step ok';
+        el.innerHTML = '1. JavaScript startup test passed.';
+      }
+
+      var dataEl = document.getElementById('boot-data');
+      try {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'theatre-data.json?v=20260507c', true);
+        xhr.onreadystatechange = function(){
+          if (xhr.readyState === 4 && dataEl) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              dataEl.className = 'boot-step ok';
+              dataEl.innerHTML = '3. <code>theatre-data.json</code> is reachable.';
+            } else {
+              dataEl.className = 'boot-step bad';
+              dataEl.innerHTML = '3. Could not load <code>theatre-data.json</code>. Status: ' + xhr.status + '. Make sure the file is in the same folder as <code>index.html</code>.';
+            }
+          }
+        };
+        xhr.onerror = function(){
+          if (dataEl) {
+            dataEl.className = 'boot-step bad';
+            dataEl.innerHTML = '3. Network error loading <code>theatre-data.json</code>.';
+          }
+        };
+        xhr.send();
+      } catch(e) {
+        if (dataEl) {
+          dataEl.className = 'boot-step bad';
+          dataEl.innerHTML = '3. Data test crashed: ' + e.message;
+        }
+      }
+    })();
+  </script>
+
+  <script src="app.js?v=20260507c"></script>
+  <script>
+    setTimeout(function(){
+      var appEl = document.getElementById('boot-app');
+      if (appEl && appEl.className.indexOf('ok') === -1) {
+        appEl.className = 'boot-step bad';
+        appEl.innerHTML = '2. <code>app.js</code> did not mark itself as loaded. Either it is cached, missing, or crashing before startup.';
+      }
+    }, 2500);
+  </script>
 </body>
 </html>
