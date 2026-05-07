@@ -60,6 +60,25 @@ body.compact .card{padding:9px;border-radius:14px}body.compact .hero{padding:12p
 .day.multi{background:#e7d2be;color:#4a2b1c}
 .day.empty{background:transparent;pointer-events:none}
 .diaryHead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:14px 0 8px}
+
+.accentRule{height:4px;border-radius:999px;background:linear-gradient(90deg,#f7d847 0,#f7d847 52%,#e92834 52%,#e92834 100%);margin:10px 0 0}
+.calendarCard{grid-column:1 / -1}
+.calendarCard .calendarWrap{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}
+.monthBox{min-width:0}
+.monthNameBtn{border:0;background:transparent;color:#5b3928;font-family:Georgia,serif;font-weight:900;padding:0;margin:0 0 5px;text-align:left}
+.monthNameBtn:hover{text-decoration:underline;text-decoration-color:#e92834;text-underline-offset:3px}
+.monthJumpBar{display:flex;gap:5px;flex-wrap:wrap;padding:0 14px 10px;background:rgba(255,255,255,.36)}
+.monthJump{border:1px solid rgba(83,58,45,.13);background:#fffdf7;color:#6d402a;border-radius:999px;padding:4px 7px;font-size:12px}
+.monthAnchor{grid-column:1/-1;color:#6d402a;font-family:Georgia,serif;font-weight:900;font-size:16px;padding:8px 2px 2px;border-bottom:1px solid rgba(83,58,45,.10)}
+.diaryYears{justify-content:flex-end;max-height:92px}
+.personWrap{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-width:0}
+.personLeft{min-width:0}
+.personTimes{font-size:12px;color:rgba(45,33,27,.56);margin-left:4px;white-space:nowrap}
+.roleFlag{flex:0 0 auto;background:#6d402a;color:#fffdf7;border-radius:999px;padding:5px 9px;font-size:13px;font-weight:900;box-shadow:inset 4px 0 0 #f7d847, inset -3px 0 0 #e92834;letter-spacing:.01em}
+.castLine>div:last-child{min-width:0}
+.searchHint{font-size:12px;color:rgba(45,33,27,.55);margin-top:5px}
+@media(max-width:760px){.personWrap{align-items:flex-start}.roleFlag{font-size:12px;padding:4px 8px}.calendarCard .calendarWrap{grid-template-columns:1fr}.diaryYears{justify-content:flex-start}}
+
 @media(max-width:760px){.homeGrid{grid-template-columns:1fr}.calendarWrap{grid-template-columns:1fr}.barRow{grid-template-columns:46px minmax(0,1fr) 34px}.yearLinks{max-height:none}}
 
 @media(max-width:760px){
@@ -76,7 +95,7 @@ body.compact .card{padding:9px;border-radius:14px}body.compact .hero{padding:12p
 <script>
 (function(){
 var db=null, idx=null, edits=readEdits();
-var state={view:'home',id:null,q:'',year:'all',type:'all',cover:false,limit:72,history:[],hIndex:-1,panel:null,peopleMode:'appearances',sort:'old',density:(localStorage.getItem('theatreDiaryDensity')||'comfy'),layout:(localStorage.getItem('theatreDiaryLayout')||'lines'),groupYears:(localStorage.getItem('theatreDiaryGroupYears')||'yes'),calendarYear:null,qDelay:null,focusId:null};
+var state={view:'home',id:null,q:'',year:'all',type:'all',cover:false,limit:2000,history:[],hIndex:-1,panel:null,peopleMode:'appearances',sort:'old',density:(localStorage.getItem('theatreDiaryDensity')||'comfy'),layout:(localStorage.getItem('theatreDiaryLayout')||'lines'),groupYears:(localStorage.getItem('theatreDiaryGroupYears')||'yes'),calendarYear:null,qDelay:null,focusId:null};
 window.onerror=function(msg,src,line,col,err){showError('Dashboard crashed',String(msg)+' at line '+line);};
 
 function esc(s){s=s==null?'':String(s);return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
@@ -118,9 +137,9 @@ function buildIndexes(){
 }
 function showNumberChips(p){return '<span class="chip purple">Diary #'+idx.attendanceNo[p.id]+'</span><span class="chip good">'+esc(showOf(p))+' #'+idx.showViewingNo[p.id]+' of '+idx.showViewingTotal[p.showId]+'</span>';}
 function stat(personId,currentPerfId){var ps=idx.personPerfSets[personId]||{},rs=idx.personRoleSets[personId]||{},ss=idx.personShowSets[personId]||{};var pc=keys(ps).length,rc=keys(rs).length,sc=keys(ss).length,other=ps[currentPerfId]?pc-1:pc;if(other<0)other=0;return{other:other,roles:rc,shows:sc,perfs:pc};}
-function personButton(personId,currentPerfId){var s=stat(personId,currentPerfId),rw=s.roles===1?'role':'roles',tw=s.other===1?'other time':'other times';return '<button class="nameBtn" onclick="TD.openPerson('+personId+')">'+esc(personName(personId))+'</button><span class="personStats"> '+s.other+' '+tw+' / '+s.roles+' '+rw+'</span>';}
+function personButton(personId,currentPerfId){var s=stat(personId,currentPerfId),rw=s.roles===1?'role':'roles',tw=s.other===1?'other time':'other times';return '<span class="personWrap"><span class="personLeft"><button class="nameBtn" onclick="TD.openPerson('+personId+')">'+esc(personName(personId))+'</button><span class="personTimes">'+s.other+' '+tw+'</span></span><span class="roleFlag">'+s.roles+' '+rw+'</span></span>';}
 
-function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button><button class="btn" onclick="TD.random()">Random</button></div></div></div>'+inner+(state.panel?renderPanel(state.panel):'');}
+function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button><button class="btn" onclick="TD.random()">Random</button></div></div></div>'+inner+(state.panel?renderPanel(state.panel):'');}
 function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
 function go(v,id,replace){state.view=v;state.id=id;state.panel=null;if(!replace){if(state.hIndex<state.history.length-1)state.history=state.history.slice(0,state.hIndex+1);state.history.push({v:v,id:id});state.hIndex=state.history.length-1;}else if(!state.history.length){state.history.push({v:v,id:id});state.hIndex=0;}render();setTimeout(function(){window.scrollTo(0,0);},0);}
 function back(){if(state.hIndex>0){state.hIndex--;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
@@ -132,12 +151,12 @@ function home(){
   var ps=sortedPerformances(), years={}, types={}, i,p,filtered=filteredPerformances();
   for(i=0;i<ps.length;i++){years[yearOf(ps[i].date)]=1;types[ps[i].type||'Unknown']=1;}
   var recent=vals(db.performances); recent.sort(function(a,b){return String(b.date).localeCompare(String(a.date))||b.id-a.id;});
-  var out='<main class="wrap"><section class="hero"><h1>Theatre Diary</h1><p class="muted">A softer little theatre archive: '+vals(db.performances).length+' performances · '+vals(db.shows).length+' shows · '+vals(db.people).length+' people.</p><div class="chips"><span class="chip">Cloud Dancer-inspired</span><span class="chip good">line view default</span><span class="chip purple">old → new diary</span></div></section>'+
+  var out='<main class="wrap"><section class="hero"><h1>Theatre Diary</h1><p class="muted">A softer little theatre archive: '+vals(db.performances).length+' performances · '+vals(db.shows).length+' shows · '+vals(db.people).length+' people.</p><div class="chips"><span class="chip">Cloud Dancer-inspired</span><span class="chip good">line view default</span><span class="chip purple">old → new diary</span></div><div class="accentRule"></div></section>'+
     '<section class="homeGrid"><div class="card"><div class="moduleTitle"><h2>Recent shows</h2><button class="btn" onclick="TD.setSort(\'new\')">Newest list</button></div><section class="grid">'+perfCard(recent[0])+perfCard(recent[1])+perfCard(recent[2])+'</section></div>'+
     '<aside class="card"><h2>Quick jumps</h2><div class="homeLinks"><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.random()">Random</button></div><div class="section"><h3>Go to year</h3><div class="yearLinks">'+yearButtons(years)+'</div></div></aside></section>'+
-    '<section class="homeGrid section"><div class="card"><h2>At-a-glance charts</h2>'+chartsBlock()+'</div><aside class="card"><h2>Calendar</h2>'+calendarBlock(years)+'</aside></section>'+
-    '<div id="diaryList" class="diaryHead"><div><h2>Full diary</h2><p class="tiny">Default is oldest to newest. Use Recent shows above for the fresh stuff.</p></div></div>'+
-    '<section class="hero"><div class="toolbar"><input id="homeSearch" class="input" value="'+esc(state.q)+'" placeholder="Search show, venue, cast, notes..." oninput="TD.setQ(this.value)">'+
+    '<section class="homeGrid section"><div class="card"><h2>At-a-glance charts</h2>'+chartsBlock()+'</div><aside class="card calendarCard"><h2>Calendar</h2>'+calendarBlock(years)+'</aside></section>'+
+    '<div id="diaryList" class="diaryHead"><div><h2>Diary</h2><p class="tiny">Click a year to jump there. The list stays continuous into other years.</p></div><div class="yearLinks diaryYears">'+yearButtons(years)+'</div></div>'+
+    '<section class="hero"><div class="toolbar"><div style="flex:1 1 280px;min-width:0"><input id="homeSearch" class="input" style="width:100%" value="'+esc(state.q)+'" placeholder="Search show, venue, cast, notes..." oninput="TD.setQ(this.value)"><div class="searchHint">Search waits until you pause typing, so it should stop flinging you out of the box.</div></div>'+
     '<select class="select" onchange="TD.setYear(this.value)"><option value="all">All years</option>'+opts(years,state.year,true)+'</select><select class="select" onchange="TD.setType(this.value)"><option value="all">All types</option>'+opts(types,state.type,false)+'</select>'+
     '<select class="select" onchange="TD.setSort(this.value)"><option value="old" '+(state.sort==='old'?'selected':'')+'>Oldest first</option><option value="new" '+(state.sort==='new'?'selected':'')+'>Newest first</option></select>'+
     '<button class="pillBtn '+(state.layout==='cards'?'active':'')+'" onclick="TD.setLayout(\'cards\')">Cards</button><button class="pillBtn '+(state.layout==='lines'?'active':'')+'" onclick="TD.setLayout(\'lines\')">Lines</button><button class="btn" onclick="TD.toggleYears()">'+(state.groupYears==='yes'?'Flat list':'By year')+'</button><button class="btn" onclick="TD.toggleCovers()">'+(state.cover?'All performances':'Only with covers')+'</button></div></section>';
@@ -158,7 +177,7 @@ function mondayKey(d){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());v
 function countByWeek(){var ps=vals(db.performances),m={},i,d,k,rows=[];for(i=0;i<ps.length;i++){d=dateObj(ps[i].date);if(!d)continue;k=mondayKey(d);m[k]=(m[k]||0)+1;}for(k in m)if(Object.prototype.hasOwnProperty.call(m,k))rows.push({label:k.slice(5),n:m[k]});rows.sort(function(a,b){return b.n-a.n||a.label.localeCompare(b.label);});return rows;}
 function newRepeatChart(){var ps=vals(db.performances),seen={},by={},i,p,y,isNew,rows=[],k;ps.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});for(i=0;i<ps.length;i++){p=ps[i];y=yearOf(p.date)||'Unknown';if(!by[y])by[y]={newShow:0,repeat:0};isNew=!seen[p.showId];if(isNew){by[y].newShow++;seen[p.showId]=1;}else by[y].repeat++;}for(k in by)if(Object.prototype.hasOwnProperty.call(by,k))rows.push({label:k,n:by[k].newShow,repeat:by[k].repeat});rows.sort(function(a,b){return String(a.label).localeCompare(String(b.label));});var max=1;for(i=0;i<rows.length;i++)if(rows[i].n+rows[i].repeat>max)max=rows[i].n+rows[i].repeat;var out='<div class="chart">';for(i=0;i<rows.length;i++){var total=rows[i].n+rows[i].repeat;out+='<div class="barRow"><div>'+rows[i].label+'</div><div class="barTrack"><div class="barFill" style="width:'+Math.max(3,Math.round(total/max*100))+'%"></div></div><div>'+rows[i].n+'/'+rows[i].repeat+'</div></div>';}return out+'</div><p class="tiny">Format: new shows / repeat visits.</p>';}
 function calendarBlock(years){var ys=keys(years);ys.sort();if(!state.calendarYear)state.calendarYear=ys[ys.length-1];var out='<div class="calendarControls"><select class="select" onchange="TD.setCalYear(this.value)">'+opts(years,state.calendarYear,true)+'</select><button class="btn" onclick="TD.goYear(\''+esc(state.calendarYear)+'\')">Open year</button></div><div class="calendarWrap">',m;for(m=0;m<12;m++)out+=monthBlock(Number(state.calendarYear),m);return out+'</div>';}
-function monthBlock(year,month){var names=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],first=new Date(year,month,1),days=new Date(year,month+1,0).getDate(),offset=first.getDay(),map=perfsByDay(year,month),out='<div class="monthBox"><div class="monthName">'+names[month]+'</div><div class="days">',i,d,key,items;for(i=0;i<offset;i++)out+='<button class="day empty"></button>';for(d=1;d<=days;d++){key=year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');items=map[key]||[];out+='<button class="day '+(items.length?'has ':'')+(items.length>1?'multi':'')+'" '+(items.length?'onclick="TD.go(\'perf\','+items[0].id+')" title="'+esc(items.length+' show(s)')+'"':'')+'>'+d+'</button>';}return out+'</div></div>';}
+function monthBlock(year,month){var names=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],first=new Date(year,month,1),days=new Date(year,month+1,0).getDate(),offset=first.getDay(),map=perfsByDay(year,month),out='<div class="monthBox"><button class="monthNameBtn" onclick="TD.goMonth(\''+year+'\',\''+String(month+1).padStart(2,'0')+'\')">'+names[month]+'</button><div class="days">',i,d,key,items;for(i=0;i<offset;i++)out+='<button class="day empty"></button>';for(d=1;d<=days;d++){key=year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');items=map[key]||[];out+='<button class="day '+(items.length?'has ':'')+(items.length>1?'multi':'')+'" '+(items.length?'onclick="TD.go(\'perf\','+items[0].id+')" title="'+esc(items.length+' show(s)')+'"':'')+'>'+d+'</button>';}return out+'</div></div>';}
 function perfsByDay(year,month){var ps=vals(db.performances),m={},i,p;for(i=0;i<ps.length;i++){p=ps[i];if(Number(String(p.date).slice(0,4))===year && Number(String(p.date).slice(5,7))-1===month){if(!m[p.date])m[p.date]=[];m[p.date].push(p);}}return m;}
 
 
@@ -175,10 +194,33 @@ function groupedListing(filtered){
   });
   for(i=0;i<order.length;i++){
     y=order[i];
-    out+='<details class="yearBox" open><summary><span>'+esc(y)+'</span><span class="chip">'+groups[y].length+'</span></summary><div class="yearInner">'+renderListing(groups[y])+'</div></details>';
+    out+='<details id="year-'+esc(y)+'" class="yearBox" open><summary><span>'+esc(y)+'</span><span class="chip">'+groups[y].length+'</span></summary>'+monthButtonsForYear(y,groups[y])+'<div class="yearInner">'+renderYearListing(groups[y],y)+'</div></details>';
   }
   if(filtered.length>state.limit) out+='<button class="btn loadMore" onclick="TD.more()">Load more</button>';
   return out;
+}
+function monthButtonsForYear(y,arr){
+  var months={},order=[],i,m,out='<div class="monthJumpBar">';
+  for(i=0;i<arr.length;i++){
+    m=String(arr[i].date).slice(5,7);
+    if(!months[m]){months[m]=1;order.push(m);}
+  }
+  order.sort();
+  for(i=0;i<order.length;i++) out+='<button class="monthJump" onclick="TD.goMonth(\''+esc(y)+'\',\''+esc(order[i])+'\')">'+monthName(Number(order[i])-1)+'</button>';
+  return out+'</div>';
+}
+function renderYearListing(arr,y){
+  var i,out,m,seen={};
+  out=state.layout==='lines'?'<section class="lineList">':'<section class="grid">';
+  for(i=0;i<arr.length;i++){
+    m=String(arr[i].date).slice(5,7);
+    if(!seen[m]){
+      seen[m]=1;
+      out+='<div id="month-'+esc(y)+'-'+esc(m)+'" class="monthAnchor">'+monthName(Number(m)-1)+'</div>';
+    }
+    out+=state.layout==='lines'?perfLine(arr[i]):perfCard(arr[i]);
+  }
+  return out+'</section>';
 }
 function renderListing(arr){
   var i,out;
@@ -191,6 +233,7 @@ function renderListing(arr){
   for(i=0;i<arr.length;i++) out+=perfCard(arr[i]);
   return out+'</section>';
 }
+function monthName(i){var a=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return a[i]||'';}
 
 function opts(obj,sel,rev){var a=keys(obj),out='',i;a.sort();if(rev)a.reverse();for(i=0;i<a.length;i++)if(a[i])out+='<option value="'+esc(a[i])+'" '+(a[i]===sel?'selected':'')+'>'+esc(a[i])+'</option>';return out;}
 function perfCounts(p){var apps=idx.perfApps[p.id]||[],covers=0,i;for(i=0;i<apps.length;i++)if(apps[i].coverType||apps[i].coverLabel||apps[i].appearanceType==='swing')covers++;return{covers:covers,cast:apps.length};}
@@ -247,10 +290,12 @@ function downloadEdits(){var blob=new Blob([JSON.stringify(edits,null,2)],{type:
 function importEdits(){var t=window.prompt('Paste edits JSON');if(!t)return;try{edits=JSON.parse(t);saveEdits();render();}catch(e){alert('Could not parse JSON.');}}
 
 window.TD={go:function(v,id){go(v,id,false)},back:back,forward:forward,
-setQ:function(v){state.q=v;state.limit=72;state.focusId=(document.activeElement&&document.activeElement.id)||null;if(state.qDelay)clearTimeout(state.qDelay);state.qDelay=setTimeout(function(){render();setTimeout(function(){if(state.focusId){var el=document.getElementById(state.focusId);if(el){el.focus();try{var l=el.value.length;el.setSelectionRange(l,l);}catch(e){}}}},0);},450);},
-setYear:function(v){state.year=v;state.limit=72;render();setTimeout(function(){var el=document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
-setType:function(v){state.type=v;state.limit=72;render()},setSort:function(v){state.sort=v;render()},toggleCovers:function(){state.cover=!state.cover;state.limit=72;render()},more:function(){state.limit+=72;render()},openPerson:function(id){state.panel=id;render()},closePerson:function(){state.panel=null;render()},random:function(){var ps=vals(db.performances),p=ps[Math.floor(Math.random()*ps.length)];go('perf',p.id,false)},saveField:saveField,exportEdits:exportEdits,downloadEdits:downloadEdits,importEdits:importEdits,copyPerf:copyPerf,setPeopleMode:function(m){state.peopleMode=m;render()},toggleDensity:function(){state.density=state.density==='compact'?'comfy':'compact';localStorage.setItem('theatreDiaryDensity',state.density);render()},setLayout:function(m){state.layout=m;localStorage.setItem('theatreDiaryLayout',m);render()},toggleYears:function(){state.groupYears=state.groupYears==='yes'?'no':'yes';localStorage.setItem('theatreDiaryGroupYears',state.groupYears);render()},
-goYear:function(y){state.year=y;state.sort='old';state.limit=120;render();setTimeout(function(){var el=document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+setQ:function(v){state.q=v;state.limit=2000;state.focusId=(document.activeElement&&document.activeElement.id)||null;if(state.qDelay)clearTimeout(state.qDelay);state.qDelay=setTimeout(function(){render();setTimeout(function(){if(state.focusId){var el=document.getElementById(state.focusId);if(el){el.focus();try{var l=el.value.length;el.setSelectionRange(l,l);}catch(e){}}}},0);},700);},
+setYear:function(v){state.year=v;state.limit=2000;render();setTimeout(function(){var el=document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+setType:function(v){state.type=v;state.limit=2000;render()},setSort:function(v){state.sort=v;render()},toggleCovers:function(){state.cover=!state.cover;state.limit=2000;render()},more:function(){state.limit+=72;render()},openPerson:function(id){state.panel=id;render()},closePerson:function(){state.panel=null;render()},random:function(){var ps=vals(db.performances),p=ps[Math.floor(Math.random()*ps.length)];go('perf',p.id,false)},saveField:saveField,exportEdits:exportEdits,downloadEdits:downloadEdits,importEdits:importEdits,copyPerf:copyPerf,setPeopleMode:function(m){state.peopleMode=m;render()},toggleDensity:function(){state.density=state.density==='compact'?'comfy':'compact';localStorage.setItem('theatreDiaryDensity',state.density);render()},setLayout:function(m){state.layout=m;localStorage.setItem('theatreDiaryLayout',m);render()},toggleYears:function(){state.groupYears=state.groupYears==='yes'?'no':'yes';localStorage.setItem('theatreDiaryGroupYears',state.groupYears);render()},
+diary:function(){state.view='home';state.id=null;state.year='all';state.groupYears='yes';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+goYear:function(y){state.view='home';state.id=null;state.year='all';state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+goMonth:function(y,m){state.view='home';state.id=null;state.year='all';state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('month-'+y+'-'+m)||document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
 setCalYear:function(y){state.calendarYear=y;render()}};
 load();
 })();
