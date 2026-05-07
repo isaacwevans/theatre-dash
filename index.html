@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#20110d">
-<title>Theatre Diary</title>
+<meta name="theme-color" content="#101010">
+<title>THEATRE DIARY</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;width:100%;overflow-x:hidden}
@@ -159,6 +159,116 @@ h3{font-size:15px;letter-spacing:-.01em}
   .wrap{padding-left:7px;padding-right:7px}
 }
 
+
+/* === Playbill Pro visual reset === */
+:root{
+  --pb-yellow:#f4d000;
+  --pb-black:#101010;
+  --pb-cream:#faf7ea;
+  --pb-paper:#fffdf3;
+  --pb-ink:#111111;
+  --pb-line:#ded6bf;
+  --tt-red:#e7272e;
+  --muted:#6e695d;
+}
+html,body{background:var(--pb-cream)!important;color:var(--pb-ink)!important;font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Arial,sans-serif!important}
+body{font-size:14px;letter-spacing:-.01em}
+.topbar{background:var(--pb-black)!important;border-bottom:4px solid var(--pb-yellow)!important;box-shadow:0 2px 18px rgba(0,0,0,.16)!important}
+.topin{max-width:1120px;padding:7px 12px!important;align-items:center}
+.brand{color:var(--pb-yellow)!important;font-size:16px!important;font-weight:900!important;text-transform:uppercase;letter-spacing:.04em}
+.brand:before{content:"";display:inline-block;width:8px;height:8px;background:var(--tt-red);border-radius:50%;margin-right:8px;vertical-align:middle}
+.nav{gap:4px}
+.btn,.pillBtn{background:#1f1f1f!important;color:#f8f4df!important;border:1px solid rgba(244,208,0,.20)!important;border-radius:8px!important;padding:6px 9px!important;font-size:12px!important;font-weight:750;box-shadow:none!important}
+.btn:hover,.pillBtn:hover{background:#2b2b2b!important;border-color:rgba(244,208,0,.52)!important}
+.pillBtn.active{background:var(--pb-yellow)!important;color:var(--pb-black)!important;border-color:var(--pb-yellow)!important}
+.wrap{max-width:1080px!important;padding:12px 10px 40px!important}
+.hero,.card,.yearBox,.roleGroup,.firstSeenBox,.connectionCard,.row,.lineRow,.stat{background:var(--pb-paper)!important;border:1px solid var(--pb-line)!important;border-radius:10px!important;box-shadow:none!important}
+.hero{padding:13px 14px!important;border-top:5px solid var(--pb-yellow)!important}
+.card{padding:10px!important}
+h1,h2,h3,.showTitle,.roleGroupTitle{font-family:inherit!important;color:var(--pb-black)!important;font-weight:900!important;letter-spacing:-.035em!important}
+h1{font-size:27px!important;line-height:1!important;text-transform:uppercase}
+h2{font-size:18px!important;margin-bottom:8px!important;text-transform:uppercase;letter-spacing:.015em!important}
+h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!important}
+.muted,.tiny,.meta,.lineSub,.personTimes,.homeStats{color:var(--muted)!important}
+.input,.select,.textarea{background:#fff!important;color:var(--pb-black)!important;border:1px solid var(--pb-line)!important;border-radius:8px!important;min-height:34px!important;padding:7px 9px!important;box-shadow:none!important}
+.input:focus,.select:focus,.textarea:focus{outline:2px solid rgba(244,208,0,.75);outline-offset:1px}
+.chips{gap:4px}
+.chip{background:#f3edd7!important;color:#171717!important;border:1px solid #e1d5b4!important;border-radius:999px!important;font-size:10px!important;font-weight:800!important;padding:3px 6px!important;text-transform:uppercase;letter-spacing:.025em}
+.chip.good{background:#111!important;color:var(--pb-yellow)!important;border-color:#111!important}
+.chip.cover,.cover{background:#fff0b3!important;color:#111!important;border-color:#d9b900!important}
+.accentRule{height:3px!important;background:linear-gradient(90deg,var(--pb-yellow),var(--pb-yellow) 82%,var(--tt-red) 82%,var(--tt-red))!important;border-radius:0!important}
+.sleekHeroSearch{grid-template-columns:minmax(0,1fr) auto auto!important}
+.homeQuick{gap:5px!important}
+.yearPickerCard{border-top:5px solid var(--pb-black)!important}
+.yearChart{gap:3px!important}
+.yearBarBtn{border-radius:7px!important;padding:4px 5px!important;font-size:12px!important;color:var(--pb-black)!important}
+.yearBarBtn:hover{background:#fff9d1!important}
+.yearBarBtn.active{background:#111!important;color:var(--pb-yellow)!important;box-shadow:inset 4px 0 0 var(--pb-yellow), inset -3px 0 0 var(--tt-red)!important}
+.yearBarTrack{height:8px!important;background:#e7dec4!important}
+.yearBarFill{background:linear-gradient(90deg,var(--pb-yellow),#111)!important}
+.monthPop{border-top:1px solid var(--pb-line)!important}
+.monthJump,.dateChip{background:#fff!important;border:1px solid var(--pb-line)!important;color:#111!important;border-radius:7px!important;font-weight:750}
+.monthJump:hover,.dateChip:hover{border-color:var(--pb-yellow)!important;box-shadow:inset 0 -2px 0 var(--pb-yellow)}
+.diaryHead{margin:13px 0 7px!important}
+.yearBox{overflow:hidden}
+.yearBox summary{background:#111!important;color:var(--pb-yellow)!important;border-radius:0!important;font-size:15px!important;padding:8px 10px!important;text-transform:uppercase;letter-spacing:.03em}
+.yearBox summary .chip{background:var(--pb-yellow)!important;color:#111!important;border-color:var(--pb-yellow)!important}
+.monthJumpBar{background:#f6efd9!important;padding:7px 9px!important;border-bottom:1px solid var(--pb-line)!important}
+.monthAnchor{font-family:inherit!important;color:#111!important;background:#fff9d4!important;border-left:4px solid var(--pb-yellow)!important;border-bottom:1px solid var(--pb-line)!important;text-transform:uppercase;letter-spacing:.04em;font-size:12px!important;padding:6px 8px!important;margin-top:2px}
+.lineList{gap:4px!important}
+.lineRow{grid-template-columns:78px minmax(0,1fr) auto!important;padding:7px 9px!important;background:#fffdf6!important;transition:background .08s ease,border-color .08s ease}
+.lineRow:hover{background:#fff8d1!important;border-color:#d8bd1d!important;transform:none!important}
+.lineDate{color:#111!important;font-size:12px!important;font-weight:900!important}
+.lineTitle{font-size:14px!important;color:#111!important;font-weight:900!important;text-transform:uppercase;letter-spacing:.01em}
+.lineBadges .chip{font-size:10px!important}
+.showTitle{font-size:16px!important;text-transform:uppercase}
+.perfCard:hover{background:#fff8d1!important;transform:none!important}
+.split{gap:10px!important}
+.castLine{display:grid!important;grid-template-columns:minmax(125px,220px) minmax(0,1fr)!important;gap:0!important;align-items:stretch!important;padding:0!important;border:1px solid var(--pb-line)!important;border-radius:8px!important;margin-bottom:5px!important;overflow:hidden;background:#fff!important}
+.castLine .role{background:#f1ead6!important;color:#1a1a1a!important;font-weight:650!important;text-transform:none!important;padding:8px 9px!important;font-size:13px!important;line-height:1.15!important;border-right:1px solid var(--pb-line)}
+.castLine .castPersonCell{padding:7px 8px!important;background:#fff!important;display:flex;align-items:center;gap:8px}
+.castLine.coverUnderstudy .role,.castLine.coverUnderstudy .castPersonCell{background:#fff4bd!important}
+.castLine.coverStandby .role,.castLine.coverStandby .castPersonCell{background:#f0e1ff!important}
+.castLine.coverAlternate .role,.castLine.coverAlternate .castPersonCell{background:#e7f2ff!important}
+.castLine.coverSwing .role,.castLine.coverSwing .castPersonCell{background:#eaf7df!important}
+.castLine.coverEmergency .role,.castLine.coverEmergency .castPersonCell{background:#ffe0dc!important}
+.castLine.coverTemporary .role,.castLine.coverTemporary .castPersonCell{background:#ffe8c8!important}
+.castLine.coverSpecial .role,.castLine.coverSpecial .castPersonCell{background:#fff0cc!important}
+.role .linkish,.castLine .linkish{color:#111!important;text-decoration:none!important}
+.role .linkish:hover,.castLine .linkish:hover{text-decoration:underline!important;text-decoration-color:var(--tt-red)!important;text-underline-offset:3px}
+.nameBtn{color:#111!important;text-decoration:none!important;font-weight:950!important}
+.castPersonName{text-transform:uppercase!important;letter-spacing:.045em!important;font-size:13px!important}
+.personWrap{width:100%;gap:8px}
+.personLeft{display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:wrap}
+.personTimes{font-size:11px!important}
+.roleFlag{background:#111!important;color:var(--pb-yellow)!important;border-radius:6px!important;box-shadow:inset 3px 0 0 var(--pb-yellow), inset -3px 0 0 var(--tt-red)!important;font-size:11px!important;text-transform:uppercase!important;padding:4px 7px!important}
+.coverBadge{margin-left:auto;background:#111!important;color:#fff!important;border-radius:6px!important;padding:4px 6px!important;font-size:10px!important;font-weight:900!important;text-transform:uppercase;white-space:nowrap}
+.coverBadge.understudy{background:#5c4700!important;color:#fff2a8!important}
+.coverBadge.standby{background:#4c2a67!important;color:#f1d9ff!important}
+.coverBadge.alternate{background:#174a73!important;color:#d9efff!important}
+.coverBadge.swing{background:#33601f!important;color:#e8ffd8!important}
+.coverBadge.emergency{background:#8b1c16!important;color:#ffe2dc!important}
+.coverBadge.temporary{background:#815115!important;color:#ffe8c8!important}
+.ensemble{gap:5px!important}
+.ensChip{background:#fff!important;border:1px solid var(--pb-line)!important;border-radius:7px!important;padding:5px 7px!important}
+.roleGroup{padding:8px!important}
+.roleGroupTitle{font-size:15px!important;text-transform:uppercase}
+.roleGroupRole{font-size:13px!important;color:#111!important;font-weight:700!important;text-transform:none}
+.panel{background:#fffdf3!important;border:1px solid #111!important;border-top:5px solid var(--pb-yellow)!important;border-radius:10px!important}
+.table th{color:#111!important;background:#fff5bd!important}
+.table th,.table td{border-bottom:1px solid var(--pb-line)!important}
+@media(max-width:760px){
+  .topin{padding:6px 8px!important}
+  .wrap{padding:8px 7px 32px!important}
+  .nav{width:100%;justify-content:flex-start}
+  .btn,.pillBtn{font-size:11px!important;padding:6px 7px!important}
+  .sleekHeroSearch{grid-template-columns:1fr!important}
+  .castLine{grid-template-columns:1fr!important}
+  .castLine .role{border-right:0!important;border-bottom:1px solid var(--pb-line)}
+  .castLine .castPersonCell{padding:7px 8px!important}
+  .lineRow{grid-template-columns:1fr!important}
+}
+
 </style>
 </head>
 <body>
@@ -214,7 +324,31 @@ function buildIndexes(){
 }
 function showNumberChips(p){return '<span class="chip purple">Diary #'+idx.attendanceNo[p.id]+'</span><span class="chip good">'+esc(showOf(p))+' #'+idx.showViewingNo[p.id]+' of '+idx.showViewingTotal[p.showId]+'</span>';}
 function stat(personId,currentPerfId){var ps=idx.personPerfSets[personId]||{},rs=idx.personRoleSets[personId]||{},ss=idx.personShowSets[personId]||{};var pc=keys(ps).length,rc=keys(rs).length,sc=keys(ss).length,other=ps[currentPerfId]?pc-1:pc;if(other<0)other=0;return{other:other,roles:rc,shows:sc,perfs:pc};}
-function personButton(personId,currentPerfId){var s=stat(personId,currentPerfId),rw=s.roles===1?'role':'roles',tw=s.other===1?'other time':'other times';return '<span class="personWrap"><span class="personLeft"><button class="nameBtn" onclick="TD.openPerson('+personId+')">'+esc(personName(personId))+'</button><span class="personTimes">'+s.other+' '+tw+'</span></span><span class="roleFlag">'+s.roles+' '+rw+'</span></span>';}
+
+function upperName(name){return String(name||'Unknown').toUpperCase();}
+function coverClassName(label){
+  var c=coverName(label||'');
+  if(c==='Understudy')return 'coverUnderstudy';
+  if(c==='Standby')return 'coverStandby';
+  if(c==='Alternate')return 'coverAlternate';
+  if(c==='Swing')return 'coverSwing';
+  if(c==='Emergency cover')return 'coverEmergency';
+  if(c==='Temporary replacement')return 'coverTemporary';
+  if(c==='Special appearance')return 'coverSpecial';
+  return '';
+}
+function coverBadgeClass(label){
+  var c=coverName(label||'');
+  if(c==='Understudy')return 'understudy';
+  if(c==='Standby')return 'standby';
+  if(c==='Alternate')return 'alternate';
+  if(c==='Swing')return 'swing';
+  if(c==='Emergency cover')return 'emergency';
+  if(c==='Temporary replacement')return 'temporary';
+  if(c==='Special appearance')return 'special';
+  return '';
+}
+function personButton(personId,currentPerfId){var s=stat(personId,currentPerfId),rw=s.roles===1?'role':'roles',tw=s.other===1?'other time':'other times';return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.openPerson('+personId+')">'+esc(upperName(personName(personId)))+'</button><span class="personTimes">'+s.other+' '+tw+'</span></span><span class="roleFlag">'+s.roles+' '+rw+'</span></span>';}
 
 function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button><button class="btn" onclick="TD.random()">Random</button></div></div></div>'+inner+(state.panel?renderPanel(state.panel):'');}
 function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
@@ -331,9 +465,31 @@ function firstTimeBlock(p){
   return out;
 }
 
-function castBlock(p){var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ens='',notes='',i,a,r,label,line,roleName,isTrack;apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});for(i=0;i<apps.length;i++){a=apps[i];r=by(db.roles,a.roleId);roleName=r?r.name:(a.roleRaw||'');label=coverName(a.coverLabel||a.coverType||'');isTrack=norm(roleName).indexOf('track')>=0||norm(roleName).indexOf('swing')>=0;if(a.appearanceType==='ensemble'){ens+='<span class="ensChip">'+personButton(a.personId,p.id)+'</span>';}else if(a.appearanceType==='swing'&&isTrack){notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(roleName)+(label?' · '+esc(label):'')+'</div></div>';}else{line='<div class="castLine"><div class="role">'+roleLink(r)+'</div><div>'+personButton(a.personId,p.id)+' '+(label?'<span class="chip cover">'+esc(label)+'</span>':'')+(a.alsoEnsemble?'<span class="chip">ensemble</span>':'')+'</div></div>';principal+=line;if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(personName(a.personId))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(roleName)+(label?' · '+esc(label):'')+'</div></div>';}}return principal+(ens?'<div class="section"><h3>Ensemble</h3><div class="ensemble">'+ens+'</div></div>':'')+(notes?'<div class="section"><h3>Coverage Notes</h3><div class="list">'+notes+'</div></div>':'');}
+function castBlock(p){
+  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ens='',notes='',i,a,r,label,line,roleName,isTrack,coverClass,badgeClass,badge;
+  apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
+  for(i=0;i<apps.length;i++){
+    a=apps[i];r=by(db.roles,a.roleId);roleName=r?r.name:(a.roleRaw||'');
+    label=coverName(a.coverLabel||a.coverType||'');
+    if(!label && a.appearanceType==='swing') label='Swing';
+    coverClass=coverClassName(label);
+    badgeClass=coverBadgeClass(label);
+    badge=label?'<span class="coverBadge '+badgeClass+'">'+esc(label)+'</span>':'';
+    isTrack=norm(roleName).indexOf('track')>=0||norm(roleName).indexOf('swing')>=0;
+    if(a.appearanceType==='ensemble'){
+      ens+='<span class="ensChip">'+personButton(a.personId,p.id)+'</span>';
+    }else if(a.appearanceType==='swing'&&isTrack){
+      notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(roleName)+(label?' · '+esc(label):'')+'</div></div>';
+    }else{
+      line='<div class="castLine '+coverClass+'"><div class="role">'+roleLink(r)+'</div><div class="castPersonCell">'+personButton(a.personId,p.id)+badge+(a.alsoEnsemble?'<span class="chip">ensemble</span>':'')+'</div></div>';
+      principal+=line;
+      if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(roleName)+(label?' · '+esc(label):'')+'</div></div>';
+    }
+  }
+  return principal+(ens?'<div class="section"><h3>Ensemble</h3><div class="ensemble">'+ens+'</div></div>':'')+(notes?'<div class="section"><h3>Coverage Notes</h3><div class="list">'+notes+'</div></div>':'');
+}
 function roleLink(r){if(!r)return'';var key=String(r.showId)+'|'+roleNorm(r.name);return '<button class="linkish" onclick="TD.go(\'role\',\''+esc(key)+'\')">'+esc(r.name)+'</button>';}
-function creativeBlock(perfId){var arr=idx.creativeByPerf[perfId]||[],byC={},i,c,p,out='',credit;for(i=0;i<arr.length;i++){c=arr[i];if(!byC[c.credit])byC[c.credit]=[];p=by(db.people,c.personId);byC[c.credit].push('<button class="nameBtn" onclick="TD.openPerson('+c.personId+')">'+esc(p?p.name:c.raw)+'</button>');}for(credit in byC)if(Object.prototype.hasOwnProperty.call(byC,credit))out+='<div class="castLine"><div class="role">'+esc(credit)+'</div><div>'+byC[credit].join(' / ')+'</div></div>';return out||'<p class="muted">No creative team listed.</p>';}
+function creativeBlock(perfId){var arr=idx.creativeByPerf[perfId]||[],byC={},i,c,p,out='',credit;for(i=0;i<arr.length;i++){c=arr[i];if(!byC[c.credit])byC[c.credit]=[];p=by(db.people,c.personId);byC[c.credit].push('<button class="nameBtn" onclick="TD.openPerson('+c.personId+')">'+esc(p?p.name:c.raw)+'</button>');}for(credit in byC)if(Object.prototype.hasOwnProperty.call(byC,credit))out+='<div class="castLine"><div class="role">'+esc(credit)+'</div><div class="castPersonCell">'+byC[credit].join(' / ')+'</div></div>';return out||'<p class="muted">No creative team listed.</p>';}
 function nextPrev(id){var ps=vals(db.performances);ps.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});var i,ix=0;for(i=0;i<ps.length;i++)if(ps[i].id==id){ix=i;break;}return{prev:ps[(ix-1+ps.length)%ps.length].id,next:ps[(ix+1)%ps.length].id};}
 function relatedBlock(p){var same=(idx.showPerfs[p.showId]||[]).slice(),out='',i,count=0;same.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});for(i=0;i<same.length&&count<5;i++){if(same[i].id==p.id)continue;out+='<div class="row"><button class="linkish" onclick="TD.go(\'perf\','+same[i].id+')">'+esc(fmtDate(same[i].date))+'</button><div class="tiny">'+esc(venueOf(same[i]))+'</div></div>';count++;}return out?'<div class="section"><h2>Related Performances</h2><div class="list">'+out+'</div></div>':'';}
 
@@ -465,8 +621,8 @@ function castCopyRows(id,formatted){
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
   for(i=0;i<apps.length;i++){
     a=apps[i]; r=by(db.roles,a.roleId); person=by(db.people,a.personId);
-    if(a.appearanceType==='ensemble'){ens.push(person?person.name:personName(a.personId));continue;}
-    base=(r?r.name:(a.roleRaw||''))+' - '+(person?person.name:'Unknown');
+    if(a.appearanceType==='ensemble'){ens.push(upperName(person?person.name:personName(a.personId)));continue;}
+    base=(r?r.name:(a.roleRaw||''))+' - '+upperName(person?person.name:'Unknown');
     notator=coverCode(a,formatted);
     if(formatted) lines.push('**'+base+'**'+(notator?' '+notator:''));
     else lines.push(base+(notator?' '+notator:''));
