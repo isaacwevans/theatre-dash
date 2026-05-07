@@ -12,7 +12,7 @@ body{background:linear-gradient(180deg,#f7f4ed 0,#efe6d8 42%,#e6d8c8 100%);color
 button,input,select,textarea{font:inherit}button{cursor:pointer}
 .topbar{position:sticky;top:0;z-index:80;background:rgba(247,244,237,.94);border-bottom:1px solid rgba(83,58,45,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .topin{max-width:1180px;margin:0 auto;padding:8px 12px;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
-.brand{border:0;background:transparent;color:#34231b;font-family:Georgia,serif;font-size:21px;font-weight:900;padding:7px 8px;border-radius:12px;white-space:nowrap}
+.brand{border:0;background:transparent;color:#34231b;font-family:inherit;font-size:21px;font-weight:900;padding:7px 8px;border-radius:12px;white-space:nowrap}
 .brand:before{content:"🎭";font-family:Apple Color Emoji,Segoe UI Emoji;margin-right:7px;font-size:17px}
 .nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .btn,.pillBtn{border:1px solid rgba(83,58,45,.18);background:rgba(255,255,255,.48);color:#3a2a22;border-radius:999px;padding:7px 10px;white-space:nowrap}
@@ -20,15 +20,15 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 .pillBtn.active{background:#fffdf7;border-color:rgba(122,82,55,.32);color:#7a4e35}
 .wrap{max-width:1180px;margin:0 auto;padding:14px 12px 44px;width:100%}
 .hero{border:1px solid rgba(83,58,45,.13);background:rgba(255,253,247,.70);border-radius:22px;padding:16px;margin-bottom:12px;box-shadow:0 16px 45px rgba(83,58,45,.10)}
-h1,h2,h3{font-family:Georgia,serif;line-height:1.05}h1{font-size:36px;margin:0 0 6px}h2{font-size:25px;margin:0 0 10px}h3{font-size:19px;margin:0 0 8px}
+h1,h2,h3{font-family:inherit;line-height:1.05}h1{font-size:36px;margin:0 0 6px}h2{font-size:25px;margin:0 0 10px}h3{font-size:19px;margin:0 0 8px}
 .muted{color:rgba(45,33,27,.66)}.tiny{font-size:12px;color:rgba(45,33,27,.58);line-height:1.35}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.input,.select,.textarea{border:1px solid rgba(83,58,45,.18);background:rgba(255,253,247,.78);color:#2d211b;border-radius:14px;padding:9px 10px;min-height:38px}.input{flex:1 1 280px;min-width:0}.select{flex:0 0 auto;max-width:100%}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:10px}.card{border:1px solid rgba(83,58,45,.13);background:rgba(255,253,247,.66);border-radius:18px;padding:12px;min-width:0;box-shadow:0 10px 28px rgba(83,58,45,.08)}
 .perfCard{cursor:pointer;transition:transform .12s ease,background .12s ease}.perfCard:hover,.lineRow:hover{transform:translateY(-1px);background:rgba(255,253,247,.92)}
-.showTitle{font-family:Georgia,serif;font-weight:900;font-size:21px;line-height:1.05;margin-bottom:4px;color:#2f2119}.meta{font-size:13px;color:rgba(45,33,27,.64);line-height:1.32}
+.showTitle{font-family:inherit;font-weight:900;font-size:21px;line-height:1.05;margin-bottom:4px;color:#2f2119}.meta{font-size:13px;color:rgba(45,33,27,.64);line-height:1.32}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{border:1px solid rgba(83,58,45,.13);background:rgba(255,255,255,.55);border-radius:999px;padding:4px 7px;font-size:12px;color:#6b4936}.cover{border-color:rgba(176,110,66,.34);background:rgba(210,146,92,.16);color:#774625;font-weight:850}.good{border-color:rgba(102,143,107,.32);background:rgba(145,184,145,.16);color:#3f6947}.purple{border-color:rgba(161,138,170,.28);background:rgba(161,138,170,.12);color:#65506f}
 .yearBox{border:1px solid rgba(83,58,45,.13);background:rgba(255,253,247,.50);border-radius:20px;margin:10px 0;overflow:hidden}
-.yearBox summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.36);font-family:Georgia,serif;font-size:22px;font-weight:900}
+.yearBox summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.36);font-family:inherit;font-size:22px;font-weight:900}
 .yearBox summary::-webkit-details-marker{display:none}.yearBox summary:after{content:"▾";font-family:Arial;font-size:14px;color:#7a4e35}.yearBox:not([open]) summary:after{content:"▸"}
 .yearInner{padding:10px}.lineList{display:grid;gap:7px}
 .lineRow{border:1px solid rgba(83,58,45,.13);background:rgba(255,253,247,.68);border-radius:14px;padding:9px 10px;display:grid;grid-template-columns:minmax(72px,110px) minmax(0,1fr) auto;gap:10px;align-items:center;cursor:pointer;transition:transform .12s ease,background .12s ease}
@@ -37,7 +37,7 @@ h1,h2,h3{font-family:Georgia,serif;line-height:1.05}h1{font-size:36px;margin:0 0
 .personStats{font-size:12px;color:rgba(45,33,27,.54);margin-left:4px;white-space:nowrap}.ensemble{display:flex;gap:6px;flex-wrap:wrap}.ensChip{border:1px solid rgba(83,58,45,.13);background:rgba(255,255,255,.50);border-radius:999px;padding:5px 8px;font-size:13px}
 .panel{position:fixed;right:14px;top:64px;width:min(400px,calc(100vw - 28px));max-height:calc(100vh - 82px);overflow:auto;z-index:150;background:#fffaf1;border:1px solid rgba(83,58,45,.18);border-radius:20px;padding:14px;box-shadow:0 30px 90px rgba(83,58,45,.22)}.closeBtn{float:right}.list{display:grid;gap:7px}.row{border:1px solid rgba(83,58,45,.12);background:rgba(255,255,255,.46);border-radius:14px;padding:8px;min-width:0}.row:hover{background:rgba(255,255,255,.76)}
 .tableWrap{overflow:auto;-webkit-overflow-scrolling:touch}.table{width:100%;border-collapse:collapse;font-size:14px}.table th,.table td{border-bottom:1px solid rgba(83,58,45,.10);padding:7px;text-align:left;vertical-align:top}.table th{color:#7a4e35;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
-.textarea{width:100%;min-height:110px;resize:vertical}.smallInput{width:100%;margin-bottom:8px}.loadMore{display:block;margin:14px auto 0}.statGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}.stat{border:1px solid rgba(83,58,45,.12);background:rgba(255,255,255,.46);border-radius:16px;padding:10px}.stat .num{font-family:Georgia,serif;font-weight:900;font-size:27px}.stat .lab{font-size:12px;color:rgba(45,33,27,.58)}
+.textarea{width:100%;min-height:110px;resize:vertical}.smallInput{width:100%;margin-bottom:8px}.loadMore{display:block;margin:14px auto 0}.statGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}.stat{border:1px solid rgba(83,58,45,.12);background:rgba(255,255,255,.46);border-radius:16px;padding:10px}.stat .num{font-family:inherit;font-weight:900;font-size:27px}.stat .lab{font-size:12px;color:rgba(45,33,27,.58)}
 .noteBox{border:1px solid rgba(83,58,45,.13);background:rgba(255,255,255,.44);border-radius:15px;padding:10px;margin:0 0 10px;white-space:pre-wrap}.groupHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 8px}.hr{height:1px;background:rgba(83,58,45,.12);margin:12px 0}pre{white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.52);border:1px solid rgba(83,58,45,.12);padding:10px;border-radius:14px;overflow:auto}
 body.compact .card{padding:9px;border-radius:14px}body.compact .hero{padding:12px;border-radius:18px}body.compact .castLine{padding:4px 0;gap:6px}body.compact .ensChip{padding:4px 7px}body.compact .chip{padding:3px 6px}body.compact .grid{gap:8px}body.compact .showTitle{font-size:20px}
 .boot{max-width:720px;margin:0 auto;padding:22px 16px}.boot-card{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.075);border-radius:20px;padding:18px}.ok{color:#bff0c7}.warn{color:#ffe3a6}.bad{color:#ffb3a6}
@@ -53,7 +53,7 @@ body.compact .card{padding:9px;border-radius:14px}body.compact .hero{padding:12p
 .calendarControls{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px}
 .calendarWrap{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .monthBox{border:1px solid rgba(83,58,45,.12);background:rgba(255,255,255,.42);border-radius:14px;padding:8px}
-.monthName{font-family:Georgia,serif;font-weight:900;margin-bottom:5px;color:#5b3928}
+.monthName{font-family:inherit;font-weight:900;margin-bottom:5px;color:#5b3928}
 .days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .day{border:0;background:rgba(83,58,45,.06);color:#4a382f;border-radius:7px;min-height:23px;font-size:11px;padding:2px}
 .day.has{background:#fffdf7;border:1px solid rgba(122,82,55,.25);font-weight:900;color:#6d402a}
@@ -65,11 +65,11 @@ body.compact .card{padding:9px;border-radius:14px}body.compact .hero{padding:12p
 .calendarCard{grid-column:1 / -1}
 .calendarCard .calendarWrap{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}
 .monthBox{min-width:0}
-.monthNameBtn{border:0;background:transparent;color:#5b3928;font-family:Georgia,serif;font-weight:900;padding:0;margin:0 0 5px;text-align:left}
+.monthNameBtn{border:0;background:transparent;color:#5b3928;font-family:inherit;font-weight:900;padding:0;margin:0 0 5px;text-align:left}
 .monthNameBtn:hover{text-decoration:underline;text-decoration-color:#e92834;text-underline-offset:3px}
 .monthJumpBar{display:flex;gap:5px;flex-wrap:wrap;padding:0 14px 10px;background:rgba(255,255,255,.36)}
 .monthJump{border:1px solid rgba(83,58,45,.13);background:#fffdf7;color:#6d402a;border-radius:999px;padding:4px 7px;font-size:12px}
-.monthAnchor{grid-column:1/-1;color:#6d402a;font-family:Georgia,serif;font-weight:900;font-size:16px;padding:8px 2px 2px;border-bottom:1px solid rgba(83,58,45,.10)}
+.monthAnchor{grid-column:1/-1;color:#6d402a;font-family:inherit;font-weight:900;font-size:16px;padding:8px 2px 2px;border-bottom:1px solid rgba(83,58,45,.10)}
 .diaryYears{justify-content:flex-end;max-height:92px}
 .personWrap{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-width:0}
 .personLeft{min-width:0}
@@ -82,7 +82,7 @@ body.compact .card{padding:9px;border-radius:14px}body.compact .hero{padding:12p
 .miniNav{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .roleGroup{border:1px solid rgba(83,58,45,.12);background:rgba(255,255,255,.48);border-radius:16px;padding:10px;margin-bottom:8px}
 .roleGroupHead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.roleGroupTitle{font-family:Georgia,serif;font-weight:900;font-size:18px;color:#2d211b;line-height:1.1}
+.roleGroupTitle{font-family:inherit;font-weight:900;font-size:18px;color:#2d211b;line-height:1.1}
 .roleGroupRole{color:#6d402a;font-weight:900;margin-top:3px}
 .dateChips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
 .dateChip{border:1px solid rgba(83,58,45,.12);background:#fffdf7;color:#5d463a;border-radius:999px;padding:4px 7px;font-size:12px}
@@ -111,14 +111,62 @@ body.compact .card{padding:9px;border-radius:14px}body.compact .hero{padding:12p
   .input{flex-basis:100%}.select{flex:1 1 135px;min-width:0}.showTitle{font-size:20px}.personStats{font-size:11px;display:inline}.ensChip{font-size:12px;padding:5px 7px}
   .lineRow{grid-template-columns:1fr;gap:4px}.lineDate{font-size:12px}.lineBadges{justify-content:flex-start}.yearBox summary{font-size:19px;padding:10px 12px}
 }
+
+/* Sleeker pass */
+body{background:#f6f3ec;color:#2b2420}
+.topbar{box-shadow:0 1px 18px rgba(70,52,42,.06)}
+.topin{padding:6px 12px}
+.brand{font-size:17px;font-weight:850;letter-spacing:-.02em}
+.brand:before{font-size:15px}
+.nav{gap:5px}
+.btn,.pillBtn{padding:6px 9px;font-size:13px;border-radius:12px}
+.wrap{max-width:1060px;padding-top:10px}
+.hero{border-radius:18px;padding:13px 14px;margin-bottom:10px;box-shadow:0 8px 25px rgba(83,58,45,.07)}
+h1{font-size:30px;letter-spacing:-.035em;margin-bottom:5px}
+h2{font-size:20px;letter-spacing:-.025em}
+h3{font-size:15px;letter-spacing:-.01em}
+.card{border-radius:16px;padding:10px;box-shadow:0 8px 20px rgba(83,58,45,.055)}
+.showTitle{font-size:17px;letter-spacing:-.015em}
+.lineRow{border-radius:12px;padding:8px 10px;grid-template-columns:82px minmax(0,1fr) auto}
+.lineTitle{font-size:15px}
+.lineSub{font-size:11px}
+.chip{font-size:11px;padding:3px 7px}
+.yearBox{border-radius:15px;margin:7px 0}
+.yearBox summary{font-family:inherit;font-size:17px;padding:9px 11px}
+.monthJumpBar{padding:0 10px 8px}
+.monthAnchor{font-family:inherit;font-size:13px;padding:6px 2px 1px}
+.input,.select,.textarea{border-radius:12px;min-height:35px;padding:8px 9px}
+.moduleTitle h2{margin:0}
+.sleekHeroSearch{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;align-items:start;margin-top:10px}
+.yearPickerCard{margin-top:10px}
+.yearChart{display:grid;gap:5px;margin-top:8px}
+.yearBarBtn{display:grid;grid-template-columns:58px minmax(0,1fr) 34px;gap:8px;align-items:center;border:0;background:transparent;padding:2px;border-radius:10px;color:#2b2420;text-align:left}
+.yearBarBtn:hover{background:rgba(255,255,255,.72)}
+.yearBarBtn.active{background:#fffdf7;box-shadow:inset 3px 0 0 #f7d847,inset -3px 0 0 #e92834}
+.yearBarTrack{height:10px;background:rgba(83,58,45,.10);border-radius:999px;overflow:hidden}
+.yearBarFill{height:100%;background:linear-gradient(90deg,#f7d847,#d9c29d 60%,#e92834);border-radius:999px}
+.monthPop{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid rgba(83,58,45,.10)}
+.monthPop .monthJump{font-size:12px;padding:5px 8px;border-radius:10px}
+.homeQuick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.homeStats{font-size:13px;color:rgba(45,33,27,.60)}
+.personWrap{align-items:center}
+.roleFlag{font-size:12px;padding:4px 8px;box-shadow:inset 3px 0 0 #f7d847,inset -2px 0 0 #e92834}
+.firstSeenBox,.roleGroup,.connectionCard{border-radius:13px}
+@media(max-width:760px){
+  .sleekHeroSearch{grid-template-columns:1fr}
+  .lineRow{grid-template-columns:1fr;gap:3px}
+  h1{font-size:25px}
+  .wrap{padding-left:7px;padding-right:7px}
+}
+
 </style>
 </head>
 <body>
-<div id="app"><main class="boot"><section class="boot-card"><h1 style="font-family:Georgia,serif;margin:0 0 8px">Theatre Diary</h1><p class="muted">Loading the inline dashboard…</p><div class="row warn">Loading theatre-data.json…</div></section></main></div>
+<div id="app"><main class="boot"><section class="boot-card"><h1 style="font-family:inherit;margin:0 0 8px">Theatre Diary</h1><p class="muted">Loading the inline dashboard…</p><div class="row warn">Loading theatre-data.json…</div></section></main></div>
 <script>
 (function(){
 var db=null, idx=null, edits=readEdits();
-var state={view:'home',id:null,q:'',year:'all',type:'all',cover:false,limit:2000,history:[],hIndex:-1,panel:null,peopleMode:'appearances',personLayout:(localStorage.getItem('theatreDiaryPersonLayout')||'grouped'),sort:'old',density:(localStorage.getItem('theatreDiaryDensity')||'comfy'),layout:(localStorage.getItem('theatreDiaryLayout')||'lines'),groupYears:(localStorage.getItem('theatreDiaryGroupYears')||'yes'),calendarYear:null,qDelay:null,focusId:null};
+var state={view:'home',id:null,q:'',year:'all',type:'all',cover:false,limit:2000,history:[],hIndex:-1,panel:null,peopleMode:'appearances',personLayout:(localStorage.getItem('theatreDiaryPersonLayout')||'grouped'),sort:'old',density:(localStorage.getItem('theatreDiaryDensity')||'comfy'),layout:(localStorage.getItem('theatreDiaryLayout')||'lines'),groupYears:(localStorage.getItem('theatreDiaryGroupYears')||'yes'),calendarYear:null,selectedJumpYear:null,qDelay:null,focusId:null};
 window.onerror=function(msg,src,line,col,err){showError('Dashboard crashed',String(msg)+' at line '+line);};
 
 function esc(s){s=s==null?'':String(s);return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
@@ -179,48 +227,47 @@ function filteredPerformances(){var ps=sortedPerformances(),out=[],q=norm(state.
 function home(){
   var ps=sortedPerformances(), years={}, types={}, i,p,filtered=filteredPerformances();
   for(i=0;i<ps.length;i++){years[yearOf(ps[i].date)]=1;types[ps[i].type||'Unknown']=1;}
-  var recent=vals(db.performances); recent.sort(function(a,b){return String(b.date).localeCompare(String(a.date))||b.id-a.id;});
-  var out='<main class="wrap"><section class="hero"><h1>Theatre Diary</h1><p class="muted">A softer little theatre archive: '+vals(db.performances).length+' performances · '+vals(db.shows).length+' shows · '+vals(db.people).length+' people.</p><div class="chips"><span class="chip">Cloud Dancer-inspired</span><span class="chip good">line view default</span><span class="chip purple">old → new diary</span></div><div class="accentRule"></div></section>'+
-    '<section class="homeGrid"><div class="card"><div class="moduleTitle"><h2>Recent shows</h2><button class="btn" onclick="TD.setSort(\'new\')">Newest list</button></div><section class="grid">'+perfCard(recent[0])+perfCard(recent[1])+perfCard(recent[2])+'</section></div>'+
-    '<aside class="card"><h2>Quick jumps</h2><div class="homeLinks"><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.random()">Random</button></div><div class="section"><h3>Go to year</h3><div class="yearLinks">'+yearButtons(years)+'</div></div></aside></section>'+
-    '<section class="homeGrid section"><div class="card"><h2>At-a-glance charts</h2>'+chartsBlock()+'</div><aside class="card calendarCard"><h2>Calendar</h2>'+calendarBlock(years)+'</aside></section>'+
-    '<div id="diaryList" class="diaryHead"><div><h2>Diary</h2><p class="tiny">Click a year to jump there. The list stays continuous into other years.</p></div><div class="yearLinks diaryYears">'+yearButtons(years)+'</div></div>'+
-    '<section class="hero"><div class="toolbar"><div style="flex:1 1 280px;min-width:0"><input id="homeSearch" class="input" style="width:100%" value="'+esc(state.q)+'" placeholder="Search show, venue, cast, notes..." oninput="TD.setQ(this.value)"><div class="searchHint">Search waits until you pause typing, so it should stop flinging you out of the box.</div></div>'+
-    '<select class="select" onchange="TD.setYear(this.value)"><option value="all">All years</option>'+opts(years,state.year,true)+'</select><select class="select" onchange="TD.setType(this.value)"><option value="all">All types</option>'+opts(types,state.type,false)+'</select>'+
-    '<select class="select" onchange="TD.setSort(this.value)"><option value="old" '+(state.sort==='old'?'selected':'')+'>Oldest first</option><option value="new" '+(state.sort==='new'?'selected':'')+'>Newest first</option></select>'+
-    '<button class="pillBtn '+(state.layout==='cards'?'active':'')+'" onclick="TD.setLayout(\'cards\')">Cards</button><button class="pillBtn '+(state.layout==='lines'?'active':'')+'" onclick="TD.setLayout(\'lines\')">Lines</button><button class="btn" onclick="TD.toggleYears()">'+(state.groupYears==='yes'?'Flat list':'By year')+'</button><button class="btn" onclick="TD.toggleCovers()">'+(state.cover?'All performances':'Only with covers')+'</button></div></section>';
+  var ys=keys(years).sort();
+  if(!state.selectedJumpYear && ys.length) state.selectedJumpYear=ys[ys.length-1];
+  var out='<main class="wrap"><section class="hero"><h1>Theatre Diary</h1><div class="homeStats">'+vals(db.performances).length+' performances · '+vals(db.shows).length+' shows · '+vals(db.people).length+' people</div>'+
+    '<div class="sleekHeroSearch"><input id="topSearch" class="input" value="'+esc(state.q)+'" placeholder="Search the diary..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'topSearch\')"><button class="btn" onclick="TD.applySearch(\'topSearch\')">Search diary</button><button class="btn" onclick="TD.diary()">Go to diary</button></div>'+
+    '<div class="homeQuick"><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.random()">Random</button>'+(state.q?'<button class="btn" onclick="TD.clearSearch()">Clear search</button>':'')+'</div><div class="accentRule"></div></section>'+
+    '<section class="card yearPickerCard"><div class="moduleTitle"><h2>By year</h2><span class="chip">click a year, then a month</span></div>'+yearPicker(countByYear())+'</section>'+
+    '<div id="diaryList" class="diaryHead"><div><h2>Diary</h2><p class="tiny">'+(state.q?'Search results for “'+esc(state.q)+'”':'Continuous list, oldest to newest')+'</p></div><div class="toolbar"><input id="diarySearch" class="input" value="'+esc(state.q)+'" placeholder="Search..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'diarySearch\')"><button class="btn" onclick="TD.applySearch(\'diarySearch\')">Search</button><button class="pillBtn '+(state.layout==='lines'?'active':'')+'" onclick="TD.setLayout(\'lines\')">Lines</button><button class="pillBtn '+(state.layout==='cards'?'active':'')+'" onclick="TD.setLayout(\'cards\')">Cards</button></div></div>';
   if(state.groupYears==='yes')out+=groupedListing(filtered); else out+=renderListing(filtered.slice(0,state.limit));
   if(filtered.length>state.limit&&state.groupYears!=='yes')out+='<button class="btn loadMore" onclick="TD.more()">Load more</button>';
   return out+'</main>';
 }
-function yearButtons(years){var arr=keys(years),out='',i;arr.sort();for(i=0;i<arr.length;i++)out+='<button class="btn" onclick="TD.goYear(\''+esc(arr[i])+'\')">'+esc(arr[i])+'</button>';return out;}
-function chartsBlock(){
-  return '<div class="section"><h3>Shows by year</h3>'+barChart(countByYear(),10)+'</div><div class="section"><h3>By month</h3>'+barChart(countByMonth(),12)+'</div><div class="section"><h3>By weekday</h3>'+barChart(countByWeekday(),7)+'</div><div class="section"><h3>Busiest Mon–Sun weeks</h3>'+barChart(countByWeek(),8)+'</div><div class="section"><h3>New shows vs repeats</h3>'+newRepeatChart()+'</div>';
+function yearPicker(rows){
+  var max=1,i,out='<div class="yearChart">';
+  for(i=0;i<rows.length;i++) if(rows[i].n>max) max=rows[i].n;
+  for(i=0;i<rows.length;i++){
+    out+='<button class="yearBarBtn '+(String(rows[i].label)===String(state.selectedJumpYear)?'active':'')+'" onclick="TD.setJumpYear(\''+esc(rows[i].label)+'\')"><span>'+esc(rows[i].label)+'</span><span class="yearBarTrack"><span class="yearBarFill" style="display:block;width:'+Math.max(3,Math.round(rows[i].n/max*100))+'%"></span></span><span>'+rows[i].n+'</span></button>';
+  }
+  out+='</div>'+monthPop(state.selectedJumpYear);
+  return out;
 }
-function barChart(rows,limit){var max=1,i,out='<div class="chart">';for(i=0;i<rows.length;i++)if(rows[i].n>max)max=rows[i].n;for(i=0;i<Math.min(rows.length,limit);i++){out+='<div class="barRow"><div>'+esc(rows[i].label)+'</div><div class="barTrack"><div class="barFill" style="width:'+Math.max(3,Math.round(rows[i].n/max*100))+'%"></div></div><div>'+rows[i].n+'</div></div>';}return out+'</div>';}
+function monthPop(y){
+  if(!y) return '';
+  var ps=vals(db.performances), m={}, order=[], i,p,mo,out='<div class="monthPop"><span class="tiny" style="align-self:center">Months in '+esc(y)+':</span>';
+  for(i=0;i<ps.length;i++){
+    p=ps[i];
+    if(yearOf(p.date)!==String(y)) continue;
+    mo=String(p.date).slice(5,7);
+    if(!m[mo]){m[mo]=0;order.push(mo);}
+    m[mo]++;
+  }
+  order.sort();
+  for(i=0;i<order.length;i++) out+='<button class="monthJump" onclick="TD.goMonth(\''+esc(y)+'\',\''+esc(order[i])+'\')">'+monthName(Number(order[i])-1)+' <span class="tiny">'+m[order[i]]+'</span></button>';
+  return out+'</div>';
+}
 function countByYear(){var ps=vals(db.performances),m={},i,y,rows=[];for(i=0;i<ps.length;i++){y=yearOf(ps[i].date)||'Unknown';m[y]=(m[y]||0)+1;}for(y in m)if(Object.prototype.hasOwnProperty.call(m,y))rows.push({label:y,n:m[y]});rows.sort(function(a,b){return String(a.label).localeCompare(String(b.label));});return rows;}
 function countByMonth(){var ps=vals(db.performances),m={},labels=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],i,mo,rows=[];for(i=0;i<12;i++)m[i]=0;for(i=0;i<ps.length;i++){mo=Number(String(ps[i].date).slice(5,7))-1;if(mo>=0)m[mo]++;}for(i=0;i<12;i++)rows.push({label:labels[i],n:m[i]});return rows;}
-function countByWeekday(){var ps=vals(db.performances),m=[0,0,0,0,0,0,0],labs=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],i,d,rows=[];for(i=0;i<ps.length;i++){d=dateObj(ps[i].date);if(d)m[d.getDay()]++;}for(i=0;i<7;i++)rows.push({label:labs[i],n:m[i]});return rows;}
 function dateObj(iso){var x=String(iso||'').split('-');if(x.length!==3)return null;return new Date(Number(x[0]),Number(x[1])-1,Number(x[2]));}
-function mondayKey(d){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());var day=x.getDay();var diff=(day===0?-6:1-day);x.setDate(x.getDate()+diff);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');}
-function countByWeek(){var ps=vals(db.performances),m={},i,d,k,rows=[];for(i=0;i<ps.length;i++){d=dateObj(ps[i].date);if(!d)continue;k=mondayKey(d);m[k]=(m[k]||0)+1;}for(k in m)if(Object.prototype.hasOwnProperty.call(m,k))rows.push({label:k.slice(5),n:m[k]});rows.sort(function(a,b){return b.n-a.n||a.label.localeCompare(b.label);});return rows;}
-function newRepeatChart(){var ps=vals(db.performances),seen={},by={},i,p,y,isNew,rows=[],k;ps.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});for(i=0;i<ps.length;i++){p=ps[i];y=yearOf(p.date)||'Unknown';if(!by[y])by[y]={newShow:0,repeat:0};isNew=!seen[p.showId];if(isNew){by[y].newShow++;seen[p.showId]=1;}else by[y].repeat++;}for(k in by)if(Object.prototype.hasOwnProperty.call(by,k))rows.push({label:k,n:by[k].newShow,repeat:by[k].repeat});rows.sort(function(a,b){return String(a.label).localeCompare(String(b.label));});var max=1;for(i=0;i<rows.length;i++)if(rows[i].n+rows[i].repeat>max)max=rows[i].n+rows[i].repeat;var out='<div class="chart">';for(i=0;i<rows.length;i++){var total=rows[i].n+rows[i].repeat;out+='<div class="barRow"><div>'+rows[i].label+'</div><div class="barTrack"><div class="barFill" style="width:'+Math.max(3,Math.round(total/max*100))+'%"></div></div><div>'+rows[i].n+'/'+rows[i].repeat+'</div></div>';}return out+'</div><p class="tiny">Format: new shows / repeat visits.</p>';}
-function calendarBlock(years){var ys=keys(years);ys.sort();if(!state.calendarYear)state.calendarYear=ys[ys.length-1];var out='<div class="calendarControls"><select class="select" onchange="TD.setCalYear(this.value)">'+opts(years,state.calendarYear,true)+'</select><button class="btn" onclick="TD.goYear(\''+esc(state.calendarYear)+'\')">Open year</button></div><div class="calendarWrap">',m;for(m=0;m<12;m++)out+=monthBlock(Number(state.calendarYear),m);return out+'</div>';}
-function monthBlock(year,month){var names=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],first=new Date(year,month,1),days=new Date(year,month+1,0).getDate(),offset=first.getDay(),map=perfsByDay(year,month),out='<div class="monthBox"><button class="monthNameBtn" onclick="TD.goMonth(\''+year+'\',\''+String(month+1).padStart(2,'0')+'\')">'+names[month]+'</button><div class="days">',i,d,key,items;for(i=0;i<offset;i++)out+='<button class="day empty"></button>';for(d=1;d<=days;d++){key=year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');items=map[key]||[];out+='<button class="day '+(items.length?'has ':'')+(items.length>1?'multi':'')+'" '+(items.length?'onclick="TD.go(\'perf\','+items[0].id+')" title="'+esc(items.length+' show(s)')+'"':'')+'>'+d+'</button>';}return out+'</div></div>';}
-function perfsByDay(year,month){var ps=vals(db.performances),m={},i,p;for(i=0;i<ps.length;i++){p=ps[i];if(Number(String(p.date).slice(0,4))===year && Number(String(p.date).slice(5,7))-1===month){if(!m[p.date])m[p.date]=[];m[p.date].push(p);}}return m;}
-
-
 function groupedListing(filtered){
   var limited=filtered.slice(0,state.limit), groups={}, order=[], i,p,y,out='';
-  for(i=0;i<limited.length;i++){
-    p=limited[i];
-    y=yearOf(p.date)||'Unknown';
-    if(!groups[y]){groups[y]=[];order.push(y);}
-    groups[y].push(p);
-  }
-  order.sort(function(a,b){
-    return state.sort==='old' ? String(a).localeCompare(String(b)) : String(b).localeCompare(String(a));
-  });
+  for(i=0;i<limited.length;i++){p=limited[i];y=yearOf(p.date)||'Unknown';if(!groups[y]){groups[y]=[];order.push(y);}groups[y].push(p);}
+  order.sort(function(a,b){return state.sort==='old' ? String(a).localeCompare(String(b)) : String(b).localeCompare(String(a));});
   for(i=0;i<order.length;i++){
     y=order[i];
     out+='<details id="year-'+esc(y)+'" class="yearBox" open><summary><span>'+esc(y)+'</span><span class="chip">'+groups[y].length+'</span></summary>'+monthButtonsForYear(y,groups[y])+'<div class="yearInner">'+renderYearListing(groups[y],y)+'</div></details>';
@@ -230,10 +277,7 @@ function groupedListing(filtered){
 }
 function monthButtonsForYear(y,arr){
   var months={},order=[],i,m,out='<div class="monthJumpBar">';
-  for(i=0;i<arr.length;i++){
-    m=String(arr[i].date).slice(5,7);
-    if(!months[m]){months[m]=1;order.push(m);}
-  }
+  for(i=0;i<arr.length;i++){m=String(arr[i].date).slice(5,7);if(!months[m]){months[m]=1;order.push(m);}}
   order.sort();
   for(i=0;i<order.length;i++) out+='<button class="monthJump" onclick="TD.goMonth(\''+esc(y)+'\',\''+esc(order[i])+'\')">'+monthName(Number(order[i])-1)+'</button>';
   return out+'</div>';
@@ -243,24 +287,15 @@ function renderYearListing(arr,y){
   out=state.layout==='lines'?'<section class="lineList">':'<section class="grid">';
   for(i=0;i<arr.length;i++){
     m=String(arr[i].date).slice(5,7);
-    if(!seen[m]){
-      seen[m]=1;
-      out+='<div id="month-'+esc(y)+'-'+esc(m)+'" class="monthAnchor">'+monthName(Number(m)-1)+'</div>';
-    }
+    if(!seen[m]){seen[m]=1;out+='<div id="month-'+esc(y)+'-'+esc(m)+'" class="monthAnchor">'+monthName(Number(m)-1)+'</div>';}
     out+=state.layout==='lines'?perfLine(arr[i]):perfCard(arr[i]);
   }
   return out+'</section>';
 }
 function renderListing(arr){
   var i,out;
-  if(state.layout==='lines'){
-    out='<section class="lineList">';
-    for(i=0;i<arr.length;i++) out+=perfLine(arr[i]);
-    return out+'</section>';
-  }
-  out='<section class="grid">';
-  for(i=0;i<arr.length;i++) out+=perfCard(arr[i]);
-  return out+'</section>';
+  if(state.layout==='lines'){out='<section class="lineList">';for(i=0;i<arr.length;i++)out+=perfLine(arr[i]);return out+'</section>';}
+  out='<section class="grid">';for(i=0;i<arr.length;i++)out+=perfCard(arr[i]);return out+'</section>';
 }
 function monthName(i){var a=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return a[i]||'';}
 
@@ -411,20 +446,74 @@ function readEdits(){try{return JSON.parse(localStorage.getItem('theatreDiaryEdi
 function saveEdits(){try{localStorage.setItem('theatreDiaryEdits',JSON.stringify(edits));}catch(e){}}
 function copyText(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t);else window.prompt('Copy this:',t);}
 function copyHtml(html,plain){if(navigator.clipboard&&window.ClipboardItem){try{var item=new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([plain],{type:'text/plain'})});navigator.clipboard.write([item]);return;}catch(e){}}copyText(plain);}
-function copyPerf(id,mode){var p=by(db.performances,id),apps=(idx.perfApps[id]||[]).slice(),i,a,r,person,lines=[],plain,html;if(!p)return;apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});lines.push('Diary #'+idx.attendanceNo[p.id]+' · '+showOf(p)+' #'+idx.showViewingNo[p.id]+' of '+idx.showViewingTotal[p.showId]);lines.push(showOf(p));lines.push(fmtDate(p.date)+' · '+venueOf(p));lines.push('');for(i=0;i<apps.length;i++){a=apps[i];r=by(db.roles,a.roleId);person=by(db.people,a.personId);if(a.appearanceType==='ensemble')continue;lines.push((r?r.name:'')+' — '+(person?person.name:'')+(coverName(a.coverLabel||a.coverType)?' ['+coverName(a.coverLabel||a.coverType)+']':''));}var ens=[];for(i=0;i<apps.length;i++){a=apps[i];if(a.appearanceType==='ensemble')ens.push(personName(a.personId));}if(ens.length){lines.push('');lines.push('Ensemble: '+ens.join(', '));}plain=mode==='cast'?lines.slice(4).join('\n'):lines.join('\n');html='<h2>'+esc(showOf(p))+'</h2><p>'+esc(fmtDate(p.date)+' · '+venueOf(p))+'</p><ul>';for(i=4;i<lines.length;i++)html+='<li>'+esc(lines[i]).replace(/\[([^\]]+)\]/g,'<strong>[$1]</strong>')+'</li>';html+='</ul>';if(mode==='html')copyHtml(html,plain);else copyText(plain);}
+function coverCode(a,formatted){
+  var role=by(db.roles,a.roleId), roleName=role?role.name:(a.roleRaw||''), c=coverName(a.coverLabel||a.coverType||'');
+  if(!c && a.appearanceType==='swing') c='Swing';
+  if(!c) return '';
+  var code='';
+  if(c==='Understudy') code='u/s';
+  else if(c==='Standby') code='s/b';
+  else if(c==='Alternate') code='alt';
+  else if(c==='Swing') code='s/w';
+  else if(c==='Emergency cover') code='e/c';
+  else if(c==='Temporary replacement') code='t/r';
+  else code=c;
+  return '('+(formatted?code:'*'+code)+(roleName?' '+roleName:'')+')';
+}
+function castCopyRows(id,formatted){
+  var apps=(idx.perfApps[id]||[]).slice(), lines=[], ens=[], i,a,r,person,base,notator;
+  apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
+  for(i=0;i<apps.length;i++){
+    a=apps[i]; r=by(db.roles,a.roleId); person=by(db.people,a.personId);
+    if(a.appearanceType==='ensemble'){ens.push(person?person.name:personName(a.personId));continue;}
+    base=(r?r.name:(a.roleRaw||''))+' - '+(person?person.name:'Unknown');
+    notator=coverCode(a,formatted);
+    if(formatted) lines.push('**'+base+'**'+(notator?' '+notator:''));
+    else lines.push(base+(notator?' '+notator:''));
+  }
+  if(ens.length) lines.push((formatted?'**Ensemble - '+ens.join(', ')+'**':'Ensemble - '+ens.join(', ')));
+  return lines;
+}
+function copyPerf(id,mode){
+  var p=by(db.performances,id), plainLines=[], formattedLines=[], location, htmlLines, i, html;
+  if(!p)return;
+  location=venueOf(p)+(p.type?' | '+p.type:'')+(p.time?' | '+p.time:'');
+  plainLines.push(showOf(p)+' | '+fmtDate(p.date));
+  plainLines.push(location);
+  plainLines.push('');
+  plainLines=plainLines.concat(castCopyRows(id,false));
+  formattedLines.push('**'+showOf(p)+' | '+fmtDate(p.date)+'**');
+  formattedLines.push(location);
+  formattedLines.push('');
+  formattedLines=formattedLines.concat(castCopyRows(id,true));
+  if(mode==='html'){
+    html='<p><strong>'+esc(showOf(p)+' | '+fmtDate(p.date))+'</strong><br>'+esc(location)+'</p><p>';
+    htmlLines=castCopyRows(id,true);
+    for(i=0;i<htmlLines.length;i++){
+      html+=esc(htmlLines[i]).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')+(i<htmlLines.length-1?'<br>':'');
+    }
+    html+='</p>';
+    copyHtml(html,formattedLines.join('\n'));
+  } else {
+    copyText(plainLines.join('\n'));
+  }
+}
 function saveField(id,field,val){if(!edits[String(id)])edits[String(id)]={};edits[String(id)][field]=val;saveEdits();}
 function exportEdits(){copyText(JSON.stringify(edits,null,2));alert('Edits JSON copied.');}
 function downloadEdits(){var blob=new Blob([JSON.stringify(edits,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='theatre-diary-edits.json';a.click();}
 function importEdits(){var t=window.prompt('Paste edits JSON');if(!t)return;try{edits=JSON.parse(t);saveEdits();render();}catch(e){alert('Could not parse JSON.');}}
 
 window.TD={go:function(v,id){go(v,id,false)},back:back,forward:forward,
-setQ:function(v){state.q=v;state.limit=2000;state.focusId=(document.activeElement&&document.activeElement.id)||null;if(state.qDelay)clearTimeout(state.qDelay);state.qDelay=setTimeout(function(){render();setTimeout(function(){if(state.focusId){var el=document.getElementById(state.focusId);if(el){el.focus();try{var l=el.value.length;el.setSelectionRange(l,l);}catch(e){}}}},0);},700);},
+setQ:function(v){state.q=v;state.limit=2000;render()},
+applySearch:function(inputId){var el=document.getElementById(inputId);state.q=el?el.value:state.q;state.limit=2000;state.groupYears='yes';render();setTimeout(function(){var d=document.getElementById('diaryList');if(d)d.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+clearSearch:function(){state.q='';state.limit=2000;render();},
 setYear:function(v){state.year=v;state.limit=2000;render();setTimeout(function(){var el=document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
 setType:function(v){state.type=v;state.limit=2000;render()},setSort:function(v){state.sort=v;render()},toggleCovers:function(){state.cover=!state.cover;state.limit=2000;render()},more:function(){state.limit+=72;render()},openPerson:function(id){state.panel=id;render()},closePerson:function(){state.panel=null;render()},random:function(){var ps=vals(db.performances),p=ps[Math.floor(Math.random()*ps.length)];go('perf',p.id,false)},saveField:saveField,exportEdits:exportEdits,downloadEdits:downloadEdits,importEdits:importEdits,copyPerf:copyPerf,setPeopleMode:function(m){state.peopleMode=m;render()},toggleDensity:function(){state.density=state.density==='compact'?'comfy':'compact';localStorage.setItem('theatreDiaryDensity',state.density);render()},setLayout:function(m){state.layout=m;localStorage.setItem('theatreDiaryLayout',m);render()},toggleYears:function(){state.groupYears=state.groupYears==='yes'?'no':'yes';localStorage.setItem('theatreDiaryGroupYears',state.groupYears);render()},
 diary:function(){state.view='home';state.id=null;state.year='all';state.groupYears='yes';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
-goYear:function(y){state.view='home';state.id=null;state.year='all';state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
-goMonth:function(y,m){state.view='home';state.id=null;state.year='all';state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('month-'+y+'-'+m)||document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
-setCalYear:function(y){state.calendarYear=y;render()},setPersonLayout:function(v){state.personLayout=v;localStorage.setItem('theatreDiaryPersonLayout',v);render()}};
+setJumpYear:function(y){state.selectedJumpYear=y;render();},
+goYear:function(y){state.view='home';state.id=null;state.year='all';state.selectedJumpYear=y;state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+goMonth:function(y,m){state.view='home';state.id=null;state.year='all';state.selectedJumpYear=y;state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('month-'+y+'-'+m)||document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+setCalYear:function(y){state.calendarYear=y;state.selectedJumpYear=y;render()},setPersonLayout:function(v){state.personLayout=v;localStorage.setItem('theatreDiaryPersonLayout',v);render()}};
 load();
 })();
 </script>
