@@ -225,4 +225,23 @@ load();
 })();
 </script>
 </body>
-</html>
+</html
+function groupedListing(filtered){
+  var limited=filtered.slice(0,state.limit), groups={}, order=[], i,p,y,out='';
+  for(i=0;i<limited.length;i++){
+    p=limited[i];
+    y=yearOf(p.date)||'Unknown';
+    if(!groups[y]){groups[y]=[];order.push(y);}
+    groups[y].push(p);
+  }
+  order.sort(function(a,b){
+    return state.sort==='old' ? String(a).localeCompare(String(b)) : String(b).localeCompare(String(a));
+  });
+  for(i=0;i<order.length;i++){
+    y=order[i];
+    out+='<details class="yearBox" open><summary><span>'+esc(y)+'</span><span class="chip">'+groups[y].length+'</span></summary><div class="yearInner">'+renderListing(groups[y])+'</div></details>';
+  }
+  if(filtered.length>state.limit) out+='<button class="btn loadMore" onclick="TD.more()">Load more</button>';
+  return out;
+}
+>
