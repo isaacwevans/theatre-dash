@@ -349,6 +349,11 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 .monthTinyBar{border:0;background:transparent;padding:0;cursor:pointer}
 .monthTinyBar:hover .monthTinyFill{outline:2px solid var(--tt-red);outline-offset:1px}
 
+
+.onlineSaveBox{border:1px solid var(--pb-line);background:#fffdf3;border-radius:8px;padding:10px;margin-top:10px}
+.onlineSaveRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}
+@media(max-width:760px){.onlineSaveRow{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -753,7 +758,7 @@ function addEntryPage(){
   '<div class="addWide"><label class="tiny">Cast, one per line</label><textarea id="addCast" class="textarea" rows="9" placeholder="Role: Performer Name&#10;Role - Performer Name&#10;Role | Performer Name (*u/s Role)"></textarea><p class="addHelp">Accepts Role: Name, Role - Name, or Role | Name. Add cover notation after the name if needed.</p></div>'+
   '<div class="addWide"><label class="tiny">Creative team, one per line</label><textarea id="addCreative" class="textarea" rows="7" placeholder="Book: Bubba Weiler&#10;Director: Jack Serio&#10;Scenic Design: Frank J. Oliva"></textarea></div>'+
   '<div class="addWide"><label class="tiny">Notes</label><textarea id="addNotes" class="textarea" rows="3" placeholder="Replacement notes, special events, seat, etc."></textarea></div>'+
-  '</div><div class="addActions"><button class="btn" onclick="TD.previewAddEntry()">Preview</button><button class="btn" onclick="TD.downloadAddEntry()">Download updated JSON</button><button class="btn" onclick="TD.clearAddEntry()">Clear</button></div></section>'+
+  '</div><div class="addActions"><button class="btn" onclick="TD.previewAddEntry()">Preview</button><button class="btn" onclick="TD.downloadAddEntry()">Download updated JSON</button><button class="btn" onclick="TD.clearAddEntry()">Clear</button></div><div class="onlineSaveBox"><h3>Save online</h3><div class="onlineSaveRow"><div><label class="tiny">Admin password</label><input id="addPassword" class="input" type="password" placeholder="Password stored in Netlify, not this page"></div><button class="btn" onclick="TD.saveAddEntryOnline()">Save to GitHub</button></div><p class="addHelp">Works on the Netlify version of this dashboard after you add the Netlify Function and environment variables.</p></div></section>'+
   '<section class="card section"><h2>Preview</h2><pre id="addPreview" class="addPreview">Fill out the form, then click Preview.</pre></section></main>';
 }
 function parseRolePersonLine(line){
@@ -848,6 +853,26 @@ function downloadAddEntry(){
     var pre=document.getElementById('addPreview');if(pre)pre.textContent='Downloaded theatre-data.json. Upload it to GitHub in place of the current theatre-data.json.';
   }catch(err){var pre=document.getElementById('addPreview');if(pre)pre.textContent='Could not build entry: '+err.message;}
 }
+
+async function saveAddEntryOnline(){
+  var pre=document.getElementById('addPreview'), pw=val('addPassword'), entry=buildAddEntryData();
+  if(pre)pre.textContent='Saving online...';
+  try{
+    if(!pw)throw new Error('Enter the admin password first.');
+    var res=await fetch('/.netlify/functions/save-entry',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:pw,entry:entry})
+    });
+    var txt=await res.text(), data;
+    try{data=JSON.parse(txt);}catch(e){data={message:txt};}
+    if(!res.ok)throw new Error(data.error||data.message||('HTTP '+res.status));
+    if(pre)pre.textContent='Saved to GitHub. Commit: '+(data.commit||'created')+'\n\nNetlify may take a moment to redeploy. Refresh with a cache-buster if needed.';
+  }catch(err){
+    if(pre)pre.textContent='Save failed: '+err.message+'\n\nUse Download updated JSON as a fallback.';
+  }
+}
+
 function clearAddEntry(){
   ['addShow','addDate','addVenue','addCity','addType','addTime','addCast','addCreative','addNotes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   var pre=document.getElementById('addPreview');if(pre)pre.textContent='Fill out the form, then click Preview.';
@@ -936,7 +961,7 @@ diary:function(){state.view='home';state.id=null;state.year='all';state.groupYea
 setJumpYear:function(y){state.selectedJumpYear=y;render();},
 goYear:function(y){state.view='home';state.id=null;state.year='all';state.selectedJumpYear=y;state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
 goMonth:function(y,m){state.view='home';state.id=null;state.year='all';state.selectedJumpYear=y;state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('month-'+y+'-'+m)||document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
-setCalYear:function(y){state.calendarYear=y;state.selectedJumpYear=y;render()},setPersonLayout:function(v){state.personLayout=v;localStorage.setItem('theatreDiaryPersonLayout',v);render()},previewAddEntry:previewAddEntry,downloadAddEntry:downloadAddEntry,clearAddEntry:clearAddEntry};
+setCalYear:function(y){state.calendarYear=y;state.selectedJumpYear=y;render()},setPersonLayout:function(v){state.personLayout=v;localStorage.setItem('theatreDiaryPersonLayout',v);render()},previewAddEntry:previewAddEntry,downloadAddEntry:downloadAddEntry,saveAddEntryOnline:saveAddEntryOnline,clearAddEntry:clearAddEntry};
 load();
 })();
 </script>
