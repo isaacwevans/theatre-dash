@@ -335,6 +335,20 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
   .monthTinyChart{gap:2px;padding:6px}
 }
 
+
+/* Add Entry + role tier + rolling month refinements */
+.roleFlag.tier2{background:#2f2f2f!important;color:#fff7c4!important;box-shadow:inset 3px 0 0 #f4d000!important}
+.roleFlag.tier3{background:#614b00!important;color:#fff5b0!important;box-shadow:inset 3px 0 0 #f4d000,inset -3px 0 0 #e7272e!important}
+.roleFlag.tier4{background:#9d1c22!important;color:#fff!important;box-shadow:inset 3px 0 0 #f4d000,inset -3px 0 0 #111!important}
+.addGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.addWide{grid-column:1/-1}
+.addHelp{font-size:12px;color:var(--muted);line-height:1.35}
+.addPreview{background:#111;color:#fffdf3;border-radius:8px;padding:10px;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;max-height:360px;overflow:auto}
+.addActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.monthTinyChart.rolling{grid-template-columns:repeat(12,minmax(0,1fr))}
+.monthTinyBar{border:0;background:transparent;padding:0;cursor:pointer}
+.monthTinyBar:hover .monthTinyFill{outline:2px solid var(--tt-red);outline-offset:1px}
+
 </style>
 </head>
 <body>
@@ -358,6 +372,18 @@ function shortDate(iso){if(!iso)return'';var x=String(iso).split('-');if(x.lengt
 function yearOf(iso){return iso?String(iso).slice(0,4):'';}
 function sourceCast(p){return p&&p.source&&p.source.castNormalized?p.source.castNormalized:'';}
 function personName(id){var p=by(db.people,id);return p?p.name:'Unknown';}
+
+function lastNameKey(name){
+  name=String(name||'').trim();
+  var parts=name.split(/\s+/);
+  return (parts[parts.length-1]+' '+name).toLowerCase();
+}
+function cleanTrackRoleLabel(role){
+  role=String(role||'');
+  var m=role.match(/^(.+?)'s track$/i);
+  if(m)return 'in '+m[1]+'’s track';
+  return role;
+}
 function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
@@ -374,7 +400,7 @@ function buildIndexes(){
     if(!idx.roleApps[a.roleId])idx.roleApps[a.roleId]=[]; idx.roleApps[a.roleId].push(a);
     if(a.coverType||a.coverLabel||a.appearanceType==='swing')idx.coverPerf[a.performanceId]=true;
     if(p){ if(!idx.personPerfSets[a.personId])idx.personPerfSets[a.personId]={}; idx.personPerfSets[a.personId][a.performanceId]=1; if(!idx.personShowSets[a.personId])idx.personShowSets[a.personId]={}; idx.personShowSets[a.personId][p.showId]=1; if(!idx.showPeople[p.showId])idx.showPeople[p.showId]={}; idx.showPeople[p.showId][a.personId]=1; }
-    if(p&&r){ if(!idx.personRoleSets[a.personId])idx.personRoleSets[a.personId]={}; prodKey=String(p.showId)+'|'+norm(p.type||'')+'|'+roleNorm(r.name||a.roleRaw||''); idx.personRoleSets[a.personId][prodKey]=1; k=String(r.showId)+'|'+roleNorm(r.name); if(!idx.allRolesByName[k])idx.allRolesByName[k]={roleName:r.name,showId:r.showId,apps:[]}; idx.allRolesByName[k].apps.push(a); }
+    if(p&&r){ if(!idx.personRoleSets[a.personId])idx.personRoleSets[a.personId]={}; prodKey=roleNorm(r.name||a.roleRaw||''); idx.personRoleSets[a.personId][prodKey]=1; k=String(r.showId)+'|'+roleNorm(r.name); if(!idx.allRolesByName[k])idx.allRolesByName[k]={roleName:r.name,showId:r.showId,apps:[]}; idx.allRolesByName[k].apps.push(a); }
   }
   var ps=vals(perfs); ps.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});
   var showCounts={};
@@ -414,10 +440,11 @@ function coverBadgeClass(label){
   if(c==='Special appearance')return 'special';
   return '';
 }
-function personButton(personId,currentPerfId){var s=stat(personId,currentPerfId),rw=s.roles===1?'role':'roles',tw=s.other===1?'other time':'other times';return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button><span class="personTimes">'+s.other+' '+tw+'</span></span><span class="roleFlag">'+s.roles+' '+rw+'</span></span>';}
+function roleTierClass(n){if(n>=8)return'tier4';if(n>=5)return'tier3';return'tier2';}
+function personButton(personId,currentPerfId){var s=stat(personId,currentPerfId),rw=s.roles===1?'role':'roles',tw=s.other===1?'other time':'other times',flag='';if(s.roles>=2)flag='<span class="roleFlag '+roleTierClass(s.roles)+'">'+s.roles+' '+rw+'</span>';return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button><span class="personTimes">'+s.other+' '+tw+'</span></span>'+flag+'</span>';}
 
-function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button><button class="btn" onclick="TD.random()">Random</button></div></div></div>'+inner;}
-function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
+function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button><button class="btn" onclick="TD.random()">Random</button></div></div></div>'+inner;}
+function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='add')h=addEntryPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
 function go(v,id,replace){state.view=v;state.id=id;state.panel=null;if(!replace){if(state.hIndex<state.history.length-1)state.history=state.history.slice(0,state.hIndex+1);state.history.push({v:v,id:id});state.hIndex=state.history.length-1;}else if(!state.history.length){state.history.push({v:v,id:id});state.hIndex=0;}render();setTimeout(function(){window.scrollTo(0,0);},0);}
 function back(){if(state.hIndex>0){state.hIndex--;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
 function forward(){if(state.hIndex<state.history.length-1){state.hIndex++;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
@@ -432,9 +459,9 @@ function home(){
   var recentYear=ys.length?ys[ys.length-1]:state.selectedJumpYear;
   var out='<main class="wrap"><section class="hero"><h1>Theatre Diary</h1>'+
     '<div class="sleekHeroSearch"><input id="topSearch" class="input" value="'+esc(state.q)+'" placeholder="Search the diary..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'topSearch\')"><button class="btn" onclick="TD.applySearch(\'topSearch\')">Search diary</button><button class="btn" onclick="TD.diary()">Go to diary</button></div>'+
-    '<div class="homeQuick"><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.random()">Random</button>'+(state.q?'<button class="btn" onclick="TD.clearSearch()">Clear search</button>':'')+'</div>'+
+    '<div class="homeQuick"><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.random()">Random</button>'+(state.q?'<button class="btn" onclick="TD.clearSearch()">Clear search</button>':'')+'</div>'+
     topStatsBlock()+'<div class="accentRule"></div></section>'+
-    '<section class="card"><div class="moduleTitle"><h2>'+esc(recentYear)+' by month</h2><span class="chip">recent year</span></div>'+monthTinyChart(recentYear)+'</section>'+
+    '<section class="card"><div class="moduleTitle"><h2>Last 12 months</h2><span class="chip">rolling activity</span></div>'+rollingMonthChart()+'</section>'+
     '<section class="card libraryCard"><div class="moduleTitle"><div><h2>Library by year</h2><p class="tiny">Pick a year, then a month. The diary below stays continuous.</p></div><span class="chip">'+keys(years).length+' years</span></div><div class="yearChipRail">'+yearChipButtons(countByYear())+'</div>'+monthPop(state.selectedJumpYear)+'</section>'+
     '<div id="diaryList" class="diaryHead"><div><h2>Diary</h2><p class="tiny">'+(state.q?'Search results for “'+esc(state.q)+'”':'Continuous list, oldest to newest')+'</p></div><div class="toolbar"><input id="diarySearch" class="input" value="'+esc(state.q)+'" placeholder="Search..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'diarySearch\')"><button class="btn" onclick="TD.applySearch(\'diarySearch\')">Search</button><button class="pillBtn '+(state.layout==='lines'?'active':'')+'" onclick="TD.setLayout(\'lines\')">Lines</button><button class="pillBtn '+(state.layout==='cards'?'active':'')+'" onclick="TD.setLayout(\'cards\')">Cards</button></div></div>';
   if(state.groupYears==='yes')out+=groupedListing(filtered); else out+=renderListing(filtered.slice(0,state.limit));
@@ -459,6 +486,26 @@ function monthTinyChart(y){
   var rows=countByMonthForYear(y), max=1, i, out='<div class="monthTinyChart">';
   for(i=0;i<rows.length;i++)if(rows[i].n>max)max=rows[i].n;
   for(i=0;i<rows.length;i++)out+='<button class="monthTinyBar" onclick="TD.goMonth(\''+esc(y)+'\',\''+String(i+1).padStart(2,'0')+'\')" title="'+esc(rows[i].label+': '+rows[i].n)+'"><span class="monthTinyFill" style="height:'+Math.max(3,Math.round(rows[i].n/max*54))+'px"></span><span class="monthTinyLabel">'+esc(rows[i].label.slice(0,1))+'</span></button>';
+  return out+'</div>';
+}
+
+function rollingMonthChart(){
+  var ps=vals(db.performances).slice().sort(function(a,b){return String(a.date).localeCompare(String(b.date));}), latest=ps.length?dateObj(ps[ps.length-1].date):new Date(), months=[], map={}, i,d,key,label,out,max=1, p;
+  latest = latest || new Date();
+  for(i=11;i>=0;i--){
+    d=new Date(latest.getFullYear(), latest.getMonth()-i, 1);
+    key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    label=monthName(d.getMonth())+' '+String(d.getFullYear()).slice(2);
+    months.push({key:key,label:label,n:0,year:String(d.getFullYear()),month:String(d.getMonth()+1).padStart(2,'0')});
+    map[key]=months[months.length-1];
+  }
+  for(i=0;i<ps.length;i++){
+    p=ps[i]; key=String(p.date).slice(0,7);
+    if(map[key]) map[key].n++;
+  }
+  for(i=0;i<months.length;i++) if(months[i].n>max) max=months[i].n;
+  out='<div class="monthTinyChart rolling">';
+  for(i=0;i<months.length;i++) out+='<button class="monthTinyBar" onclick="TD.goMonth(\''+months[i].year+'\',\''+months[i].month+'\')" title="'+esc(months[i].label+': '+months[i].n)+'"><span class="monthTinyFill" style="height:'+Math.max(3,Math.round(months[i].n/max*54))+'px"></span><span class="monthTinyLabel">'+esc(months[i].label.replace(' ','\\u00a0'))+'</span></button>';
   return out+'</div>';
 }
 function countByMonthForYear(y){
@@ -544,18 +591,18 @@ function inlinePersonCarousel(personId,currentPerfId){
   var active=state.inlinePerson;
   if(!active || active.personId!==personId || active.perfId!==currentPerfId) return '';
   var arr=uniquePersonAppearances(personId), groups=personRoleGroups(arr), s=stat(personId,currentPerfId), out='', i,g,j,dates,max=10;
-  out+='<div class="personInline"><div class="personInlineTop"><div><div class="personInlineName">'+esc(upperName(personName(personId)))+'</div><div class="personInlineStats">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' role/production combos</div></div><div class="personInlineActions"><button class="btn" onclick="TD.go(\'person\','+personId+')">Full profile</button><button class="btn" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">Close</button></div></div><div class="personCarousel">';
+  out+='<div class="personInline"><div class="personInlineTop"><div><div class="personInlineName">'+esc(upperName(personName(personId)))+'</div><div class="personInlineStats">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' roles</div></div><div class="personInlineActions"><button class="btn" onclick="TD.go(\'person\','+personId+')">Full profile</button><button class="btn" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">Close</button></div></div><div class="personCarousel">';
   for(i=0;i<Math.min(groups.length,max);i++){
     g=groups[i]; dates=[];
     for(j=0;j<Math.min(g.perfs.length,3);j++) dates.push(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date));
-    out+='<button class="personMiniCard" onclick="TD.go(\'show\','+g.showId+')"><span class="personMiniCount">'+g.count+'x</span><div class="personMiniShow">'+esc(g.show)+'</div><div class="personMiniRole">'+esc(g.roles)+'</div><div class="personMiniDates">'+esc(dates.join(' · '))+(g.perfs.length>3?' · +'+(g.perfs.length-3)+' more':'')+'</div></button>';
+    out+='<button class="personMiniCard" onclick="TD.go(\'show\','+g.showId+')"><span class="personMiniCount">'+g.count+'x</span><div class="personMiniShow">'+esc(g.show)+'</div><div class="personMiniRole">'+esc(cleanTrackRoleLabel(g.roles))+'</div><div class="personMiniDates">'+esc(dates.join(' · '))+(g.perfs.length>3?' · +'+(g.perfs.length-3)+' more':'')+'</div></button>';
   }
   if(groups.length>max) out+='<div class="personMiniCard"><div class="personMiniShow">More</div><div class="personMiniRole">+'+(groups.length-max)+' additional groups</div><div class="personMiniDates">Open full profile for everything</div></div>';
   return out+'</div></div>';
 }
 
 function castBlock(p){
-  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ens='',notes='',i,a,r,label,line,roleName,isTrack,coverClass,badgeClass,badge,isOpen,ensInline='';
+  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ensItems=[],notes='',i,a,r,label,line,roleName,isTrack,coverClass,badgeClass,badge,isOpen,ensInline='';
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
   for(i=0;i<apps.length;i++){
     a=apps[i];r=by(db.roles,a.roleId);roleName=r?r.name:(a.roleRaw||'');
@@ -566,16 +613,18 @@ function castBlock(p){
     isTrack=norm(roleName).indexOf('track')>=0||norm(roleName).indexOf('swing')>=0;
     isOpen=state.inlinePerson && state.inlinePerson.personId===a.personId && state.inlinePerson.perfId===p.id;
     if(a.appearanceType==='ensemble'){
-      ens+='<span class="ensChip">'+personButton(a.personId,p.id)+'</span>';
-      if(isOpen) ensInline=inlinePersonCarousel(a.personId,p.id);
+      ensItems.push({name:personName(a.personId),html:'<span class="ensChip">'+personButton(a.personId,p.id)+'</span>',inline:isOpen?inlinePersonCarousel(a.personId,p.id):''});
     }else if(a.appearanceType==='swing'&&isTrack){
-      notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(roleName)+(label?' · '+esc(label):'')+'</div></div>';
+      notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }else{
       line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="role">'+roleLink(r)+'</div><div class="castPersonCell">'+personButton(a.personId,p.id)+badge+(a.alsoEnsemble?'<span class="chip">ensemble</span>':'')+'</div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
       principal+=line;
-      if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(roleName)+(label?' · '+esc(label):'')+'</div></div>';
+      if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }
   }
+  ensItems.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
+  var ens='', j;
+  for(j=0;j<ensItems.length;j++){ens+=ensItems[j].html;if(ensItems[j].inline)ensInline+=ensItems[j].inline;}
   var out='<div class="castArea"><div class="principalCast">'+principal+'</div>'+(ens?'<aside class="ensembleSide"><h3>Ensemble</h3><div class="ensemble">'+ens+'</div>'+ensInline+'</aside>':'')+'</div>';
   if(notes)out+='<div class="section"><h3>Coverage Notes</h3><div class="list">'+notes+'</div></div>';
   return out;
@@ -588,18 +637,18 @@ function relatedBlock(p){var same=(idx.showPerfs[p.showId]||[]).slice(),out='',i
 function uniquePersonAppearances(personId){var apps=idx.personApps[personId]||[],map={},arr=[],i,a,p,r,k;for(i=0;i<apps.length;i++){a=apps[i];p=by(db.performances,a.performanceId);r=by(db.roles,a.roleId);if(!p)continue;k=String(p.id);if(!map[k])map[k]={perf:p,roles:[],covers:[]};if(r)map[k].roles.push(r.name);if(a.coverLabel||a.coverType)map[k].covers.push(a.coverLabel||a.coverType);}for(k in map)if(Object.prototype.hasOwnProperty.call(map,k))arr.push(map[k]);arr.sort(function(a,b){return String(b.perf.date).localeCompare(String(a.perf.date));});return arr;}
 function renderPanel(personId){
   var p=by(db.people,personId),arr=uniquePersonAppearances(personId),s=stat(personId,null),groups=personRoleGroups(arr),out,i,g,dates,j,max=8;
-  out='<aside class="panel"><button class="btn closeBtn" onclick="TD.closePerson()">Close</button><h2>'+esc(p?p.name:'Person')+'</h2><p class="muted">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' role/production combos</p><button class="btn" onclick="TD.go(\'person\','+personId+')">Open full profile</button><div class="section list">';
+  out='<aside class="panel"><button class="btn closeBtn" onclick="TD.closePerson()">Close</button><h2>'+esc(p?p.name:'Person')+'</h2><p class="muted">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' roles</p><button class="btn" onclick="TD.go(\'person\','+personId+')">Open full profile</button><div class="section list">';
   for(i=0;i<Math.min(groups.length,max);i++){
     g=groups[i]; dates=[];
     for(j=0;j<Math.min(g.perfs.length,3);j++) dates.push(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date));
-    out+='<div class="panelRoleRow"><div class="panelRoleTop"><button class="linkish panelShow" onclick="TD.go(\'show\','+g.showId+')">'+esc(g.show)+'</button><span class="panelCount">'+g.count+'x</span></div><div class="panelRoleSub">'+esc(g.roles)+'</div><div class="panelDates">'+esc(dates.join(' · '))+(g.perfs.length>3?' · +'+(g.perfs.length-3)+' more':'')+'</div></div>';
+    out+='<div class="panelRoleRow"><div class="panelRoleTop"><button class="linkish panelShow" onclick="TD.go(\'show\','+g.showId+')">'+esc(g.show)+'</button><span class="panelCount">'+g.count+'x</span></div><div class="panelRoleSub">'+esc(cleanTrackRoleLabel(g.roles))+'</div><div class="panelDates">'+esc(dates.join(' · '))+(g.perfs.length>3?' · +'+(g.perfs.length-3)+' more':'')+'</div></div>';
   }
   if(groups.length>max) out+='<div class="panelMore">+'+(groups.length-max)+' more role/show groups</div>';
   return out+'</div></aside>';
 }
 function personPage(id){
   var p=by(db.people,id), arr=uniquePersonAppearances(id), s=stat(id,null), cr=idx.creativeByPerson[id]||[], summary=personSummary(id,arr), out='';
-  out+='<main class="wrap"><section class="hero"><h1>'+esc(p?p.name:'Person')+'</h1><p class="muted">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' role/production combos</p><div class="personHeroGrid">'+
+  out+='<main class="wrap"><section class="hero"><h1>'+esc(p?p.name:'Person')+'</h1><p class="muted">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' roles</p><div class="personHeroGrid">'+
     '<div class="stat"><div class="num">'+s.perfs+'</div><div class="lab">performances</div></div>'+
     '<div class="stat"><div class="num">'+s.shows+'</div><div class="lab">shows</div></div>'+
     '<div class="stat"><div class="num">'+s.roles+'</div><div class="lab">roles</div></div>'+
@@ -637,7 +686,7 @@ function groupedPersonAppearances(personId,arr){
   for(i=0;i<groups.length;i++){
     g=groups[i]; dates=[]; venueList=keys(g.venues).slice(0,3).join(' · ');
     for(j=0;j<g.perfs.length;j++) dates.push('<button class="dateChip" onclick="TD.go(\'perf\','+g.perfs[j].id+')">'+esc(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date))+'</button>');
-    out+='<article class="roleGroup"><div class="roleGroupHead"><div><button class="linkish roleGroupTitle" onclick="TD.go(\'show\','+g.showId+')">'+esc(g.show)+'</button><div class="roleGroupRole">'+esc(g.roles)+'</div></div><span class="roleFlag">'+g.count+'x</span></div><div class="tiny">'+esc(venueList)+'</div><div class="dateChips">'+dates.join('')+'</div></article>';
+    out+='<article class="roleGroup"><div class="roleGroupHead"><div><button class="linkish roleGroupTitle" onclick="TD.go(\'show\','+g.showId+')">'+esc(g.show)+'</button><div class="roleGroupRole">'+esc(cleanTrackRoleLabel(g.roles))+'</div></div><span class="roleFlag">'+g.count+'x</span></div><div class="tiny">'+esc(venueList)+'</div><div class="dateChips">'+dates.join('')+'</div></article>';
   }
   return out+'</div>';
 }
@@ -689,6 +738,120 @@ function showCoverSummary(showId){var roleRows=showRoleRows(showId),rows=[],i,ou
 function firstTimersForShow(showId){var perfs=(idx.showPerfs[showId]||[]).slice(),seenBefore={},firsts={},i,j,p,apps,a,person,out='<div class="list">';perfs.sort(function(a,b){return String(a.date).localeCompare(String(b.date));});for(i=0;i<perfs.length;i++){p=perfs[i];apps=idx.perfApps[p.id]||[];for(j=0;j<apps.length;j++){a=apps[j];if(!seenBefore[a.personId]){if(!firsts[a.personId])firsts[a.personId]={perf:p,roles:[]};var r=by(db.roles,a.roleId);if(r)firsts[a.personId].roles.push(r.name);}}for(j=0;j<apps.length;j++)seenBefore[apps[j].personId]=1;}var rows=[],id;for(id in firsts)if(Object.prototype.hasOwnProperty.call(firsts,id))rows.push({id:id,perf:firsts[id].perf,roles:firsts[id].roles});rows.sort(function(a,b){return String(a.perf.date).localeCompare(String(b.perf.date))||personName(a.id).localeCompare(personName(b.id));});if(!rows.length)return'<p class="muted">No first-time performer appearances found for this show.</p>';for(i=0;i<Math.min(rows.length,18);i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'person\','+rows[i].id+')">'+esc(personName(rows[i].id))+'</button><div class="tiny">'+esc(rows[i].roles.slice(0,3).join(' / '))+' · first in this show on <button class="linkish" onclick="TD.go(\'perf\','+rows[i].perf.id+')">'+esc(fmtDate(rows[i].perf.date))+'</button></div></div>';return out+'</div>';}
 function showRoleRows(showId){var rows=[],k,o,set,i,a;for(k in idx.allRolesByName)if(Object.prototype.hasOwnProperty.call(idx.allRolesByName,k)){o=idx.allRolesByName[k];if(String(o.showId)!==String(showId))continue;set={};var covers=0;for(i=0;i<o.apps.length;i++){a=o.apps[i];set[a.personId]=1;if(a.coverType||a.coverLabel||a.appearanceType==='swing')covers++;}rows.push({key:k,name:o.roleName,apps:o.apps.length,people:keys(set).length,covers:covers});}rows.sort(function(a,b){return b.apps-a.apps||a.name.localeCompare(b.name);});return rows;}
 function venuePage(id){var v=by(db.venues,id),arr=(idx.venuePerfs[id]||[]).slice(),i,out;arr.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});out='<main class="wrap"><section class="hero"><h1>'+esc(v?v.name:'Venue')+'</h1><p class="muted">'+esc(v&&v.city?v.city:'')+' · '+arr.length+' performances.</p></section>';out+=renderListing(arr);return out+'</main>';}
+
+
+function addEntryPage(){
+  var today=new Date(), iso=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  return '<main class="wrap"><section class="hero"><h1>Add Entry</h1><p class="muted">Build a new performance entry in-browser, preview it, then download a fresh theatre-data.json.</p></section>'+
+  '<section class="card"><div class="addGrid">'+
+  '<div><label class="tiny">Show</label><input id="addShow" class="input" placeholder="Well, I’ll Let You Go"></div>'+
+  '<div><label class="tiny">Date</label><input id="addDate" class="input" type="date" value="'+iso+'"></div>'+
+  '<div><label class="tiny">Venue</label><input id="addVenue" class="input" placeholder="Studio Seaview"></div>'+
+  '<div><label class="tiny">City</label><input id="addCity" class="input" placeholder="New York, NY"></div>'+
+  '<div><label class="tiny">Production type</label><input id="addType" class="input" placeholder="Off-Broadway"></div>'+
+  '<div><label class="tiny">Time</label><input id="addTime" class="input" placeholder="Evening / Matinee / 8:00pm"></div>'+
+  '<div class="addWide"><label class="tiny">Cast, one per line</label><textarea id="addCast" class="textarea" rows="9" placeholder="Role: Performer Name&#10;Role - Performer Name&#10;Role | Performer Name (*u/s Role)"></textarea><p class="addHelp">Accepts Role: Name, Role - Name, or Role | Name. Add cover notation after the name if needed.</p></div>'+
+  '<div class="addWide"><label class="tiny">Creative team, one per line</label><textarea id="addCreative" class="textarea" rows="7" placeholder="Book: Bubba Weiler&#10;Director: Jack Serio&#10;Scenic Design: Frank J. Oliva"></textarea></div>'+
+  '<div class="addWide"><label class="tiny">Notes</label><textarea id="addNotes" class="textarea" rows="3" placeholder="Replacement notes, special events, seat, etc."></textarea></div>'+
+  '</div><div class="addActions"><button class="btn" onclick="TD.previewAddEntry()">Preview</button><button class="btn" onclick="TD.downloadAddEntry()">Download updated JSON</button><button class="btn" onclick="TD.clearAddEntry()">Clear</button></div></section>'+
+  '<section class="card section"><h2>Preview</h2><pre id="addPreview" class="addPreview">Fill out the form, then click Preview.</pre></section></main>';
+}
+function parseRolePersonLine(line){
+  var raw=String(line||'').trim(), m, role='', person='', coverType=null, coverLabel=null, coverMatch;
+  if(!raw)return null;
+  coverMatch=raw.match(/\((\*?(u\/s|s\/b|alt|s\/w|e\/c|t\/r)[^)]*)\)$/i);
+  if(coverMatch){coverLabel=coverMatch[1].replace(/^\*/,'').trim();raw=raw.slice(0,coverMatch.index).trim();}
+  m=raw.match(/^(.+?)\s*[:|\-]\s*(.+)$/);
+  if(m){role=m[1].trim();person=m[2].trim();}else{return null;}
+  if(coverLabel){
+    var c=coverLabel.toLowerCase();
+    if(c.indexOf('u/s')===0)coverType='Understudy';
+    else if(c.indexOf('s/b')===0)coverType='Standby';
+    else if(c.indexOf('alt')===0)coverType='Alternate';
+    else if(c.indexOf('s/w')===0)coverType='Swing';
+    else if(c.indexOf('e/c')===0)coverType='Emergency cover';
+    else if(c.indexOf('t/r')===0)coverType='Temporary replacement';
+  }
+  return {role:role,person:person,coverType:coverType,coverLabel:coverLabel,raw:line};
+}
+function parseCreditLine(line){
+  var raw=String(line||'').trim(), m;
+  if(!raw)return null;
+  m=raw.match(/^(.+?)\s*[:|\-]\s*(.+)$/);
+  if(!m)return null;
+  return {credit:m[1].trim(),person:m[2].trim(),raw:line};
+}
+function buildAddEntryData(){
+  var entry={
+    show:val('addShow'),date:val('addDate'),venue:val('addVenue'),city:val('addCity'),
+    type:val('addType'),time:val('addTime'),notes:val('addNotes'),
+    cast:[],creative:[]
+  }, lines, i, row;
+  lines=val('addCast').split(/\n+/);
+  for(i=0;i<lines.length;i++){row=parseRolePersonLine(lines[i]);if(row)entry.cast.push(row);}
+  lines=val('addCreative').split(/\n+/);
+  for(i=0;i<lines.length;i++){row=parseCreditLine(lines[i]);if(row)entry.creative.push(row);}
+  return entry;
+}
+function val(id){var el=document.getElementById(id);return el?String(el.value||'').trim():'';}
+function previewAddEntry(){
+  var e=buildAddEntryData(), out=[];
+  out.push(e.show+' | '+e.date);
+  out.push([e.venue,e.city,e.type,e.time].filter(Boolean).join(' | '));
+  out.push('');
+  for(var i=0;i<e.cast.length;i++)out.push(e.cast[i].role+' - '+e.cast[i].person+(e.cast[i].coverLabel?' ('+e.cast[i].coverLabel+')':''));
+  if(e.creative.length){out.push('');out.push('Creative:');for(i=0;i<e.creative.length;i++)out.push(e.creative[i].credit+' - '+e.creative[i].person);}
+  if(e.notes){out.push('');out.push('Notes: '+e.notes);}
+  var pre=document.getElementById('addPreview'); if(pre)pre.textContent=out.join('\n');
+}
+function cloneDb(){return JSON.parse(JSON.stringify(db));}
+function nextDictId(obj){var max=0,k;for(k in obj)if(Object.prototype.hasOwnProperty.call(obj,k))max=Math.max(max,Number(k)||0);return max+1;}
+function nextListId(arr){var max=0,i;for(i=0;i<arr.length;i++)max=Math.max(max,Number(arr[i].id)||0);return max+1;}
+function findEntity(obj,field,value,extraFn){
+  var k,v,nv=norm(value);
+  for(k in obj)if(Object.prototype.hasOwnProperty.call(obj,k)){v=obj[k];if(norm(v[field])===nv && (!extraFn||extraFn(v)))return v;}
+  return null;
+}
+function ensurePersonIn(target,name,kind){
+  var p=findEntity(target.people,'name',name), id;
+  if(p){p.kinds=p.kinds||[];if(p.kinds.indexOf(kind)<0)p.kinds.push(kind);return p.id;}
+  id=nextDictId(target.people);target.people[String(id)]={id:id,name:name,sortName:name,kinds:[kind]};return id;
+}
+function ensureShowIn(target,title){var s=findEntity(target.shows,'title',title),id;if(s)return s.id;id=nextDictId(target.shows);target.shows[String(id)]={id:id,title:title};return id;}
+function ensureVenueIn(target,name,city){var v=findEntity(target.venues,'name',name,function(x){return norm(x.city)===norm(city)}),id;if(v)return v.id;id=nextDictId(target.venues);target.venues[String(id)]={id:id,name:name,city:city};return id;}
+function ensureRoleIn(target,showId,role){var r=findEntity(target.roles,'name',role,function(x){return Number(x.showId)===Number(showId)}),id;if(r)return r.id;id=nextDictId(target.roles);target.roles[String(id)]={id:id,showId:showId,name:role};return id;}
+function applyAddEntryToCopy(){
+  var e=buildAddEntryData(), target=cloneDb(), showId, venueId, perfId, appId, crId, i, row, pid, rid, castNorm=[];
+  if(!e.show||!e.date||!e.venue||!e.cast.length)throw new Error('Show, date, venue, and at least one cast line are required.');
+  showId=ensureShowIn(target,e.show); venueId=ensureVenueIn(target,e.venue,e.city||'');
+  perfId=nextDictId(target.performances);
+  target.performances[String(perfId)]={id:perfId,showId:showId,date:e.date,venueId:venueId,type:e.type,time:e.time,notes:e.notes,source:{castNormalized:''}};
+  appId=nextListId(target.appearances);
+  for(i=0;i<e.cast.length;i++){
+    row=e.cast[i]; pid=ensurePersonIn(target,row.person,'performer'); rid=ensureRoleIn(target,showId,row.role);
+    target.appearances.push({id:appId++,performanceId:perfId,personId:pid,roleId:rid,roleRaw:row.role,coverType:row.coverType,coverLabel:row.coverLabel,appearanceType:row.coverType==='Swing'?'swing':'principal',alsoEnsemble:false,displayOrder:i+1,raw:row.person+' ('+(row.coverLabel?'*'+row.coverLabel+' ': '')+row.role+')'});
+    castNorm.push(row.person+' ('+(row.coverLabel?'*'+row.coverLabel+' ':'')+row.role+')');
+  }
+  target.performances[String(perfId)].source.castNormalized=castNorm.join(', ');
+  crId=nextListId(target.creativeCredits);
+  for(i=0;i<e.creative.length;i++){
+    row=e.creative[i]; pid=ensurePersonIn(target,row.person,'creative');
+    target.creativeCredits.push({id:crId++,performanceId:perfId,personId:pid,credit:row.credit,raw:row.person});
+  }
+  target.meta=target.meta||{};target.meta.updatedAt=new Date().toISOString();target.meta.updatedBy='Dashboard Add Entry';
+  return target;
+}
+function downloadAddEntry(){
+  try{
+    var target=applyAddEntryToCopy(), blob=new Blob([JSON.stringify(target,null,2)],{type:'application/json'}), a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);a.download='theatre-data.json';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},0);
+    var pre=document.getElementById('addPreview');if(pre)pre.textContent='Downloaded theatre-data.json. Upload it to GitHub in place of the current theatre-data.json.';
+  }catch(err){var pre=document.getElementById('addPreview');if(pre)pre.textContent='Could not build entry: '+err.message;}
+}
+function clearAddEntry(){
+  ['addShow','addDate','addVenue','addCity','addType','addTime','addCast','addCreative','addNotes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  var pre=document.getElementById('addPreview');if(pre)pre.textContent='Fill out the form, then click Preview.';
+}
 
 function peoplePage(){var rows=vals(db.people),q=norm(state.q),i,p,filtered=[],s;for(i=0;i<rows.length;i++){p=rows[i];if(q&&norm(p.name).indexOf(q)===-1)continue;s=stat(p.id,null);if(s.perfs||idx.creativeByPerson[p.id])filtered.push({p:p,s:s});}if(state.peopleMode==='roles')filtered.sort(function(a,b){return b.s.roles-a.s.roles||b.s.perfs-a.s.perfs||a.p.name.localeCompare(b.p.name);});else filtered.sort(function(a,b){return b.s.perfs-a.s.perfs||b.s.roles-a.s.roles||a.p.name.localeCompare(b.p.name);});var out='<main class="wrap"><section class="hero"><h1>People</h1><div class="toolbar"><input class="input" value="'+esc(state.q)+'" placeholder="Search people..." oninput="TD.setQ(this.value)"><button class="pillBtn '+(state.peopleMode==='appearances'?'active':'')+'" onclick="TD.setPeopleMode(\'appearances\')">Most seen</button><button class="pillBtn '+(state.peopleMode==='roles'?'active':'')+'" onclick="TD.setPeopleMode(\'roles\')">Most roles</button></div></section><section class="card tableWrap"><table class="table"><thead><tr><th>Person</th><th>Performances</th><th>Shows</th><th>Roles</th></tr></thead><tbody>';for(i=0;i<Math.min(filtered.length,500);i++)out+='<tr><td><button class="linkish" onclick="TD.go(\'person\','+filtered[i].p.id+')">'+esc(filtered[i].p.name)+'</button></td><td>'+filtered[i].s.perfs+'</td><td>'+filtered[i].s.shows+'</td><td>'+filtered[i].s.roles+'</td></tr>';return out+'</tbody></table></section></main>';}
 function showsPage(){var rows=vals(db.shows),q=norm(state.q),i,s,perfs,people,filtered=[];for(i=0;i<rows.length;i++){s=rows[i];if(q&&norm(s.title).indexOf(q)===-1)continue;perfs=(idx.showPerfs[s.id]||[]).length;people=keys(idx.showPeople[s.id]||{}).length;filtered.push({s:s,perfs:perfs,people:people});}filtered.sort(function(a,b){return b.perfs-a.perfs||a.s.title.localeCompare(b.s.title);});var out='<main class="wrap"><section class="hero"><h1>Shows</h1><div class="toolbar"><input class="input" value="'+esc(state.q)+'" placeholder="Search shows..." oninput="TD.setQ(this.value)"></div></section><section class="grid">';for(i=0;i<filtered.length;i++)out+='<article class="card perfCard" onclick="TD.go(\'show\','+filtered[i].s.id+')"><div class="showTitle">'+esc(filtered[i].s.title)+'</div><div class="chips"><span class="chip">'+filtered[i].perfs+' performances</span><span class="chip">'+filtered[i].people+' people</span></div></article>';return out+'</section></main>';}
@@ -773,7 +936,7 @@ diary:function(){state.view='home';state.id=null;state.year='all';state.groupYea
 setJumpYear:function(y){state.selectedJumpYear=y;render();},
 goYear:function(y){state.view='home';state.id=null;state.year='all';state.selectedJumpYear=y;state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
 goMonth:function(y,m){state.view='home';state.id=null;state.year='all';state.selectedJumpYear=y;state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('month-'+y+'-'+m)||document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
-setCalYear:function(y){state.calendarYear=y;state.selectedJumpYear=y;render()},setPersonLayout:function(v){state.personLayout=v;localStorage.setItem('theatreDiaryPersonLayout',v);render()}};
+setCalYear:function(y){state.calendarYear=y;state.selectedJumpYear=y;render()},setPersonLayout:function(v){state.personLayout=v;localStorage.setItem('theatreDiaryPersonLayout',v);render()},previewAddEntry:previewAddEntry,downloadAddEntry:downloadAddEntry,clearAddEntry:clearAddEntry};
 load();
 })();
 </script>
