@@ -368,6 +368,27 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 .otdItemTitle{font-size:12px;font-weight:950;text-transform:uppercase;letter-spacing:.025em}
 .otdItemMeta{font-size:11px;color:var(--muted);margin-top:1px}
 
+
+/* Refined click-down lines + literal month chart labels */
+.personCarousel{display:block;overflow:visible;padding:0;border-top:1px solid rgba(255,255,255,.18)}
+.personRoleLine{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;width:100%;border:0;border-bottom:1px solid rgba(255,255,255,.16);background:transparent;color:#fffdf3;text-align:left;padding:8px 2px}
+.personRoleLine:hover{background:rgba(244,208,0,.08)}
+.personRoleMain{min-width:0}
+.personRoleRole{font-size:12px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;color:var(--pb-yellow)}
+.personRoleProd{font-size:12px;color:#fffdf3;margin-top:2px}
+.personRoleDates{font-size:11px;color:#d8d2b8;margin-top:2px;line-height:1.35}
+.personRoleCount{background:#fffdf3;color:#111;border-radius:999px;font-size:11px;font-weight:950;padding:3px 7px;white-space:nowrap}
+.personMoreLine{font-size:12px;color:#d8d2b8;padding:8px 2px}
+.monthTinyChart{height:104px!important;align-items:end}
+.monthTinyLabel{font-size:10px!important;line-height:1.05;text-transform:none!important;white-space:normal;text-align:center;display:block;min-height:22px}
+.monthTinyMonth,.monthTinyYear{display:block}
+.monthTinyBar{overflow:visible}
+@media(max-width:760px){
+  .monthTinyChart{height:112px!important;gap:3px!important}
+  .monthTinyLabel{font-size:9px!important}
+  .monthTinyFill{max-width:16px!important}
+}
+
 </style>
 </head>
 <body>
@@ -576,13 +597,15 @@ function monthTinyChart(y){
 }
 
 function rollingMonthChart(){
-  var ps=vals(db.performances).slice().sort(function(a,b){return String(a.date).localeCompare(String(b.date));}), latest=ps.length?dateObj(ps[ps.length-1].date):new Date(), months=[], map={}, i,d,key,label,out,max=1, p;
+  var ps=vals(db.performances).slice().sort(function(a,b){return String(a.date).localeCompare(String(b.date));}), latest=ps.length?dateObj(ps[ps.length-1].date):new Date(), months=[], map={}, i,d,key,label,out,max=1, p, mon, yr;
   latest = latest || new Date();
   for(i=11;i>=0;i--){
     d=new Date(latest.getFullYear(), latest.getMonth()-i, 1);
+    mon=monthName(d.getMonth());
+    yr=String(d.getFullYear()).slice(2);
     key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-    label=monthName(d.getMonth())+' '+String(d.getFullYear()).slice(2);
-    months.push({key:key,label:label,n:0,year:String(d.getFullYear()),month:String(d.getMonth()+1).padStart(2,'0')});
+    label=mon+' '+yr;
+    months.push({key:key,label:label,monthLabel:mon,yearLabel:yr,n:0,year:String(d.getFullYear()),month:String(d.getMonth()+1).padStart(2,'0')});
     map[key]=months[months.length-1];
   }
   for(i=0;i<ps.length;i++){
@@ -591,9 +614,10 @@ function rollingMonthChart(){
   }
   for(i=0;i<months.length;i++) if(months[i].n>max) max=months[i].n;
   out='<div class="monthTinyChart rolling">';
-  for(i=0;i<months.length;i++) out+='<button class="monthTinyBar" onclick="TD.goMonth(\''+months[i].year+'\',\''+months[i].month+'\')" title="'+esc(months[i].label+': '+months[i].n)+'"><span class="monthTinyFill" style="height:'+Math.max(3,Math.round(months[i].n/max*54))+'px"></span><span class="monthTinyLabel">'+esc(months[i].label.replace(' ','\\u00a0'))+'</span></button>';
+  for(i=0;i<months.length;i++) out+='<button class="monthTinyBar" onclick="TD.goMonth(\''+months[i].year+'\',\''+months[i].month+'\')" title="'+esc(months[i].label+': '+months[i].n)+'"><span class="monthTinyFill" style="height:'+Math.max(3,Math.round(months[i].n/max*54))+'px"></span><span class="monthTinyLabel"><span class="monthTinyMonth">'+esc(months[i].monthLabel)+'</span><span class="monthTinyYear">'+esc(months[i].yearLabel)+'</span></span></button>';
   return out+'</div>';
 }
+
 function countByMonthForYear(y){
   var ps=vals(db.performances),m={},labels=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],i,mo,rows=[];
   for(i=0;i<12;i++)m[i]=0;
@@ -673,17 +697,35 @@ function firstTimeBlock(p){
 }
 
 
+
+function productionLabelForPerf(p){
+  if(!p)return '';
+  var bits=[];
+  if(p.type)bits.push(p.type);
+  bits.push(venueOf(p));
+  return bits.filter(Boolean).join(' · ');
+}
+function productionSummary(perfs){
+  var seen={}, arr=[], i, label;
+  for(i=0;i<perfs.length;i++){
+    label=productionLabelForPerf(perfs[i]);
+    if(label&&!seen[label]){seen[label]=1;arr.push(label);}
+  }
+  if(!arr.length)return '';
+  return arr.slice(0,2).join(' / ')+(arr.length>2?' / +'+(arr.length-2)+' more':'');
+}
+
 function inlinePersonCarousel(personId,currentPerfId){
   var active=state.inlinePerson;
   if(!active || active.personId!==personId || active.perfId!==currentPerfId) return '';
-  var arr=uniquePersonAppearances(personId), groups=personRoleGroups(arr), s=stat(personId,currentPerfId), out='', i,g,j,dates,max=10;
+  var arr=uniquePersonAppearances(personId), groups=personRoleGroups(arr), s=stat(personId,currentPerfId), out='', i,g,j,dates,max=12,prod;
   out+='<div class="personInline"><div class="personInlineTop"><div><div class="personInlineName">'+esc(upperName(personName(personId)))+'</div><div class="personInlineStats">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' roles</div></div><div class="personInlineActions"><button class="btn" onclick="TD.go(\'person\','+personId+')">Full profile</button><button class="btn" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">Close</button></div></div><div class="personCarousel">';
   for(i=0;i<Math.min(groups.length,max);i++){
-    g=groups[i]; dates=[];
-    for(j=0;j<Math.min(g.perfs.length,3);j++) dates.push(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date));
-    out+='<button class="personMiniCard" onclick="TD.go(\'show\','+g.showId+')"><span class="personMiniCount">'+g.count+'x</span><div class="personMiniShow">'+esc(g.show)+'</div><div class="personMiniRole">'+esc(cleanTrackRoleLabel(g.roles))+'</div><div class="personMiniDates">'+esc(dates.join(' · '))+(g.perfs.length>3?' · +'+(g.perfs.length-3)+' more':'')+'</div></button>';
+    g=groups[i]; dates=[]; prod=productionSummary(g.perfs);
+    for(j=0;j<Math.min(g.perfs.length,4);j++) dates.push(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date));
+    out+='<button class="personRoleLine" onclick="TD.go(\'show\','+g.showId+')"><span class="personRoleMain"><span class="personRoleRole">'+esc(cleanTrackRoleLabel(g.roles))+'</span><span class="personRoleProd">'+esc(g.show)+(prod?' · '+esc(prod):'')+'</span><span class="personRoleDates">'+esc(dates.join(' · '))+(g.perfs.length>4?' · +'+(g.perfs.length-4)+' more':'')+'</span></span><span class="personRoleCount">'+g.count+'x</span></button>';
   }
-  if(groups.length>max) out+='<div class="personMiniCard"><div class="personMiniShow">More</div><div class="personMiniRole">+'+(groups.length-max)+' additional groups</div><div class="personMiniDates">Open full profile for everything</div></div>';
+  if(groups.length>max) out+='<div class="personMoreLine">+'+(groups.length-max)+' additional groups. Open full profile for everything.</div>';
   return out+'</div></div>';
 }
 
@@ -961,7 +1003,7 @@ function clearAddEntry(){
 
 function peoplePage(){var rows=vals(db.people),q=norm(state.q),i,p,filtered=[],s;for(i=0;i<rows.length;i++){p=rows[i];if(q&&norm(p.name).indexOf(q)===-1)continue;s=stat(p.id,null);if(s.perfs||idx.creativeByPerson[p.id])filtered.push({p:p,s:s});}if(state.peopleMode==='roles')filtered.sort(function(a,b){return b.s.roles-a.s.roles||b.s.perfs-a.s.perfs||a.p.name.localeCompare(b.p.name);});else filtered.sort(function(a,b){return b.s.perfs-a.s.perfs||b.s.roles-a.s.roles||a.p.name.localeCompare(b.p.name);});var out='<main class="wrap"><section class="hero"><h1>People</h1><div class="toolbar"><input class="input" value="'+esc(state.q)+'" placeholder="Search people..." oninput="TD.setQ(this.value)"><button class="pillBtn '+(state.peopleMode==='appearances'?'active':'')+'" onclick="TD.setPeopleMode(\'appearances\')">Most seen</button><button class="pillBtn '+(state.peopleMode==='roles'?'active':'')+'" onclick="TD.setPeopleMode(\'roles\')">Most roles</button></div></section><section class="card tableWrap"><table class="table"><thead><tr><th>Person</th><th>Performances</th><th>Shows</th><th>Roles</th></tr></thead><tbody>';for(i=0;i<Math.min(filtered.length,500);i++)out+='<tr><td><button class="linkish" onclick="TD.go(\'person\','+filtered[i].p.id+')">'+esc(filtered[i].p.name)+'</button></td><td>'+filtered[i].s.perfs+'</td><td>'+filtered[i].s.shows+'</td><td>'+filtered[i].s.roles+'</td></tr>';return out+'</tbody></table></section></main>';}
 function showsPage(){var rows=vals(db.shows),q=norm(state.q),i,s,perfs,people,filtered=[];for(i=0;i<rows.length;i++){s=rows[i];if(q&&norm(s.title).indexOf(q)===-1)continue;perfs=(idx.showPerfs[s.id]||[]).length;people=keys(idx.showPeople[s.id]||{}).length;filtered.push({s:s,perfs:perfs,people:people});}filtered.sort(function(a,b){return b.perfs-a.perfs||a.s.title.localeCompare(b.s.title);});var out='<main class="wrap"><section class="hero"><h1>Shows</h1><div class="toolbar"><input class="input" value="'+esc(state.q)+'" placeholder="Search shows..." oninput="TD.setQ(this.value)"></div></section><section class="grid">';for(i=0;i<filtered.length;i++)out+='<article class="card perfCard" onclick="TD.go(\'show\','+filtered[i].s.id+')"><div class="showTitle">'+esc(filtered[i].s.title)+'</div><div class="chips"><span class="chip">'+filtered[i].perfs+' performances</span><span class="chip">'+filtered[i].people+' people</span></div></article>';return out+'</section></main>';}
-function rolesPage(){var people=vals(db.people),rows=[],i,p,s;for(i=0;i<people.length;i++){p=people[i];s=stat(p.id,null);if(s.roles>1)rows.push({p:p,s:s});}rows.sort(function(a,b){return b.s.roles-a.s.roles||b.s.perfs-a.s.perfs||a.p.name.localeCompare(b.p.name);});var out='<main class="wrap"><section class="hero"><h1>Most Different Roles</h1><p class="muted">Counts by role/track within a production. Production = show + production type. Venue does not split the count. Cover type is ignored.</p></section><section class="card tableWrap"><table class="table"><thead><tr><th>Person</th><th>Roles</th><th>Performances</th><th>Shows</th></tr></thead><tbody>';for(i=0;i<Math.min(rows.length,300);i++)out+='<tr><td><button class="linkish" onclick="TD.go(\'person\','+rows[i].p.id+')">'+esc(rows[i].p.name)+'</button></td><td>'+rows[i].s.roles+'</td><td>'+rows[i].s.perfs+'</td><td>'+rows[i].s.shows+'</td></tr>';return out+'</tbody></table></section></main>';}
+function rolesPage(){var people=vals(db.people),rows=[],i,p,s;for(i=0;i<people.length;i++){p=people[i];s=stat(p.id,null);if(s.roles>1)rows.push({p:p,s:s});}rows.sort(function(a,b){return b.s.roles-a.s.roles||b.s.perfs-a.s.perfs||a.p.name.localeCompare(b.p.name);});var out='<main class="wrap"><section class="hero"><h1>Most Different Roles</h1><p class="muted">Counts each role name once per person, even if they played it in different productions. Cover type is ignored.</p></section><section class="card tableWrap"><table class="table"><thead><tr><th>Person</th><th>Roles</th><th>Performances</th><th>Shows</th></tr></thead><tbody>';for(i=0;i<Math.min(rows.length,300);i++)out+='<tr><td><button class="linkish" onclick="TD.go(\'person\','+rows[i].p.id+')">'+esc(rows[i].p.name)+'</button></td><td>'+rows[i].s.roles+'</td><td>'+rows[i].s.perfs+'</td><td>'+rows[i].s.shows+'</td></tr>';return out+'</tbody></table></section></main>';}
 function rolePage(key){var o=idx.allRolesByName[key],show=o?by(db.shows,o.showId):null,apps=o?o.apps:[],rows=[],i,a,p,r,personSet={};for(i=0;i<apps.length;i++){a=apps[i];p=by(db.performances,a.performanceId);r=by(db.people,a.personId);if(p&&r){personSet[a.personId]=1;rows.push({a:a,perf:p,person:r});}}rows.sort(function(a,b){return String(b.perf.date).localeCompare(String(a.perf.date));});var out='<main class="wrap"><section class="hero"><h1>'+esc(o?o.roleName:'Role')+'</h1><p class="muted">'+esc(show?show.title:'')+' · '+rows.length+' appearances · '+keys(personSet).length+' people.</p></section><section class="card"><div class="list">';for(i=0;i<rows.length;i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'person\','+rows[i].person.id+')">'+esc(rows[i].person.name)+'</button><div class="tiny"><button class="linkish" onclick="TD.go(\'perf\','+rows[i].perf.id+')">'+esc(fmtDate(rows[i].perf.date))+'</button> · '+esc(venueOf(rows[i].perf))+(coverName(rows[i].a.coverLabel||rows[i].a.coverType)?' · '+esc(coverName(rows[i].a.coverLabel||rows[i].a.coverType)):'')+'</div></div>';return out+'</div></section></main>';}
 function coversPage(){var apps=db.appearances||[],rows=[],i,a,p,r,person;for(i=0;i<apps.length;i++){a=apps[i];if(!(a.coverType||a.coverLabel||a.appearanceType==='swing'))continue;p=by(db.performances,a.performanceId);r=by(db.roles,a.roleId);person=by(db.people,a.personId);if(p&&person)rows.push({a:a,p:p,r:r,person:person});}rows.sort(function(a,b){return String(b.p.date).localeCompare(String(a.p.date));});var out='<main class="wrap"><section class="hero"><h1>Covers & Special Appearances</h1><p class="muted">'+rows.length+' cover/swing/special appearance lines.</p></section><section class="card tableWrap"><table class="table"><thead><tr><th>Date</th><th>Show</th><th>Person</th><th>Role</th><th>Cover</th></tr></thead><tbody>';for(i=0;i<Math.min(rows.length,600);i++)out+='<tr><td><button class="linkish" onclick="TD.go(\'perf\','+rows[i].p.id+')">'+esc(fmtDate(rows[i].p.date))+'</button></td><td>'+esc(showOf(rows[i].p))+'</td><td><button class="linkish" onclick="TD.go(\'person\','+rows[i].person.id+')">'+esc(rows[i].person.name)+'</button></td><td>'+esc(rows[i].r?rows[i].r.name:'')+'</td><td><span class="chip cover">'+esc(coverName(rows[i].a.coverLabel||rows[i].a.coverType||rows[i].a.appearanceType))+'</span></td></tr>';return out+'</tbody></table></section></main>';}
 function statsPage(){var perfs=vals(db.performances),years={},types={},i,p,topShows=[],sid;for(i=0;i<perfs.length;i++){p=perfs[i];years[yearOf(p.date)]=(years[yearOf(p.date)]||0)+1;types[p.type||'Unknown']=(types[p.type||'Unknown']||0)+1;}for(sid in idx.showPerfs)if(Object.prototype.hasOwnProperty.call(idx.showPerfs,sid))topShows.push({id:sid,n:idx.showPerfs[sid].length,title:(by(db.shows,sid)||{}).title});topShows.sort(function(a,b){return b.n-a.n||a.title.localeCompare(b.title);});return '<main class="wrap"><section class="hero"><h1>Stats</h1><div class="statGrid"><div class="stat"><div class="num">'+perfs.length+'</div><div class="lab">performances</div></div><div class="stat"><div class="num">'+vals(db.shows).length+'</div><div class="lab">shows</div></div><div class="stat"><div class="num">'+vals(db.people).length+'</div><div class="lab">people</div></div><div class="stat"><div class="num">'+keys(idx.coverPerf).length+'</div><div class="lab">performances with covers</div></div></div></section><div class="split"><section class="card"><h2>Most Seen Shows</h2>'+simpleRows(topShows,'show')+'</section><aside class="card"><h2>By Year</h2>'+countRows(years,true)+'<div class="section"><h2>By Type</h2>'+countRows(types,false)+'</div></aside></div></main>';}
