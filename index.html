@@ -354,6 +354,20 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 .onlineSaveRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}
 @media(max-width:760px){.onlineSaveRow{grid-template-columns:1fr}}
 
+
+/* On This Day homepage */
+.onThisDay{border-top:5px solid var(--pb-yellow)!important}
+.otdGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:10px}
+.otdCard{background:#fff;border:1px solid var(--pb-line);border-radius:8px;padding:8px}
+.otdLabel{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:850}
+.otdMain{font-size:14px;font-weight:900;color:#111;margin-top:3px}
+.otdSub{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.3}
+.otdList{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.otdItem{border:1px solid var(--pb-line);background:#fffdf3;border-radius:7px;padding:6px 7px;text-align:left;color:#111}
+.otdItem:hover{border-color:var(--pb-yellow);box-shadow:inset 3px 0 0 var(--pb-yellow)}
+.otdItemTitle{font-size:12px;font-weight:950;text-transform:uppercase;letter-spacing:.025em}
+.otdItemMeta{font-size:11px;color:var(--muted);margin-top:1px}
+
 </style>
 </head>
 <body>
@@ -465,7 +479,7 @@ function home(){
   var out='<main class="wrap"><section class="hero"><h1>Theatre Diary</h1>'+
     '<div class="sleekHeroSearch"><input id="topSearch" class="input" value="'+esc(state.q)+'" placeholder="Search the diary..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'topSearch\')"><button class="btn" onclick="TD.applySearch(\'topSearch\')">Search diary</button><button class="btn" onclick="TD.diary()">Go to diary</button></div>'+
     '<div class="homeQuick"><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.random()">Random</button>'+(state.q?'<button class="btn" onclick="TD.clearSearch()">Clear search</button>':'')+'</div>'+
-    topStatsBlock()+'<div class="accentRule"></div></section>'+
+    topStatsBlock()+'<div class="accentRule"></div></section>'+onThisDayBlock()+
     '<section class="card"><div class="moduleTitle"><h2>Last 12 months</h2><span class="chip">rolling activity</span></div>'+rollingMonthChart()+'</section>'+
     '<section class="card libraryCard"><div class="moduleTitle"><div><h2>Library by year</h2><p class="tiny">Pick a year, then a month. The diary below stays continuous.</p></div><span class="chip">'+keys(years).length+' years</span></div><div class="yearChipRail">'+yearChipButtons(countByYear())+'</div>'+monthPop(state.selectedJumpYear)+'</section>'+
     '<div id="diaryList" class="diaryHead"><div><h2>Diary</h2><p class="tiny">'+(state.q?'Search results for “'+esc(state.q)+'”':'Continuous list, oldest to newest')+'</p></div><div class="toolbar"><input id="diarySearch" class="input" value="'+esc(state.q)+'" placeholder="Search..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'diarySearch\')"><button class="btn" onclick="TD.applySearch(\'diarySearch\')">Search</button><button class="pillBtn '+(state.layout==='lines'?'active':'')+'" onclick="TD.setLayout(\'lines\')">Lines</button><button class="pillBtn '+(state.layout==='cards'?'active':'')+'" onclick="TD.setLayout(\'cards\')">Cards</button></div></div>';
@@ -473,6 +487,73 @@ function home(){
   if(filtered.length>state.limit&&state.groupYears!=='yes')out+='<button class="btn loadMore" onclick="TD.more()">Load more</button>';
   return out+'</main>';
 }
+
+function todayParts(){
+  var d=new Date();
+  return {date:d, month:String(d.getMonth()+1).padStart(2,'0'), day:String(d.getDate()).padStart(2,'0'), year:String(d.getFullYear())};
+}
+function mdOf(iso){return String(iso||'').slice(5,10);}
+function sameWeekKey(d){
+  var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  var day=x.getDay(), diff=(day===0?-6:1-day);
+  x.setDate(x.getDate()+diff);
+  return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
+}
+function weekStartForYearLike(today,yearOffset){
+  var d=new Date(today.getFullYear()+yearOffset,today.getMonth(),today.getDate());
+  return sameWeekKey(d);
+}
+function isInWeek(iso,weekKey){
+  var d=dateObj(iso); if(!d)return false;
+  return sameWeekKey(d)===weekKey;
+}
+function onThisDayBlock(){
+  var t=todayParts(), ps=vals(db.performances), apps=db.appearances||[], firstByPerson={}, todayPerfs=[], sameWeek=[], firstPeople=[], i,p,a,personId,weekKey,out;
+  ps.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});
+  for(i=0;i<ps.length;i++){
+    p=ps[i];
+    if(mdOf(p.date)===t.month+'-'+t.day) todayPerfs.push(p);
+  }
+  for(i=0;i<apps.length;i++){
+    a=apps[i]; p=by(db.performances,a.performanceId); if(!p)continue;
+    personId=a.personId;
+    if(!firstByPerson[personId] || String(p.date).localeCompare(String(firstByPerson[personId].date))<0) firstByPerson[personId]=p;
+  }
+  for(personId in firstByPerson){
+    if(Object.prototype.hasOwnProperty.call(firstByPerson,personId) && mdOf(firstByPerson[personId].date)===t.month+'-'+t.day) firstPeople.push({personId:personId,perf:firstByPerson[personId]});
+  }
+  firstPeople.sort(function(a,b){return personName(a.personId).localeCompare(personName(b.personId));});
+  weekKey=weekStartForYearLike(t.date,-1);
+  for(i=0;i<ps.length;i++) if(isInWeek(ps[i].date,weekKey)) sameWeek.push(ps[i]);
+  sameWeek.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});
+  out='<section class="card onThisDay"><div class="moduleTitle"><div><h2>On This Day</h2><p class="tiny">'+esc(monthName(Number(t.month)-1)+' '+Number(t.day))+' across your theatre diary</p></div><span class="chip">today-ish</span></div><div class="otdGrid">';
+  out+='<div class="otdCard"><div class="otdLabel">You saw on this date</div><div class="otdMain">'+todayPerfs.length+' performance'+(todayPerfs.length===1?'':'s')+'</div>'+otdPerfList(todayPerfs,4)+'</div>';
+  out+='<div class="otdCard"><div class="otdLabel">First appearances on this date</div><div class="otdMain">'+firstPeople.length+' performer/creative firsts</div>'+otdPeopleList(firstPeople,6)+'</div>';
+  out+='<div class="otdCard"><div class="otdLabel">Same week last year</div><div class="otdMain">'+sameWeek.length+' performance'+(sameWeek.length===1?'':'s')+'</div><div class="otdSub">Week of '+esc(fmtDate(weekKey))+'</div>'+otdPerfList(sameWeek,4)+'</div>';
+  out+='</div></section>';
+  return out;
+}
+function otdPerfList(arr,limit){
+  var out='<div class="otdList">',i,p;
+  if(!arr.length)return '<div class="otdSub">Nothing logged yet. The calendar goblin remains quiet.</div>';
+  for(i=0;i<Math.min(arr.length,limit);i++){
+    p=arr[i];
+    out+='<button class="otdItem" onclick="TD.go(\'perf\','+p.id+')"><div class="otdItemTitle">'+esc(showOf(p))+'</div><div class="otdItemMeta">'+esc(fmtDate(p.date)+' · '+venueOf(p))+'</div></button>';
+  }
+  if(arr.length>limit)out+='<div class="otdSub">+'+(arr.length-limit)+' more</div>';
+  return out+'</div>';
+}
+function otdPeopleList(arr,limit){
+  var out='<div class="otdList">',i,item,p;
+  if(!arr.length)return '<div class="otdSub">No first appearances on this date.</div>';
+  for(i=0;i<Math.min(arr.length,limit);i++){
+    item=arr[i]; p=item.perf;
+    out+='<button class="otdItem" onclick="TD.go(\'person\','+item.personId+')"><div class="otdItemTitle">'+esc(personName(item.personId))+'</div><div class="otdItemMeta">'+esc(showOf(p)+' · '+fmtDate(p.date))+'</div></button>';
+  }
+  if(arr.length>limit)out+='<div class="otdSub">+'+(arr.length-limit)+' more firsts</div>';
+  return out+'</div>';
+}
+
 function topStatsBlock(){
   var ps=vals(db.performances), people=vals(db.people), shows=vals(db.shows), venues=vals(db.venues), cities={}, types={}, i,v,p;
   for(i=0;i<venues.length;i++){v=venues[i];if(v&&v.city)cities[v.city]=1;}
@@ -906,43 +987,45 @@ function coverPrefix(a,plain){
   else code=c;
   return (plain?'*':'')+code+' ';
 }
-function castCopyRows(id,formatted){
-  var apps=(idx.perfApps[id]||[]).slice(), lines=[], ens=[], i,a,r,person,roleName,roleText,line,isCover;
+function castCopyItems(id,formatted){
+  var apps=(idx.perfApps[id]||[]).slice(), items=[], ens=[], i,a,r,person,roleName,roleText,item,isCover;
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
   for(i=0;i<apps.length;i++){
     a=apps[i]; r=by(db.roles,a.roleId); person=by(db.people,a.personId);
-    if(a.appearanceType==='ensemble'){ens.push(upperName(person?person.name:personName(a.personId)));continue;}
+    if(a.appearanceType==='ensemble'){ens.push(person?person.name:personName(a.personId));continue;}
     roleName=r?r.name:(a.roleRaw||'');
     isCover=!!(coverName(a.coverLabel||a.coverType||'') || a.appearanceType==='swing');
     roleText=coverPrefix(a,!formatted)+roleName;
-    line=roleText+' - '+upperName(person?person.name:'Unknown');
-    if(formatted && isCover) line='***'+line+'***';
-    lines.push(line);
+    item=(person?person.name:'Unknown')+' ('+roleText+')';
+    if(formatted && isCover)item='***'+item+'***';
+    items.push(item);
   }
-  if(ens.length) lines.push('Ensemble - '+ens.join(', '));
-  return lines;
+  if(ens.length)items.push('Ensemble: '+ens.join(', '));
+  return items;
+}
+function castCopyText(id,formatted){
+  return castCopyItems(id,formatted).join(', ');
 }
 function copyPerf(id,mode){
-  var p=by(db.performances,id), plainLines=[], formattedLines=[], location, htmlLines, i, html;
+  var p=by(db.performances,id), plainLines=[], formattedLines=[], location, castPlain, castFormatted, html;
   if(!p)return;
   location=venueOf(p)+(p.type?' | '+p.type:'')+(p.time?' | '+p.time:'');
+  castPlain=castCopyText(id,false);
+  castFormatted=castCopyText(id,true);
   plainLines.push(showOf(p)+' | '+fmtDate(p.date));
   plainLines.push(location);
   plainLines.push('');
-  plainLines=plainLines.concat(castCopyRows(id,false));
+  plainLines.push(castPlain);
   formattedLines.push(showOf(p)+' | '+fmtDate(p.date));
   formattedLines.push(location);
   formattedLines.push('');
-  formattedLines=formattedLines.concat(castCopyRows(id,true));
-  if(mode==='html'){
-    html='<p><strong>'+esc(showOf(p)+' | '+fmtDate(p.date))+'</strong><br>'+esc(location)+'</p><p>';
-    htmlLines=castCopyRows(id,true);
-    for(i=0;i<htmlLines.length;i++){
-      html+=esc(htmlLines[i]).replace(/\*\*\*([^*]+)\*\*\*/g,'<strong><em>$1</em></strong>')+(i<htmlLines.length-1?'<br>':'');
-    }
-    html+='</p>';
+  formattedLines.push(castFormatted);
+  if(mode==='cast'){
+    copyText(castPlain);
+  }else if(mode==='html'){
+    html='<p><strong>'+esc(showOf(p)+' | '+fmtDate(p.date))+'</strong><br>'+esc(location)+'</p><p>'+esc(castFormatted).replace(/\*\*\*([^*]+)\*\*\*/g,'<strong><em>$1</em></strong>')+'</p>';
     copyHtml(html,formattedLines.join('\n'));
-  } else {
+  }else{
     copyText(plainLines.join('\n'));
   }
 }
