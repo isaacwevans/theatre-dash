@@ -510,6 +510,46 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
   .coverBadge{font-size:8.5px!important;padding:2px 4px!important}
 }
 
+
+/* === Ensemble section restructure === */
+.ensembleInlineSection{
+  margin-top:10px!important;
+  padding-top:8px!important;
+  border-top:3px solid var(--pb-yellow)!important;
+}
+.ensembleInlineSection h3{
+  margin:0 0 6px 0!important;
+  font-size:11px!important;
+  letter-spacing:.08em!important;
+  color:#111!important;
+}
+.ensembleLine .roleInline,
+.ensembleRole{
+  background:#fff7cf!important;
+  color:#111!important;
+}
+.ensembleLine .castPersonCell{
+  background:#fffef8!important;
+}
+.ensembleSide{
+  background:#fffdf3!important;
+  border:1px solid var(--pb-line)!important;
+  border-top:4px solid var(--pb-yellow)!important;
+}
+.ensembleSide .ensChip{
+  border-radius:8px!important;
+  padding:6px 7px!important;
+  background:#fff!important;
+  border:1px solid var(--pb-line)!important;
+}
+.ensembleSide .personWrap{
+  gap:5px!important;
+}
+@media(max-width:860px){
+  .ensembleInlineSection{margin-top:8px!important;padding-top:7px!important}
+  .ensembleSide{margin-top:8px!important}
+}
+
 </style>
 </head>
 <body>
@@ -856,30 +896,58 @@ function inlinePersonCarousel(personId,currentPerfId){
 }
 
 function castBlock(p){
-  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ensItems=[],notes='',i,a,r,label,line,roleName,isTrack,coverClass,badgeClass,badge,isOpen,ensInline='';
+  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ensembleRows=[],pureEnsemble=[],notes='',i,a,r,label,line,roleName,isTrack,coverClass,badgeClass,badge,isOpen;
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
+
+  function ensembleLine(a,labelText){
+    var isOpen=state.inlinePerson && state.inlinePerson.personId===a.personId && state.inlinePerson.perfId===p.id;
+    return '<div class="castLine ensembleLine '+(isOpen?'isOpen':'')+'"><div class="castOneLine"><span class="roleInline ensembleRole">'+esc(labelText||'Ensemble')+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
+  }
+
   for(i=0;i<apps.length;i++){
-    a=apps[i];r=by(db.roles,a.roleId);roleName=r?r.name:(a.roleRaw||'');
+    a=apps[i]; r=by(db.roles,a.roleId); roleName=r?r.name:(a.roleRaw||'');
     label=coverName(a.coverLabel||a.coverType||'');
     if(!label && a.appearanceType==='swing') label='Swing';
     coverClass=coverClassName(label); badgeClass=coverBadgeClass(label);
     badge=label?'<span class="coverBadge '+badgeClass+'">'+esc(label)+'</span>':'';
     isTrack=norm(roleName).indexOf('track')>=0||norm(roleName).indexOf('swing')>=0;
     isOpen=state.inlinePerson && state.inlinePerson.personId===a.personId && state.inlinePerson.perfId===p.id;
-    if(a.appearanceType==='ensemble'){
-      ensItems.push({name:personName(a.personId),html:'<span class="ensChip">'+personButton(a.personId,p.id)+'</span>',inline:isOpen?inlinePersonCarousel(a.personId,p.id):''});
-    }else if(a.appearanceType==='swing'&&isTrack){
+
+    if(a.appearanceType==='ensemble' || norm(roleName)==='ensemble'){
+      pureEnsemble.push({name:personName(a.personId), app:a});
+    }else if(a.appearanceType==='swing' && isTrack){
       notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }else{
-      line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="castOneLine"><span class="roleInline">'+roleLink(r)+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+badge+(a.alsoEnsemble?'<span class="chip">ensemble</span>':'')+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
+      line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="castOneLine"><span class="roleInline">'+roleLink(r)+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+badge+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
       principal+=line;
+      if(a.alsoEnsemble) ensembleRows.push({name:personName(a.personId), html:ensembleLine(a,'Ensemble')});
       if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }
   }
-  ensItems.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
-  var ens='', j;
-  for(j=0;j<ensItems.length;j++){ens+=ensItems[j].html;if(ensItems[j].inline)ensInline+=ensItems[j].inline;}
-  var out='<div class="castArea"><div class="principalCast">'+principal+'</div>'+(ens?'<aside class="ensembleSide"><h3>Ensemble</h3><div class="ensemble">'+ens+'</div>'+ensInline+'</aside>':'')+'</div>';
+
+  ensembleRows.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
+  pureEnsemble.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
+
+  var ensembleSection='', pureBox='', j;
+  if(pureEnsemble.length && pureEnsemble.length<4){
+    for(j=0;j<pureEnsemble.length;j++) ensembleRows.push({name:pureEnsemble[j].name, html:ensembleLine(pureEnsemble[j].app,'Ensemble')});
+    ensembleRows.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
+  }else if(pureEnsemble.length>=4){
+    var chips='', inline='';
+    for(j=0;j<pureEnsemble.length;j++){
+      chips+='<span class="ensChip">'+personButton(pureEnsemble[j].app.personId,p.id)+'</span>';
+      if(state.inlinePerson && state.inlinePerson.personId===pureEnsemble[j].app.personId && state.inlinePerson.perfId===p.id) inline+=inlinePersonCarousel(pureEnsemble[j].app.personId,p.id);
+    }
+    pureBox='<aside class="ensembleSide"><h3>Ensemble</h3><div class="ensemble">'+chips+'</div>'+inline+'</aside>';
+  }
+
+  if(ensembleRows.length){
+    ensembleSection='<div class="ensembleInlineSection"><h3>Ensemble</h3>';
+    for(j=0;j<ensembleRows.length;j++) ensembleSection+=ensembleRows[j].html;
+    ensembleSection+='</div>';
+  }
+
+  var out='<div class="castArea"><div class="principalCast">'+principal+ensembleSection+'</div>'+pureBox+'</div>';
   if(notes)out+='<div class="section"><h3>Coverage Notes</h3><div class="list">'+notes+'</div></div>';
   return out;
 }
