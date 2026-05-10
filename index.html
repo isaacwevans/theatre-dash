@@ -389,52 +389,128 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
   .monthTinyFill{max-width:16px!important}
 }
 
-</style>
 
-<style id="mobile-cleanup-v2">
-.cast-card{
-  padding:0 !important;
-  overflow:hidden;
+/* === Real mobile density patch: one-line cast rows === */
+.castLine{
+  display:block!important;
+  padding:0!important;
+  margin-bottom:6px!important;
+  border:1px solid var(--pb-line)!important;
+  border-radius:8px!important;
+  overflow:hidden!important;
+  background:#fff!important;
 }
-.cast-role{
-  padding:10px 14px 4px 14px !important;
-  font-size:.95rem !important;
-  font-weight:700 !important;
+.castOneLine{
+  display:grid!important;
+  grid-template-columns:minmax(92px,.72fr) minmax(0,1.28fr)!important;
+  align-items:center!important;
+  gap:0!important;
+  min-height:38px!important;
 }
-.cast-performer{
-  padding:8px 14px 10px 14px !important;
-  display:flex !important;
-  justify-content:space-between !important;
-  align-items:center !important;
-  gap:10px !important;
+.roleInline{
+  min-width:0!important;
+  height:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  background:#f1ead6!important;
+  border-right:1px solid var(--pb-line)!important;
+  padding:7px 8px!important;
+  font-size:13px!important;
+  font-weight:750!important;
+  line-height:1.1!important;
 }
-.cast-performer-name{
-  font-size:1rem !important;
-  letter-spacing:.04em !important;
+.roleInline .linkish{
+  color:#111!important;
+  text-decoration:none!important;
+  font-weight:750!important;
 }
-.other-times{
-  font-size:.78rem !important;
-  opacity:.65 !important;
+.castPersonCell{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:6px!important;
+  padding:7px 8px!important;
+  background:#fff!important;
 }
-.role-count-badge{
-  border-radius:999px !important;
-  padding:4px 10px !important;
-  font-size:.75rem !important;
-  font-weight:800 !important;
+.castPersonName{
+  font-size:12.5px!important;
+  line-height:1.05!important;
+  letter-spacing:.055em!important;
+  white-space:normal!important;
 }
-.sort-toggle{
-  display:flex;
-  gap:8px;
-  margin-bottom:10px;
+.personWrap{
+  display:flex!important;
+  width:100%!important;
+  min-width:0!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:5px!important;
 }
-.dropdown-entry{
-  padding:8px 0;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  line-height:1.35;
-  font-size:.9rem;
+.personLeft{
+  display:flex!important;
+  align-items:baseline!important;
+  gap:4px!important;
+  min-width:0!important;
+  flex:1 1 auto!important;
+  overflow:hidden!important;
 }
-</style>
+.personTimes{
+  font-size:10.5px!important;
+  color:var(--muted)!important;
+  line-height:1!important;
+  flex:0 0 auto!important;
+}
+.roleFlag{
+  width:24px!important;
+  min-width:24px!important;
+  height:24px!important;
+  padding:0!important;
+  border-radius:999px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:11px!important;
+  font-weight:950!important;
+  line-height:1!important;
+  box-shadow:none!important;
+  border:1px solid rgba(0,0,0,.18)!important;
+}
+.roleFlag.tier1{background:#f3ecd4!important;color:#111!important}
+.roleFlag.tier2{background:var(--pb-yellow)!important;color:#111!important}
+.roleFlag.tier3{background:#d79500!important;color:#111!important}
+.roleFlag.tier4{background:var(--tt-red)!important;color:#fff!important}
+.coverBadge{
+  margin-left:2px!important;
+  flex:0 0 auto!important;
+  font-size:9px!important;
+  padding:3px 5px!important;
+  border-radius:999px!important;
+}
+.castLine.coverUnderstudy .roleInline,
+.castLine.coverUnderstudy .castPersonCell{background:#fff4bd!important}
+.castLine.coverStandby .roleInline,
+.castLine.coverStandby .castPersonCell{background:#f0e1ff!important}
+.castLine.coverAlternate .roleInline,
+.castLine.coverAlternate .castPersonCell{background:#e7f2ff!important}
+.castLine.coverSwing .roleInline,
+.castLine.coverSwing .castPersonCell{background:#eaf7df!important}
+.castLine.coverEmergency .roleInline,
+.castLine.coverEmergency .castPersonCell{background:#ffe0dc!important}
+.castLine.coverTemporary .roleInline,
+.castLine.coverTemporary .castPersonCell{background:#ffe8c8!important}
+@media(max-width:760px){
+  .card{padding:8px!important}
+  .castOneLine{grid-template-columns:minmax(86px,.66fr) minmax(0,1.34fr)!important;min-height:36px!important}
+  .roleInline{font-size:12px!important;padding:6px 7px!important}
+  .castPersonCell{padding:6px 7px!important}
+  .castPersonName{font-size:11.5px!important;letter-spacing:.05em!important}
+  .personTimes{font-size:9.5px!important}
+  .roleFlag{width:21px!important;min-width:21px!important;height:21px!important;font-size:10px!important}
+  .coverBadge{font-size:8.5px!important;padding:2px 4px!important}
+}
 
+</style>
 </head>
 <body>
 <div id="app"><main class="boot"><section class="boot-card"><h1 style="font-family:inherit;margin:0 0 8px">Theatre Diary</h1><p class="muted">Loading the inline dashboard…</p><div class="row warn">Loading theatre-data.json…</div></section></main></div>
@@ -525,8 +601,13 @@ function coverBadgeClass(label){
   if(c==='Special appearance')return 'special';
   return '';
 }
-function roleTierClass(n){if(n>=8)return'tier4';if(n>=5)return'tier3';return'tier2';}
-function personButton(personId,currentPerfId){var s=stat(personId,currentPerfId),rw=s.roles===1?'role':'roles',tw=s.other===1?'other time':'other times',flag='';if(s.roles>=2)flag='<span class="roleFlag '+roleTierClass(s.roles)+'">'+s.roles+' '+rw+'</span>';return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button><span class="personTimes">'+s.other+' '+tw+'</span></span>'+flag+'</span>';}
+function roleTierClass(n){if(n>=8)return'tier4';if(n>=5)return'tier3';if(n>=3)return'tier2';return'tier1';}
+function personButton(personId,currentPerfId){
+  var s=stat(personId,currentPerfId), flag='', times='';
+  if(s.other>0) times='<span class="personTimes">('+s.other+')</span>';
+  if(s.roles>=2) flag='<span class="roleFlag '+roleTierClass(s.roles)+'" title="'+s.roles+' roles">'+s.roles+'</span>';
+  return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button>'+times+'</span>'+flag+'</span>';
+}
 
 function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button><button class="btn" onclick="TD.random()">Random</button></div></div></div>'+inner;}
 function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='add')h=addEntryPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
@@ -790,7 +871,7 @@ function castBlock(p){
     }else if(a.appearanceType==='swing'&&isTrack){
       notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }else{
-      line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="role">'+roleLink(r)+'</div><div class="castPersonCell">'+personButton(a.personId,p.id)+badge+(a.alsoEnsemble?'<span class="chip">ensemble</span>':'')+'</div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
+      line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="castOneLine"><span class="roleInline">'+roleLink(r)+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+badge+(a.alsoEnsemble?'<span class="chip">ensemble</span>':'')+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
       principal+=line;
       if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }
@@ -1135,18 +1216,5 @@ setCalYear:function(y){state.calendarYear=y;state.selectedJumpYear=y;render()},s
 load();
 })();
 </script>
-
-<script id="sort-toggle-patch">
-window.diarySortDirection = 'desc';
-document.addEventListener('click', function(e){
-  if(e.target && e.target.id==='sortNewestBtn'){
-    window.diarySortDirection='desc';
-  }
-  if(e.target && e.target.id==='sortOldestBtn'){
-    window.diarySortDirection='asc';
-  }
-});
-</script>
-
 </body>
 </html>
