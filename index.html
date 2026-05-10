@@ -559,6 +559,15 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
   background:#fff2ad!important;
 }
 
+
+/* Show-specific cast hierarchy, no ensemble side box */
+.castArea{display:block!important}
+.ensembleSide{display:none!important}
+.ensembleInlineSection{margin-top:10px!important;padding-top:8px!important;border-top:3px solid var(--pb-yellow)!important}
+.ensembleInlineSection h3{margin:0 0 6px 0!important;font-size:11px!important;letter-spacing:.08em!important;color:#111!important}
+.ensembleInlineSection .castLine{margin-bottom:5px!important}
+.ensembleInlineSection .ensembleRole{background:#fff2ad!important;color:#111!important}
+
 </style>
 </head>
 <body>
@@ -904,71 +913,64 @@ function inlinePersonCarousel(personId,currentPerfId){
   return out+'</div></div>';
 }
 
+
+function showTitleForPerf(p){var s=by(db.shows,p.showId);return s?s.title:'';}
+var SHOW_PRINCIPAL_RULES={
+  'wicked':['elphaba','glinda','fiyero','the wonderful wizard of oz','wizard','madame morrible','nessarose','boq','doctor dillamond','dr dillamond'],
+  '& juliet':['juliet','lance','anne','shakespeare','may','angélique','angelique','romeo','françois','francois'],
+  'heathers':['veronica sawyer',"jason 'j.d.' dean",'jason jd dean','jd','heather chandler','heather duke','heather mcnamara','ram sweeney','kurt kelly','martha dunnstock'],
+  'death becomes her':['madeline ashton','helen sharp','ernest menville','viola van horn','chagall','stefan'],
+  'annie':['annie','oliver warbucks','miss hannigan','grace farrell','rooster hannigan','lily st regis','president franklin delano roosevelt','fdr'],
+  'mamma mia!':['donna sheridan','sophie sheridan','rosie','tanya','sky','harry bright','bill austin','sam carmichael'],
+  'waitress':['jenna','becky','dawn','dr pomatter','earl','joe','ogie','cal'],
+  'dear evan hansen':['evan hansen','heidi hansen','cynthia murphy','larry murphy','connor murphy','zoe murphy','jared kleinman','alana beck'],
+  'six':['catherine of aragon','anne boleyn','jane seymour','anna of cleves','katherine howard','catherine parr'],
+  'a wrinkle in time: a new musical':['meg','charles wallace','calvin','mrs whatsit','mrs which','mrs who','paper girl','man with the red eyes','happy medium beast','mother aunt beast','camazotzian brother','beast','father','affirmations man'],
+  'newsies':['jack kelly','katherine plumber','medda larkin','davey jacobs','crutchie','les','joseph pulitzer','joseph pultizer'],
+  'oliver!':['oliver','fagin','nancy','bill sikes','artful dodger','mr bumble','bet','mr brownlow','charlotte','widow corney strawberry seller','widow corney','mr sowerberry','ms sowerberry ms bedwin','mrs sowerberry mrs bedwin','noah claypole','charley bates'],
+  'anything goes':['reno sweeney','moonface martin','billy crocker','hope harcourt','lord evelyn oakleigh','erma','elisha whitney','evangelina harcourt','mrs evangeline harcourt','captain'],
+  'kinky boots':['charlie price','lola','lauren','nicola','don','george','mr price','young charlie','young lola','simon sr','pat','harry','trish'],
+  'legally blonde: the musical':['elle woods','emmett forrest','professor callahan','vivienne kensington','warner huntington iii','warner hunington iii','paulette bonafante','brooke wyndam','brooke wyndham','margot','serena','pilar','enid'],
+  'the color purple':['celie','nettie','pa','mister','harpo','sofia','squeak','shug avery','ol mister preacher','ol mister preacher prison guard','ol mister'],
+  'sister act':['deloris van cartier','mother superior','monsignor o hara','eddie souther','curtis jackson','sister mary robert','sister mary patrick','sister mary lazarus','joey','tj','pablo'],
+  'pippin':['pippin','leading player','catherine','charles','fastrada','berthe','lewis','theo'],
+  'sweeney todd':['sweeney todd','mrs lovett','johanna barker','judge turpin','anthony hope','tobias ragg','beggar woman','pirelli','beadle bamford','the beadle'],
+  'chicago':['roxie hart','velma kelly','billy flynn','amos hart','mary sunshine','matron mama morton'],
+  'hairspray':['tracy turnblad','edna turnblad','link larkin','amber von tussle','velma von tussle','penny pingleton','penny pingelton','corny collins','seaweed stubbs','seaweed j stubbs','wilbur','wilbur turnblad','motormouth maybelle','motormouh maybelle','little inez','inez','male authority figure','female authority figure'],
+  'into the woods':['the witch','the baker','the baker s wife','cinderella','little red ridinghood','jack','jack s mother','cinderella s stepmother','florinda','lucinda','cinderella s father','narrator mysterious man','mysterious man narrator','wolf cinderella s prince','cinderella s prince wolf','rapunzel s prince','rapunzel','cinderella s mother granny giant','cinderella s mother granny giant s wife','steward','milky white'],
+  'titanique':['céline dion','celine dion','jack dawson','rose dewitt bukater','cal hockley','ruth dewitt bukater','molly brown','victor garber luigi','the seaman iceberg','the iceberg'],
+  'little shop of horrors':['seymour krelborn','audrey','mr mushnik','orin','orin scrivello dds','chiffon','ronnette','crystal','audrey ii','voice of audrey ii','audrey ii voice'],
+  'cats: the jellicle ball':['old deuteronomy','munkustrap','rum tum tugger','grizabella','jennyanydots','bustopher jones','gus','gus the theatre cat','magical mister mistoffelees','mistoffelees','jellylorum','skimbleshanks','victoria','mungojerrie','rumpleteazer','macavity','demeter','bombalurina','sillabub','cassandra skimbleshanks']
+};
+function isPrincipalByShowRule(showTitle,roleName){
+  var rules=SHOW_PRINCIPAL_RULES[norm(showTitle)];
+  if(!rules)return null;
+  var r=roleNorm(roleName);
+  for(var i=0;i<rules.length;i++)if(r===roleNorm(rules[i]))return true;
+  return false;
+}
 function castBlock(p){
-  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ensembleRows=[],pureEnsemble=[],notes='',i,a,r,label,line,roleName,displayRole,isTrack,isEnsembleTrack,coverClass,badgeClass,badge,isOpen;
+  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ensembleRows=[],notes='',i,a,r,label,line,roleName,displayRole,isTrack,isEnsembleTrack,showRule,coverClass,badgeClass,badge,isOpen,showTitle=showTitleForPerf(p);
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
-
-  function ensembleDisplayRole(roleName, appType){
-    var raw=String(roleName||'').trim();
-    if(appType==='ensemble' || norm(raw)==='ensemble') return 'Ensemble';
-    raw=raw.replace(/\s*\/\s*ensemble\b/ig,'').replace(/\bensemble\s*\/\s*/ig,'').replace(/\s{2,}/g,' ').trim();
-    return raw || 'Ensemble';
-  }
-  function isEnsembleTrackRole(roleName, appType){
-    var n=norm(roleName);
-    return appType==='ensemble' || n==='ensemble' || /(^|\/)\s*ensemble\s*(\/|$)/i.test(String(roleName||'')) || /\bensemble\b/i.test(String(roleName||''));
-  }
-  function ensembleLine(a,labelText){
-    var isOpen=state.inlinePerson && state.inlinePerson.personId===a.personId && state.inlinePerson.perfId===p.id;
-    return '<div class="castLine ensembleLine '+(isOpen?'isOpen':'')+'"><div class="castOneLine"><span class="roleInline ensembleRole">'+esc(labelText||'Ensemble')+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
-  }
-
+  function ensembleDisplayRole(roleName, appType){var raw=String(roleName||'').trim();if(appType==='ensemble'||norm(raw)==='ensemble')return'Ensemble';raw=raw.replace(/\s*\/\s*ensemble\b/ig,'').replace(/\bensemble\s*\/\s*/ig,'').replace(/\s{2,}/g,' ').trim();return raw||'Ensemble';}
+  function isEnsembleTrackRole(roleName, appType){var n=norm(roleName);return appType==='ensemble'||n==='ensemble'||/(^|\/)\s*ensemble\s*(\/|$)/i.test(String(roleName||''))||/\bensemble\b/i.test(String(roleName||''));}
+  function ensembleLine(a,labelText){var isOpen=state.inlinePerson&&state.inlinePerson.personId===a.personId&&state.inlinePerson.perfId===p.id;return '<div class="castLine ensembleLine '+(isOpen?'isOpen':'')+'"><div class="castOneLine"><span class="roleInline ensembleRole">'+esc(labelText||'Ensemble')+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';}
   for(i=0;i<apps.length;i++){
-    a=apps[i]; r=by(db.roles,a.roleId); roleName=r?r.name:(a.roleRaw||'');
-    label=coverName(a.coverLabel||a.coverType||'');
-    if(!label && a.appearanceType==='swing') label='Swing';
-    coverClass=coverClassName(label); badgeClass=coverBadgeClass(label);
-    badge=label?'<span class="coverBadge '+badgeClass+'">'+esc(label)+'</span>':'';
+    a=apps[i];r=by(db.roles,a.roleId);roleName=r?r.name:(a.roleRaw||'');
+    label=coverName(a.coverLabel||a.coverType||'');if(!label&&a.appearanceType==='swing')label='Swing';
+    coverClass=coverClassName(label);badgeClass=coverBadgeClass(label);badge=label?'<span class="coverBadge '+badgeClass+'">'+esc(label)+'</span>':'';
     isTrack=norm(roleName).indexOf('track')>=0||norm(roleName).indexOf('swing')>=0;
-    isEnsembleTrack=isEnsembleTrackRole(roleName,a.appearanceType);
+    showRule=isPrincipalByShowRule(showTitle,roleName);
+    isEnsembleTrack=showRule===null?isEnsembleTrackRole(roleName,a.appearanceType):!showRule;
     displayRole=ensembleDisplayRole(roleName,a.appearanceType);
-    isOpen=state.inlinePerson && state.inlinePerson.personId===a.personId && state.inlinePerson.perfId===p.id;
-
-    if(isEnsembleTrack){
-      if(displayRole==='Ensemble') pureEnsemble.push({name:personName(a.personId), app:a});
-      else ensembleRows.push({name:personName(a.personId), html:ensembleLine(a,displayRole)});
-    }else if(a.appearanceType==='swing'&&isTrack){
-      notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
-    }else{
-      line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="castOneLine"><span class="roleInline">'+roleLink(r)+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+badge+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
-      principal+=line;
-      if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
-    }
+    isOpen=state.inlinePerson&&state.inlinePerson.personId===a.personId&&state.inlinePerson.perfId===p.id;
+    if(isEnsembleTrack){ensembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole)});}
+    else if(a.appearanceType==='swing'&&isTrack){notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';}
+    else{line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="castOneLine"><span class="roleInline">'+roleLink(r)+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+badge+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';principal+=line;if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';}
   }
-
   ensembleRows.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
-  pureEnsemble.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
-
-  var ensembleSection='', pureBox='', j;
-  if(pureEnsemble.length && pureEnsemble.length<4){
-    for(j=0;j<pureEnsemble.length;j++) ensembleRows.push({name:pureEnsemble[j].name, html:ensembleLine(pureEnsemble[j].app,'Ensemble')});
-    ensembleRows.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
-  }else if(pureEnsemble.length>=4){
-    var chips='', inline='';
-    for(j=0;j<pureEnsemble.length;j++){
-      chips+='<span class="ensChip">'+personButton(pureEnsemble[j].app.personId,p.id)+'</span>';
-      if(state.inlinePerson && state.inlinePerson.personId===pureEnsemble[j].app.personId && state.inlinePerson.perfId===p.id) inline+=inlinePersonCarousel(pureEnsemble[j].app.personId,p.id);
-    }
-    pureBox='<aside class="ensembleSide"><h3>Ensemble</h3><div class="ensemble">'+chips+'</div>'+inline+'</aside>';
-  }
-
-  if(ensembleRows.length){
-    ensembleSection='<div class="ensembleInlineSection"><h3>Ensemble</h3>';
-    for(j=0;j<ensembleRows.length;j++) ensembleSection+=ensembleRows[j].html;
-    ensembleSection+='</div>';
-  }
-
-  var out='<div class="castArea"><div class="principalCast">'+principal+ensembleSection+'</div>'+pureBox+'</div>';
+  var ensembleSection='',j;if(ensembleRows.length){ensembleSection='<div class="ensembleInlineSection"><h3>Ensemble</h3>';for(j=0;j<ensembleRows.length;j++)ensembleSection+=ensembleRows[j].html;ensembleSection+='</div>';}
+  var out='<div class="castArea"><div class="principalCast">'+principal+ensembleSection+'</div></div>';
   if(notes)out+='<div class="section"><h3>Coverage Notes</h3><div class="list">'+notes+'</div></div>';
   return out;
 }
