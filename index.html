@@ -390,6 +390,51 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 }
 
 </style>
+
+<style id="mobile-cleanup-v2">
+.cast-card{
+  padding:0 !important;
+  overflow:hidden;
+}
+.cast-role{
+  padding:10px 14px 4px 14px !important;
+  font-size:.95rem !important;
+  font-weight:700 !important;
+}
+.cast-performer{
+  padding:8px 14px 10px 14px !important;
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:center !important;
+  gap:10px !important;
+}
+.cast-performer-name{
+  font-size:1rem !important;
+  letter-spacing:.04em !important;
+}
+.other-times{
+  font-size:.78rem !important;
+  opacity:.65 !important;
+}
+.role-count-badge{
+  border-radius:999px !important;
+  padding:4px 10px !important;
+  font-size:.75rem !important;
+  font-weight:800 !important;
+}
+.sort-toggle{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+}
+.dropdown-entry{
+  padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  line-height:1.35;
+  font-size:.9rem;
+}
+</style>
+
 </head>
 <body>
 <div id="app"><main class="boot"><section class="boot-card"><h1 style="font-family:inherit;margin:0 0 8px">Theatre Diary</h1><p class="muted">Loading the inline dashboard…</p><div class="row warn">Loading theatre-data.json…</div></section></main></div>
@@ -1090,5 +1135,18 @@ setCalYear:function(y){state.calendarYear=y;state.selectedJumpYear=y;render()},s
 load();
 })();
 </script>
+
+<script id="sort-toggle-patch">
+window.diarySortDirection = 'desc';
+document.addEventListener('click', function(e){
+  if(e.target && e.target.id==='sortNewestBtn'){
+    window.diarySortDirection='desc';
+  }
+  if(e.target && e.target.id==='sortOldestBtn'){
+    window.diarySortDirection='asc';
+  }
+});
+</script>
+
 </body>
 </html>
