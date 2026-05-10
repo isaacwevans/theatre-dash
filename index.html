@@ -550,6 +550,15 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
   .ensembleSide{margin-top:8px!important}
 }
 
+
+/* Ensemble tracks live under Ensemble only */
+.ensembleInlineSection .castLine{
+  margin-bottom:5px!important;
+}
+.ensembleInlineSection .ensembleRole{
+  background:#fff2ad!important;
+}
+
 </style>
 </head>
 <body>
@@ -896,9 +905,19 @@ function inlinePersonCarousel(personId,currentPerfId){
 }
 
 function castBlock(p){
-  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ensembleRows=[],pureEnsemble=[],notes='',i,a,r,label,line,roleName,isTrack,coverClass,badgeClass,badge,isOpen;
+  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ensembleRows=[],pureEnsemble=[],notes='',i,a,r,label,line,roleName,displayRole,isTrack,isEnsembleTrack,coverClass,badgeClass,badge,isOpen;
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
 
+  function ensembleDisplayRole(roleName, appType){
+    var raw=String(roleName||'').trim();
+    if(appType==='ensemble' || norm(raw)==='ensemble') return 'Ensemble';
+    raw=raw.replace(/\s*\/\s*ensemble\b/ig,'').replace(/\bensemble\s*\/\s*/ig,'').replace(/\s{2,}/g,' ').trim();
+    return raw || 'Ensemble';
+  }
+  function isEnsembleTrackRole(roleName, appType){
+    var n=norm(roleName);
+    return appType==='ensemble' || n==='ensemble' || /(^|\/)\s*ensemble\s*(\/|$)/i.test(String(roleName||'')) || /\bensemble\b/i.test(String(roleName||''));
+  }
   function ensembleLine(a,labelText){
     var isOpen=state.inlinePerson && state.inlinePerson.personId===a.personId && state.inlinePerson.perfId===p.id;
     return '<div class="castLine ensembleLine '+(isOpen?'isOpen':'')+'"><div class="castOneLine"><span class="roleInline ensembleRole">'+esc(labelText||'Ensemble')+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
@@ -911,16 +930,18 @@ function castBlock(p){
     coverClass=coverClassName(label); badgeClass=coverBadgeClass(label);
     badge=label?'<span class="coverBadge '+badgeClass+'">'+esc(label)+'</span>':'';
     isTrack=norm(roleName).indexOf('track')>=0||norm(roleName).indexOf('swing')>=0;
+    isEnsembleTrack=isEnsembleTrackRole(roleName,a.appearanceType);
+    displayRole=ensembleDisplayRole(roleName,a.appearanceType);
     isOpen=state.inlinePerson && state.inlinePerson.personId===a.personId && state.inlinePerson.perfId===p.id;
 
-    if(a.appearanceType==='ensemble' || norm(roleName)==='ensemble'){
-      pureEnsemble.push({name:personName(a.personId), app:a});
-    }else if(a.appearanceType==='swing' && isTrack){
+    if(isEnsembleTrack){
+      if(displayRole==='Ensemble') pureEnsemble.push({name:personName(a.personId), app:a});
+      else ensembleRows.push({name:personName(a.personId), html:ensembleLine(a,displayRole)});
+    }else if(a.appearanceType==='swing'&&isTrack){
       notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }else{
       line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="castOneLine"><span class="roleInline">'+roleLink(r)+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+badge+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
       principal+=line;
-      if(a.alsoEnsemble) ensembleRows.push({name:personName(a.personId), html:ensembleLine(a,'Ensemble')});
       if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }
   }
