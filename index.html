@@ -1,0 +1,1152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101010">
+<title>THEATRE DIARY</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;width:100%;overflow-x:hidden}
+body{background:linear-gradient(180deg,#f7f4ed 0,#efe6d8 42%,#e6d8c8 100%);color:#2d211b;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.topbar{position:sticky;top:0;z-index:80;background:rgba(247,244,237,.94);border-bottom:1px solid rgba(83,58,45,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.topin{max-width:1180px;margin:0 auto;padding:8px 12px;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+.brand{border:0;background:transparent;color:#34231b;font-family:inherit;font-size:21px;font-weight:900;padding:7px 8px;border-radius:12px;white-space:nowrap}
+.brand:before{content:"🎭";font-family:Apple Color Emoji,Segoe UI Emoji;margin-right:7px;font-size:17px}
+.nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.btn,.pillBtn{border:1px solid rgba(83,58,45,.18);background:rgba(255,255,255,.48);color:#3a2a22;border-radius:999px;padding:7px 10px;white-space:nowrap}
+.btn:hover,.pillBtn:hover{background:rgba(255,255,255,.78)}
+.pillBtn.active{background:#fffdf7;border-color:rgba(122,82,55,.32);color:#7a4e35}
+.wrap{max-width:1180px;margin:0 auto;padding:14px 12px 44px;width:100%}
+.hero{border:1px solid rgba(83,58,45,.13);background:rgba(255,253,247,.70);border-radius:22px;padding:16px;margin-bottom:12px;box-shadow:0 16px 45px rgba(83,58,45,.10)}
+h1,h2,h3{font-family:inherit;line-height:1.05}h1{font-size:36px;margin:0 0 6px}h2{font-size:25px;margin:0 0 10px}h3{font-size:19px;margin:0 0 8px}
+.muted{color:rgba(45,33,27,.66)}.tiny{font-size:12px;color:rgba(45,33,27,.58);line-height:1.35}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.input,.select,.textarea{border:1px solid rgba(83,58,45,.18);background:rgba(255,253,247,.78);color:#2d211b;border-radius:14px;padding:9px 10px;min-height:38px}.input{flex:1 1 280px;min-width:0}.select{flex:0 0 auto;max-width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:10px}.card{border:1px solid rgba(83,58,45,.13);background:rgba(255,253,247,.66);border-radius:18px;padding:12px;min-width:0;box-shadow:0 10px 28px rgba(83,58,45,.08)}
+.perfCard{cursor:pointer;transition:transform .12s ease,background .12s ease}.perfCard:hover,.lineRow:hover{transform:translateY(-1px);background:rgba(255,253,247,.92)}
+.showTitle{font-family:inherit;font-weight:900;font-size:21px;line-height:1.05;margin-bottom:4px;color:#2f2119}.meta{font-size:13px;color:rgba(45,33,27,.64);line-height:1.32}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{border:1px solid rgba(83,58,45,.13);background:rgba(255,255,255,.55);border-radius:999px;padding:4px 7px;font-size:12px;color:#6b4936}.cover{border-color:rgba(176,110,66,.34);background:rgba(210,146,92,.16);color:#774625;font-weight:850}.good{border-color:rgba(102,143,107,.32);background:rgba(145,184,145,.16);color:#3f6947}.purple{border-color:rgba(161,138,170,.28);background:rgba(161,138,170,.12);color:#65506f}
+.yearBox{border:1px solid rgba(83,58,45,.13);background:rgba(255,253,247,.50);border-radius:20px;margin:10px 0;overflow:hidden}
+.yearBox summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.36);font-family:inherit;font-size:22px;font-weight:900}
+.yearBox summary::-webkit-details-marker{display:none}.yearBox summary:after{content:"▾";font-family:Arial;font-size:14px;color:#7a4e35}.yearBox:not([open]) summary:after{content:"▸"}
+.yearInner{padding:10px}.lineList{display:grid;gap:7px}
+.lineRow{border:1px solid rgba(83,58,45,.13);background:rgba(255,253,247,.68);border-radius:14px;padding:9px 10px;display:grid;grid-template-columns:minmax(72px,110px) minmax(0,1fr) auto;gap:10px;align-items:center;cursor:pointer;transition:transform .12s ease,background .12s ease}
+.lineDate{color:#7a4e35;font-weight:850;font-size:13px}.lineMain{min-width:0}.lineTitle{font-weight:900;color:#2d211b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lineSub{font-size:12px;color:rgba(45,33,27,.58);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lineBadges{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.split{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:12px;align-items:start}.section{margin-top:13px}.castLine{display:grid;grid-template-columns:minmax(120px,215px) minmax(0,1fr);gap:8px;align-items:start;border-bottom:1px solid rgba(83,58,45,.10);padding:6px 0}.role{font-weight:850;color:#7a4e35;line-height:1.22}.nameBtn,.linkish{border:0;background:transparent;color:#2d211b;text-align:left;padding:0;font-weight:800;text-decoration:underline;text-decoration-color:rgba(83,58,45,.22);text-underline-offset:3px}.linkish{color:#6d402a;text-decoration-color:rgba(109,64,42,.28)}
+.personStats{font-size:12px;color:rgba(45,33,27,.54);margin-left:4px;white-space:nowrap}.ensemble{display:flex;gap:6px;flex-wrap:wrap}.ensChip{border:1px solid rgba(83,58,45,.13);background:rgba(255,255,255,.50);border-radius:999px;padding:5px 8px;font-size:13px}
+.panel{position:fixed;right:14px;top:64px;width:min(400px,calc(100vw - 28px));max-height:calc(100vh - 82px);overflow:auto;z-index:150;background:#fffaf1;border:1px solid rgba(83,58,45,.18);border-radius:20px;padding:14px;box-shadow:0 30px 90px rgba(83,58,45,.22)}.closeBtn{float:right}.list{display:grid;gap:7px}.row{border:1px solid rgba(83,58,45,.12);background:rgba(255,255,255,.46);border-radius:14px;padding:8px;min-width:0}.row:hover{background:rgba(255,255,255,.76)}
+.tableWrap{overflow:auto;-webkit-overflow-scrolling:touch}.table{width:100%;border-collapse:collapse;font-size:14px}.table th,.table td{border-bottom:1px solid rgba(83,58,45,.10);padding:7px;text-align:left;vertical-align:top}.table th{color:#7a4e35;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.textarea{width:100%;min-height:110px;resize:vertical}.smallInput{width:100%;margin-bottom:8px}.loadMore{display:block;margin:14px auto 0}.statGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}.stat{border:1px solid rgba(83,58,45,.12);background:rgba(255,255,255,.46);border-radius:16px;padding:10px}.stat .num{font-family:inherit;font-weight:900;font-size:27px}.stat .lab{font-size:12px;color:rgba(45,33,27,.58)}
+.noteBox{border:1px solid rgba(83,58,45,.13);background:rgba(255,255,255,.44);border-radius:15px;padding:10px;margin:0 0 10px;white-space:pre-wrap}.groupHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 8px}.hr{height:1px;background:rgba(83,58,45,.12);margin:12px 0}pre{white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.52);border:1px solid rgba(83,58,45,.12);padding:10px;border-radius:14px;overflow:auto}
+body.compact .card{padding:9px;border-radius:14px}body.compact .hero{padding:12px;border-radius:18px}body.compact .castLine{padding:4px 0;gap:6px}body.compact .ensChip{padding:4px 7px}body.compact .chip{padding:3px 6px}body.compact .grid{gap:8px}body.compact .showTitle{font-size:20px}
+.boot{max-width:720px;margin:0 auto;padding:22px 16px}.boot-card{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.075);border-radius:20px;padding:18px}.ok{color:#bff0c7}.warn{color:#ffe3a6}.bad{color:#ffb3a6}
+
+.homeGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;align-items:start}
+.homeLinks{display:flex;flex-wrap:wrap;gap:7px}
+.yearLinks{display:flex;flex-wrap:wrap;gap:6px;max-height:120px;overflow:auto;padding-right:4px}
+.moduleTitle{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.chart{display:grid;gap:6px}
+.barRow{display:grid;grid-template-columns:58px minmax(0,1fr) 38px;gap:8px;align-items:center;font-size:13px}
+.barTrack{height:12px;background:rgba(83,58,45,.10);border-radius:999px;overflow:hidden}
+.barFill{height:100%;background:linear-gradient(90deg,#d7c8b8,#a88a75);border-radius:999px}
+.calendarControls{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px}
+.calendarWrap{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.monthBox{border:1px solid rgba(83,58,45,.12);background:rgba(255,255,255,.42);border-radius:14px;padding:8px}
+.monthName{font-family:inherit;font-weight:900;margin-bottom:5px;color:#5b3928}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.day{border:0;background:rgba(83,58,45,.06);color:#4a382f;border-radius:7px;min-height:23px;font-size:11px;padding:2px}
+.day.has{background:#fffdf7;border:1px solid rgba(122,82,55,.25);font-weight:900;color:#6d402a}
+.day.multi{background:#e7d2be;color:#4a2b1c}
+.day.empty{background:transparent;pointer-events:none}
+.diaryHead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:14px 0 8px}
+
+.accentRule{height:4px;border-radius:999px;background:linear-gradient(90deg,#f7d847 0,#f7d847 52%,#e92834 52%,#e92834 100%);margin:10px 0 0}
+.calendarCard{grid-column:1 / -1}
+.calendarCard .calendarWrap{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}
+.monthBox{min-width:0}
+.monthNameBtn{border:0;background:transparent;color:#5b3928;font-family:inherit;font-weight:900;padding:0;margin:0 0 5px;text-align:left}
+.monthNameBtn:hover{text-decoration:underline;text-decoration-color:#e92834;text-underline-offset:3px}
+.monthJumpBar{display:flex;gap:5px;flex-wrap:wrap;padding:0 14px 10px;background:rgba(255,255,255,.36)}
+.monthJump{border:1px solid rgba(83,58,45,.13);background:#fffdf7;color:#6d402a;border-radius:999px;padding:4px 7px;font-size:12px}
+.monthAnchor{grid-column:1/-1;color:#6d402a;font-family:inherit;font-weight:900;font-size:16px;padding:8px 2px 2px;border-bottom:1px solid rgba(83,58,45,.10)}
+.diaryYears{justify-content:flex-end;max-height:92px}
+.personWrap{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-width:0}
+.personLeft{min-width:0}
+.personTimes{font-size:12px;color:rgba(45,33,27,.56);margin-left:4px;white-space:nowrap}
+.roleFlag{flex:0 0 auto;background:#6d402a;color:#fffdf7;border-radius:999px;padding:5px 9px;font-size:13px;font-weight:900;box-shadow:inset 4px 0 0 #f7d847, inset -3px 0 0 #e92834;letter-spacing:.01em}
+.castLine>div:last-child{min-width:0}
+.searchHint{font-size:12px;color:rgba(45,33,27,.55);margin-top:5px}
+
+.personHeroGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px}
+.miniNav{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.roleGroup{border:1px solid rgba(83,58,45,.12);background:rgba(255,255,255,.48);border-radius:16px;padding:10px;margin-bottom:8px}
+.roleGroupHead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.roleGroupTitle{font-family:inherit;font-weight:900;font-size:18px;color:#2d211b;line-height:1.1}
+.roleGroupRole{color:#6d402a;font-weight:900;margin-top:3px}
+.dateChips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.dateChip{border:1px solid rgba(83,58,45,.12);background:#fffdf7;color:#5d463a;border-radius:999px;padding:4px 7px;font-size:12px}
+.timeline{display:flex;align-items:flex-end;gap:4px;height:72px;padding:8px;border:1px solid rgba(83,58,45,.12);background:rgba(255,255,255,.38);border-radius:14px;overflow-x:auto}
+.timeBar{min-width:22px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.timeFill{width:14px;border-radius:999px;background:linear-gradient(180deg,#f7d847,#a88a75);box-shadow:inset 0 -3px 0 rgba(232,40,52,.35)}
+.timeYear{font-size:10px;color:rgba(45,33,27,.55);writing-mode:vertical-rl;transform:rotate(180deg)}
+.firstSeenBox{border:1px solid rgba(83,58,45,.13);background:rgba(255,253,247,.68);border-radius:16px;padding:10px;margin-bottom:10px}
+.firstSeenNames{display:flex;gap:6px;flex-wrap:wrap}
+.firstSeenChip{border:1px solid rgba(247,216,71,.56);background:linear-gradient(90deg,rgba(247,216,71,.20),rgba(255,255,255,.68));border-radius:999px;padding:5px 8px;color:#5b3928;font-size:12px;font-weight:850}
+.connectionGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px}
+.connectionCard{border:1px solid rgba(83,58,45,.12);background:rgba(255,255,255,.44);border-radius:15px;padding:9px}
+.connectionBar{height:7px;background:rgba(83,58,45,.10);border-radius:999px;overflow:hidden;margin-top:6px}
+.connectionFill{height:100%;background:linear-gradient(90deg,#f7d847,#e92834);border-radius:999px}
+.subtleDivider{height:1px;background:rgba(83,58,45,.11);margin:14px 0}
+@media(max-width:760px){.roleGroupHead{align-items:flex-start}.dateChip{font-size:11px}.connectionGrid{grid-template-columns:1fr}.miniNav .pillBtn,.miniNav .btn{font-size:12px}}
+
+@media(max-width:760px){.personWrap{align-items:flex-start}.roleFlag{font-size:12px;padding:4px 8px}.calendarCard .calendarWrap{grid-template-columns:1fr}.diaryYears{justify-content:flex-start}}
+
+@media(max-width:760px){.homeGrid{grid-template-columns:1fr}.calendarWrap{grid-template-columns:1fr}.barRow{grid-template-columns:46px minmax(0,1fr) 34px}.yearLinks{max-height:none}}
+
+@media(max-width:760px){
+  .topin{padding:7px 8px}.brand{font-size:18px;padding:7px 5px}.nav{margin-left:0;flex:1 1 100%;justify-content:flex-start;gap:5px}.btn,.pillBtn{padding:6px 8px;font-size:13px}
+  .wrap{padding:10px 8px 34px}.hero{border-radius:18px;padding:12px}h1{font-size:28px}h2{font-size:22px}.grid{grid-template-columns:1fr;gap:8px}.card{border-radius:15px;padding:10px}.split{display:block}.split aside{margin-top:10px}
+  .castLine{grid-template-columns:1fr;gap:2px;padding:6px 0}.role{font-size:14px}.nameBtn{font-size:16px}.panel{left:8px;right:8px;top:auto;bottom:8px;width:auto;max-height:76vh;border-radius:18px}
+  .input{flex-basis:100%}.select{flex:1 1 135px;min-width:0}.showTitle{font-size:20px}.personStats{font-size:11px;display:inline}.ensChip{font-size:12px;padding:5px 7px}
+  .lineRow{grid-template-columns:1fr;gap:4px}.lineDate{font-size:12px}.lineBadges{justify-content:flex-start}.yearBox summary{font-size:19px;padding:10px 12px}
+}
+
+/* Sleeker pass */
+body{background:#f6f3ec;color:#2b2420}
+.topbar{box-shadow:0 1px 18px rgba(70,52,42,.06)}
+.topin{padding:6px 12px}
+.brand{font-size:17px;font-weight:850;letter-spacing:-.02em}
+.brand:before{font-size:15px}
+.nav{gap:5px}
+.btn,.pillBtn{padding:6px 9px;font-size:13px;border-radius:12px}
+.wrap{max-width:1060px;padding-top:10px}
+.hero{border-radius:18px;padding:13px 14px;margin-bottom:10px;box-shadow:0 8px 25px rgba(83,58,45,.07)}
+h1{font-size:30px;letter-spacing:-.035em;margin-bottom:5px}
+h2{font-size:20px;letter-spacing:-.025em}
+h3{font-size:15px;letter-spacing:-.01em}
+.card{border-radius:16px;padding:10px;box-shadow:0 8px 20px rgba(83,58,45,.055)}
+.showTitle{font-size:17px;letter-spacing:-.015em}
+.lineRow{border-radius:12px;padding:8px 10px;grid-template-columns:82px minmax(0,1fr) auto}
+.lineTitle{font-size:15px}
+.lineSub{font-size:11px}
+.chip{font-size:11px;padding:3px 7px}
+.yearBox{border-radius:15px;margin:7px 0}
+.yearBox summary{font-family:inherit;font-size:17px;padding:9px 11px}
+.monthJumpBar{padding:0 10px 8px}
+.monthAnchor{font-family:inherit;font-size:13px;padding:6px 2px 1px}
+.input,.select,.textarea{border-radius:12px;min-height:35px;padding:8px 9px}
+.moduleTitle h2{margin:0}
+.sleekHeroSearch{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;align-items:start;margin-top:10px}
+.yearPickerCard{margin-top:10px}
+.yearChart{display:grid;gap:5px;margin-top:8px}
+.yearBarBtn{display:grid;grid-template-columns:58px minmax(0,1fr) 34px;gap:8px;align-items:center;border:0;background:transparent;padding:2px;border-radius:10px;color:#2b2420;text-align:left}
+.yearBarBtn:hover{background:rgba(255,255,255,.72)}
+.yearBarBtn.active{background:#fffdf7;box-shadow:inset 3px 0 0 #f7d847,inset -3px 0 0 #e92834}
+.yearBarTrack{height:10px;background:rgba(83,58,45,.10);border-radius:999px;overflow:hidden}
+.yearBarFill{height:100%;background:linear-gradient(90deg,#f7d847,#d9c29d 60%,#e92834);border-radius:999px}
+.monthPop{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid rgba(83,58,45,.10)}
+.monthPop .monthJump{font-size:12px;padding:5px 8px;border-radius:10px}
+.homeQuick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.homeStats{font-size:13px;color:rgba(45,33,27,.60)}
+.personWrap{align-items:center}
+.roleFlag{font-size:12px;padding:4px 8px;box-shadow:inset 3px 0 0 #f7d847,inset -2px 0 0 #e92834}
+.firstSeenBox,.roleGroup,.connectionCard{border-radius:13px}
+@media(max-width:760px){
+  .sleekHeroSearch{grid-template-columns:1fr}
+  .lineRow{grid-template-columns:1fr;gap:3px}
+  h1{font-size:25px}
+  .wrap{padding-left:7px;padding-right:7px}
+}
+
+
+/* === Playbill Pro visual reset === */
+:root{
+  --pb-yellow:#f4d000;
+  --pb-black:#101010;
+  --pb-cream:#faf7ea;
+  --pb-paper:#fffdf3;
+  --pb-ink:#111111;
+  --pb-line:#ded6bf;
+  --tt-red:#e7272e;
+  --muted:#6e695d;
+}
+html,body{background:var(--pb-cream)!important;color:var(--pb-ink)!important;font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Arial,sans-serif!important}
+body{font-size:14px;letter-spacing:-.01em}
+.topbar{background:var(--pb-black)!important;border-bottom:4px solid var(--pb-yellow)!important;box-shadow:0 2px 18px rgba(0,0,0,.16)!important}
+.topin{max-width:1120px;padding:7px 12px!important;align-items:center}
+.brand{color:var(--pb-yellow)!important;font-size:16px!important;font-weight:900!important;text-transform:uppercase;letter-spacing:.04em}
+.brand:before{content:"";display:inline-block;width:8px;height:8px;background:var(--tt-red);border-radius:50%;margin-right:8px;vertical-align:middle}
+.nav{gap:4px}
+.btn,.pillBtn{background:#1f1f1f!important;color:#f8f4df!important;border:1px solid rgba(244,208,0,.20)!important;border-radius:8px!important;padding:6px 9px!important;font-size:12px!important;font-weight:750;box-shadow:none!important}
+.btn:hover,.pillBtn:hover{background:#2b2b2b!important;border-color:rgba(244,208,0,.52)!important}
+.pillBtn.active{background:var(--pb-yellow)!important;color:var(--pb-black)!important;border-color:var(--pb-yellow)!important}
+.wrap{max-width:1080px!important;padding:12px 10px 40px!important}
+.hero,.card,.yearBox,.roleGroup,.firstSeenBox,.connectionCard,.row,.lineRow,.stat{background:var(--pb-paper)!important;border:1px solid var(--pb-line)!important;border-radius:10px!important;box-shadow:none!important}
+.hero{padding:13px 14px!important;border-top:5px solid var(--pb-yellow)!important}
+.card{padding:10px!important}
+h1,h2,h3,.showTitle,.roleGroupTitle{font-family:inherit!important;color:var(--pb-black)!important;font-weight:900!important;letter-spacing:-.035em!important}
+h1{font-size:27px!important;line-height:1!important;text-transform:uppercase}
+h2{font-size:18px!important;margin-bottom:8px!important;text-transform:uppercase;letter-spacing:.015em!important}
+h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!important}
+.muted,.tiny,.meta,.lineSub,.personTimes,.homeStats{color:var(--muted)!important}
+.input,.select,.textarea{background:#fff!important;color:var(--pb-black)!important;border:1px solid var(--pb-line)!important;border-radius:8px!important;min-height:34px!important;padding:7px 9px!important;box-shadow:none!important}
+.input:focus,.select:focus,.textarea:focus{outline:2px solid rgba(244,208,0,.75);outline-offset:1px}
+.chips{gap:4px}
+.chip{background:#f3edd7!important;color:#171717!important;border:1px solid #e1d5b4!important;border-radius:999px!important;font-size:10px!important;font-weight:800!important;padding:3px 6px!important;text-transform:uppercase;letter-spacing:.025em}
+.chip.good{background:#111!important;color:var(--pb-yellow)!important;border-color:#111!important}
+.chip.cover,.cover{background:#fff0b3!important;color:#111!important;border-color:#d9b900!important}
+.accentRule{height:3px!important;background:linear-gradient(90deg,var(--pb-yellow),var(--pb-yellow) 82%,var(--tt-red) 82%,var(--tt-red))!important;border-radius:0!important}
+.sleekHeroSearch{grid-template-columns:minmax(0,1fr) auto auto!important}
+.homeQuick{gap:5px!important}
+.yearPickerCard{border-top:5px solid var(--pb-black)!important}
+.yearChart{gap:3px!important}
+.yearBarBtn{border-radius:7px!important;padding:4px 5px!important;font-size:12px!important;color:var(--pb-black)!important}
+.yearBarBtn:hover{background:#fff9d1!important}
+.yearBarBtn.active{background:#111!important;color:var(--pb-yellow)!important;box-shadow:inset 4px 0 0 var(--pb-yellow), inset -3px 0 0 var(--tt-red)!important}
+.yearBarTrack{height:8px!important;background:#e7dec4!important}
+.yearBarFill{background:linear-gradient(90deg,var(--pb-yellow),#111)!important}
+.monthPop{border-top:1px solid var(--pb-line)!important}
+.monthJump,.dateChip{background:#fff!important;border:1px solid var(--pb-line)!important;color:#111!important;border-radius:7px!important;font-weight:750}
+.monthJump:hover,.dateChip:hover{border-color:var(--pb-yellow)!important;box-shadow:inset 0 -2px 0 var(--pb-yellow)}
+.diaryHead{margin:13px 0 7px!important}
+.yearBox{overflow:hidden}
+.yearBox summary{background:#111!important;color:var(--pb-yellow)!important;border-radius:0!important;font-size:15px!important;padding:8px 10px!important;text-transform:uppercase;letter-spacing:.03em}
+.yearBox summary .chip{background:var(--pb-yellow)!important;color:#111!important;border-color:var(--pb-yellow)!important}
+.monthJumpBar{background:#f6efd9!important;padding:7px 9px!important;border-bottom:1px solid var(--pb-line)!important}
+.monthAnchor{font-family:inherit!important;color:#111!important;background:#fff9d4!important;border-left:4px solid var(--pb-yellow)!important;border-bottom:1px solid var(--pb-line)!important;text-transform:uppercase;letter-spacing:.04em;font-size:12px!important;padding:6px 8px!important;margin-top:2px}
+.lineList{gap:4px!important}
+.lineRow{grid-template-columns:78px minmax(0,1fr) auto!important;padding:7px 9px!important;background:#fffdf6!important;transition:background .08s ease,border-color .08s ease}
+.lineRow:hover{background:#fff8d1!important;border-color:#d8bd1d!important;transform:none!important}
+.lineDate{color:#111!important;font-size:12px!important;font-weight:900!important}
+.lineTitle{font-size:14px!important;color:#111!important;font-weight:900!important;text-transform:uppercase;letter-spacing:.01em}
+.lineBadges .chip{font-size:10px!important}
+.showTitle{font-size:16px!important;text-transform:uppercase}
+.perfCard:hover{background:#fff8d1!important;transform:none!important}
+.split{gap:10px!important}
+.castLine{display:grid!important;grid-template-columns:minmax(125px,220px) minmax(0,1fr)!important;gap:0!important;align-items:stretch!important;padding:0!important;border:1px solid var(--pb-line)!important;border-radius:8px!important;margin-bottom:5px!important;overflow:hidden;background:#fff!important}
+.castLine .role{background:#f1ead6!important;color:#1a1a1a!important;font-weight:650!important;text-transform:none!important;padding:8px 9px!important;font-size:13px!important;line-height:1.15!important;border-right:1px solid var(--pb-line)}
+.castLine .castPersonCell{padding:7px 8px!important;background:#fff!important;display:flex;align-items:center;gap:8px}
+.castLine.coverUnderstudy .role,.castLine.coverUnderstudy .castPersonCell{background:#fff4bd!important}
+.castLine.coverStandby .role,.castLine.coverStandby .castPersonCell{background:#f0e1ff!important}
+.castLine.coverAlternate .role,.castLine.coverAlternate .castPersonCell{background:#e7f2ff!important}
+.castLine.coverSwing .role,.castLine.coverSwing .castPersonCell{background:#eaf7df!important}
+.castLine.coverEmergency .role,.castLine.coverEmergency .castPersonCell{background:#ffe0dc!important}
+.castLine.coverTemporary .role,.castLine.coverTemporary .castPersonCell{background:#ffe8c8!important}
+.castLine.coverSpecial .role,.castLine.coverSpecial .castPersonCell{background:#fff0cc!important}
+.role .linkish,.castLine .linkish{color:#111!important;text-decoration:none!important}
+.role .linkish:hover,.castLine .linkish:hover{text-decoration:underline!important;text-decoration-color:var(--tt-red)!important;text-underline-offset:3px}
+.nameBtn{color:#111!important;text-decoration:none!important;font-weight:950!important}
+.castPersonName{text-transform:uppercase!important;letter-spacing:.045em!important;font-size:13px!important}
+.personWrap{width:100%;gap:8px}
+.personLeft{display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:wrap}
+.personTimes{font-size:11px!important}
+.roleFlag{background:#111!important;color:var(--pb-yellow)!important;border-radius:6px!important;box-shadow:inset 3px 0 0 var(--pb-yellow), inset -3px 0 0 var(--tt-red)!important;font-size:11px!important;text-transform:uppercase!important;padding:4px 7px!important}
+.coverBadge{margin-left:auto;background:#111!important;color:#fff!important;border-radius:6px!important;padding:4px 6px!important;font-size:10px!important;font-weight:900!important;text-transform:uppercase;white-space:nowrap}
+.coverBadge.understudy{background:#5c4700!important;color:#fff2a8!important}
+.coverBadge.standby{background:#4c2a67!important;color:#f1d9ff!important}
+.coverBadge.alternate{background:#174a73!important;color:#d9efff!important}
+.coverBadge.swing{background:#33601f!important;color:#e8ffd8!important}
+.coverBadge.emergency{background:#8b1c16!important;color:#ffe2dc!important}
+.coverBadge.temporary{background:#815115!important;color:#ffe8c8!important}
+.ensemble{gap:5px!important}
+.ensChip{background:#fff!important;border:1px solid var(--pb-line)!important;border-radius:7px!important;padding:5px 7px!important}
+.roleGroup{padding:8px!important}
+.roleGroupTitle{font-size:15px!important;text-transform:uppercase}
+.roleGroupRole{font-size:13px!important;color:#111!important;font-weight:700!important;text-transform:none}
+.panel{background:#fffdf3!important;border:1px solid #111!important;border-top:5px solid var(--pb-yellow)!important;border-radius:10px!important}
+.table th{color:#111!important;background:#fff5bd!important}
+.table th,.table td{border-bottom:1px solid var(--pb-line)!important}
+@media(max-width:760px){
+  .topin{padding:6px 8px!important}
+  .wrap{padding:8px 7px 32px!important}
+  .nav{width:100%;justify-content:flex-start}
+  .btn,.pillBtn{font-size:11px!important;padding:6px 7px!important}
+  .sleekHeroSearch{grid-template-columns:1fr!important}
+  .castLine{grid-template-columns:1fr!important}
+  .castLine .role{border-right:0!important;border-bottom:1px solid var(--pb-line)}
+  .castLine .castPersonCell{padding:7px 8px!important}
+  .lineRow{grid-template-columns:1fr!important}
+}
+
+
+/* Compact person pop-out pass */
+.panel{width:min(360px,calc(100vw - 24px))!important;padding:10px!important}
+.panel h2{font-size:16px!important;margin-right:64px!important}
+.panel .muted{font-size:12px!important}
+.panelRoleRow{border:1px solid var(--pb-line);background:#fff;border-radius:8px;padding:7px 8px;margin-bottom:5px}
+.panelRoleTop{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.panelShow{font-weight:900;text-transform:uppercase;font-size:12px;color:#111;text-decoration:none}
+.panelCount{font-size:11px;font-weight:900;background:#111;color:var(--pb-yellow);border-radius:999px;padding:2px 6px;white-space:nowrap}
+.panelRoleSub{font-size:12px;color:#111;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panelDates{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panelMore{font-size:11px;color:var(--muted);padding:4px 2px}
+
+
+/* Inline performer stat carousel */
+.personInline{grid-column:1 / -1;background:#111;color:#fffdf3;border-top:1px solid #000;padding:8px 9px}
+.personInlineTop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+.personInlineName{font-weight:950;text-transform:uppercase;letter-spacing:.045em;font-size:12px;color:var(--pb-yellow)}
+.personInlineStats{font-size:11px;color:#d8d2b8}
+.personCarousel{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;scroll-snap-type:x proximity}
+.personMiniCard{flex:0 0 min(210px,72vw);scroll-snap-align:start;background:#fffdf3;color:#111;border:1px solid #d9cc9f;border-radius:8px;padding:7px 8px;text-align:left}
+.personMiniShow{font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.personMiniRole{font-size:12px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.personMiniDates{font-size:11px;color:#6e695d;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.personMiniCount{float:right;background:#111;color:var(--pb-yellow);border-radius:999px;font-size:10px;font-weight:950;padding:2px 6px;margin-left:5px}
+.personInlineActions{display:flex;gap:5px;flex-shrink:0}
+.personInlineActions .btn{padding:4px 7px!important;font-size:10px!important}
+.castLine.isOpen{border-color:#111!important;box-shadow:inset 0 -3px 0 var(--pb-yellow)!important}
+.panel{display:none!important}
+@media(max-width:760px){
+  .personInlineTop{align-items:flex-start;flex-direction:column}
+  .personMiniCard{flex-basis:78vw}
+}
+
+
+/* Compact home/library + cast layout pass */
+.topStatGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:6px;margin-top:10px}
+.topStat{background:#fff;border:1px solid var(--pb-line);border-radius:8px;padding:7px 8px}
+.topStatNum{font-weight:950;font-size:18px;color:#111;line-height:1}
+.topStatLabel{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-top:3px}
+.yearChipRail{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.yearChipBtn{border:1px solid var(--pb-line);background:#fff;color:#111;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:850}
+.yearChipBtn.active{background:#111;color:var(--pb-yellow);border-color:#111;box-shadow:inset 3px 0 0 var(--pb-yellow), inset -3px 0 0 var(--tt-red)}
+.monthTinyChart{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;align-items:end;height:82px;margin-top:8px;padding:8px;background:#fff;border:1px solid var(--pb-line);border-radius:8px}
+.monthTinyBar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;min-width:0}
+.monthTinyFill{width:100%;max-width:18px;background:linear-gradient(180deg,var(--pb-yellow),#111);border-radius:4px 4px 0 0;min-height:3px}
+.monthTinyLabel{font-size:9px;color:var(--muted);text-transform:uppercase}
+.libraryCard{margin-top:10px}
+.libraryCard h2{margin-bottom:2px!important}
+.castArea{display:grid;grid-template-columns:minmax(0,1fr) minmax(210px,28%);gap:10px;align-items:start}
+.principalCast{min-width:0}
+.ensembleSide{background:#fff;border:1px solid var(--pb-line);border-radius:8px;padding:8px;position:sticky;top:74px;max-height:calc(100vh - 110px);overflow:auto}
+.ensembleSide h3{margin-top:0}
+.ensemble .ensChip{display:block;margin-bottom:5px}
+.notesBottom{margin-top:10px}
+.notesBottom details{background:#fff;border:1px solid var(--pb-line);border-radius:8px;padding:8px}
+.notesGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin-top:8px}
+@media(max-width:860px){
+  .castArea{grid-template-columns:1fr}
+  .ensembleSide{position:static;max-height:none}
+}
+@media(max-width:760px){
+  .topStatGrid{grid-template-columns:repeat(2,1fr)}
+  .monthTinyChart{gap:2px;padding:6px}
+}
+
+
+/* Add Entry + role tier + rolling month refinements */
+.roleFlag.tier2{background:#2f2f2f!important;color:#fff7c4!important;box-shadow:inset 3px 0 0 #f4d000!important}
+.roleFlag.tier3{background:#614b00!important;color:#fff5b0!important;box-shadow:inset 3px 0 0 #f4d000,inset -3px 0 0 #e7272e!important}
+.roleFlag.tier4{background:#9d1c22!important;color:#fff!important;box-shadow:inset 3px 0 0 #f4d000,inset -3px 0 0 #111!important}
+.addGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.addWide{grid-column:1/-1}
+.addHelp{font-size:12px;color:var(--muted);line-height:1.35}
+.addPreview{background:#111;color:#fffdf3;border-radius:8px;padding:10px;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;max-height:360px;overflow:auto}
+.addActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.monthTinyChart.rolling{grid-template-columns:repeat(12,minmax(0,1fr))}
+.monthTinyBar{border:0;background:transparent;padding:0;cursor:pointer}
+.monthTinyBar:hover .monthTinyFill{outline:2px solid var(--tt-red);outline-offset:1px}
+
+
+.onlineSaveBox{border:1px solid var(--pb-line);background:#fffdf3;border-radius:8px;padding:10px;margin-top:10px}
+.onlineSaveRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}
+@media(max-width:760px){.onlineSaveRow{grid-template-columns:1fr}}
+
+
+/* On This Day homepage */
+.onThisDay{border-top:5px solid var(--pb-yellow)!important}
+.otdGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:10px}
+.otdCard{background:#fff;border:1px solid var(--pb-line);border-radius:8px;padding:8px}
+.otdLabel{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:850}
+.otdMain{font-size:14px;font-weight:900;color:#111;margin-top:3px}
+.otdSub{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.3}
+.otdList{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.otdItem{border:1px solid var(--pb-line);background:#fffdf3;border-radius:7px;padding:6px 7px;text-align:left;color:#111}
+.otdItem:hover{border-color:var(--pb-yellow);box-shadow:inset 3px 0 0 var(--pb-yellow)}
+.otdItemTitle{font-size:12px;font-weight:950;text-transform:uppercase;letter-spacing:.025em}
+.otdItemMeta{font-size:11px;color:var(--muted);margin-top:1px}
+
+
+/* Refined click-down lines + literal month chart labels */
+.personCarousel{display:block;overflow:visible;padding:0;border-top:1px solid rgba(255,255,255,.18)}
+.personRoleLine{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;width:100%;border:0;border-bottom:1px solid rgba(255,255,255,.16);background:transparent;color:#fffdf3;text-align:left;padding:8px 2px}
+.personRoleLine:hover{background:rgba(244,208,0,.08)}
+.personRoleMain{min-width:0}
+.personRoleRole{font-size:12px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;color:var(--pb-yellow)}
+.personRoleProd{font-size:12px;color:#fffdf3;margin-top:2px}
+.personRoleDates{font-size:11px;color:#d8d2b8;margin-top:2px;line-height:1.35}
+.personRoleCount{background:#fffdf3;color:#111;border-radius:999px;font-size:11px;font-weight:950;padding:3px 7px;white-space:nowrap}
+.personMoreLine{font-size:12px;color:#d8d2b8;padding:8px 2px}
+.monthTinyChart{height:104px!important;align-items:end}
+.monthTinyLabel{font-size:10px!important;line-height:1.05;text-transform:none!important;white-space:normal;text-align:center;display:block;min-height:22px}
+.monthTinyMonth,.monthTinyYear{display:block}
+.monthTinyBar{overflow:visible}
+@media(max-width:760px){
+  .monthTinyChart{height:112px!important;gap:3px!important}
+  .monthTinyLabel{font-size:9px!important}
+  .monthTinyFill{max-width:16px!important}
+}
+
+</style>
+
+<style id="mobile-cleanup-v2">
+.cast-card{
+  padding:0 !important;
+  overflow:hidden;
+}
+.cast-role{
+  padding:10px 14px 4px 14px !important;
+  font-size:.95rem !important;
+  font-weight:700 !important;
+}
+.cast-performer{
+  padding:8px 14px 10px 14px !important;
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:center !important;
+  gap:10px !important;
+}
+.cast-performer-name{
+  font-size:1rem !important;
+  letter-spacing:.04em !important;
+}
+.other-times{
+  font-size:.78rem !important;
+  opacity:.65 !important;
+}
+.role-count-badge{
+  border-radius:999px !important;
+  padding:4px 10px !important;
+  font-size:.75rem !important;
+  font-weight:800 !important;
+}
+.sort-toggle{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+}
+.dropdown-entry{
+  padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  line-height:1.35;
+  font-size:.9rem;
+}
+</style>
+
+</head>
+<body>
+<div id="app"><main class="boot"><section class="boot-card"><h1 style="font-family:inherit;margin:0 0 8px">Theatre Diary</h1><p class="muted">Loading the inline dashboard…</p><div class="row warn">Loading theatre-data.json…</div></section></main></div>
+<script>
+(function(){
+var db=null, idx=null, edits=readEdits();
+var state={view:'home',id:null,q:'',year:'all',type:'all',cover:false,limit:2000,history:[],hIndex:-1,panel:null,peopleMode:'appearances',personLayout:(localStorage.getItem('theatreDiaryPersonLayout')||'grouped'),sort:'old',density:(localStorage.getItem('theatreDiaryDensity')||'comfy'),layout:(localStorage.getItem('theatreDiaryLayout')||'lines'),groupYears:(localStorage.getItem('theatreDiaryGroupYears')||'yes'),calendarYear:null,selectedJumpYear:null,inlinePerson:null,qDelay:null,focusId:null};
+window.onerror=function(msg,src,line,col,err){showError('Dashboard crashed',String(msg)+' at line '+line);};
+
+function esc(s){s=s==null?'':String(s);return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function norm(s){return (s==null?'':String(s)).toLowerCase().replace(/[\u2018\u2019]/g,"'").replace(/[^a-z0-9]+/g,' ').replace(/^\s+|\s+$/g,'');}
+function roleNorm(s){s=norm(s).replace(/\bensemble\b/g,'').replace(/\btrack\b/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');return s||'ensemble';}
+function vals(o){var a=[],k;for(k in o){if(Object.prototype.hasOwnProperty.call(o,k))a.push(o[k]);}return a;}
+function keys(o){var a=[],k;for(k in o){if(Object.prototype.hasOwnProperty.call(o,k))a.push(k);}return a;}
+function by(map,id){return map&&map[String(id)]?map[String(id)]:null;}
+function showOf(p){var s=by(db.shows,p.showId);return s?s.title:'Untitled';}
+function venueOf(p){var v=by(db.venues,p.venueId);return v?v.name+(v.city?' · '+v.city:''):'';}
+function fmtDate(iso){if(!iso)return'';var x=String(iso).split('-');if(x.length!==3)return iso;var d=new Date(Number(x[0]),Number(x[1])-1,Number(x[2]));var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return m[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();}
+function shortDate(iso){if(!iso)return'';var x=String(iso).split('-');if(x.length!==3)return iso;var d=new Date(Number(x[0]),Number(x[1])-1,Number(x[2]));var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return m[d.getMonth()]+' '+d.getDate();}
+function yearOf(iso){return iso?String(iso).slice(0,4):'';}
+function sourceCast(p){return p&&p.source&&p.source.castNormalized?p.source.castNormalized:'';}
+function personName(id){var p=by(db.people,id);return p?p.name:'Unknown';}
+
+function lastNameKey(name){
+  name=String(name||'').trim();
+  var parts=name.split(/\s+/);
+  return (parts[parts.length-1]+' '+name).toLowerCase();
+}
+function cleanTrackRoleLabel(role){
+  role=String(role||'');
+  var m=role.match(/^(.+?)'s track$/i);
+  if(m)return 'in '+m[1]+'’s track';
+  return role;
+}
+function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
+function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+
+function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=layout1',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
+function showError(t,m){document.getElementById('app').innerHTML='<main class="wrap"><section class="card"><h1>'+esc(t)+'</h1><p class="muted">'+esc(m)+'</p></section></main>';}
+
+function buildIndexes(){
+  var apps=db.appearances||[], perfs=db.performances||{}, i,a,p,r,k,prodKey;
+  idx={perfApps:{},personApps:{},roleApps:{},showPerfs:{},venuePerfs:{},coverPerf:{},personPerfSets:{},personRoleSets:{},personShowSets:{},showPeople:{},searchText:{},creativeByPerf:{},creativeByPerson:{},allRolesByName:{},attendanceNo:{},showViewingNo:{},showViewingTotal:{},firstPerformerPerf:{},firstCreativePerf:{}};
+  for(i=0;i<apps.length;i++){
+    a=apps[i];p=by(perfs,a.performanceId);r=by(db.roles,a.roleId);
+    if(!idx.perfApps[a.performanceId])idx.perfApps[a.performanceId]=[]; idx.perfApps[a.performanceId].push(a);
+    if(!idx.personApps[a.personId])idx.personApps[a.personId]=[]; idx.personApps[a.personId].push(a);
+    if(!idx.roleApps[a.roleId])idx.roleApps[a.roleId]=[]; idx.roleApps[a.roleId].push(a);
+    if(a.coverType||a.coverLabel||a.appearanceType==='swing')idx.coverPerf[a.performanceId]=true;
+    if(p){ if(!idx.personPerfSets[a.personId])idx.personPerfSets[a.personId]={}; idx.personPerfSets[a.personId][a.performanceId]=1; if(!idx.personShowSets[a.personId])idx.personShowSets[a.personId]={}; idx.personShowSets[a.personId][p.showId]=1; if(!idx.showPeople[p.showId])idx.showPeople[p.showId]={}; idx.showPeople[p.showId][a.personId]=1; }
+    if(p&&r){ if(!idx.personRoleSets[a.personId])idx.personRoleSets[a.personId]={}; prodKey=roleNorm(r.name||a.roleRaw||''); idx.personRoleSets[a.personId][prodKey]=1; k=String(r.showId)+'|'+roleNorm(r.name); if(!idx.allRolesByName[k])idx.allRolesByName[k]={roleName:r.name,showId:r.showId,apps:[]}; idx.allRolesByName[k].apps.push(a); }
+  }
+  var ps=vals(perfs); ps.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});
+  var showCounts={};
+  for(i=0;i<ps.length;i++){p=ps[i]; idx.attendanceNo[p.id]=i+1; showCounts[p.showId]=(showCounts[p.showId]||0)+1; idx.showViewingNo[p.id]=showCounts[p.showId]; if(!idx.showPerfs[p.showId])idx.showPerfs[p.showId]=[]; idx.showPerfs[p.showId].push(p); if(!idx.venuePerfs[p.venueId])idx.venuePerfs[p.venueId]=[]; idx.venuePerfs[p.venueId].push(p); idx.searchText[p.id]=norm(showOf(p)+' '+venueOf(p)+' '+(p.type||'')+' '+(p.time||'')+' '+(p.notes||'')+' '+sourceCast(p)); }
+  for(k in showCounts)idx.showViewingTotal[k]=showCounts[k];
+  var cr=db.creativeCredits||[], c; for(i=0;i<cr.length;i++){c=cr[i]; if(!idx.creativeByPerf[c.performanceId])idx.creativeByPerf[c.performanceId]=[]; idx.creativeByPerf[c.performanceId].push(c); if(!idx.creativeByPerson[c.personId])idx.creativeByPerson[c.personId]=[]; idx.creativeByPerson[c.personId].push(c);}
+  for(i=0;i<ps.length;i++){
+    p=ps[i];
+    var pa=idx.perfApps[p.id]||[], pc=idx.creativeByPerf[p.id]||[], j;
+    for(j=0;j<pa.length;j++) if(!idx.firstPerformerPerf[pa[j].personId]) idx.firstPerformerPerf[pa[j].personId]=p.id;
+    for(j=0;j<pc.length;j++) if(!idx.firstCreativePerf[pc[j].personId]) idx.firstCreativePerf[pc[j].personId]=p.id;
+  }
+}
+function showNumberChips(p){return '<span class="chip purple">Diary #'+idx.attendanceNo[p.id]+'</span><span class="chip good">'+esc(showOf(p))+' #'+idx.showViewingNo[p.id]+' of '+idx.showViewingTotal[p.showId]+'</span>';}
+function stat(personId,currentPerfId){var ps=idx.personPerfSets[personId]||{},rs=idx.personRoleSets[personId]||{},ss=idx.personShowSets[personId]||{};var pc=keys(ps).length,rc=keys(rs).length,sc=keys(ss).length,other=ps[currentPerfId]?pc-1:pc;if(other<0)other=0;return{other:other,roles:rc,shows:sc,perfs:pc};}
+
+function upperName(name){return String(name||'Unknown').toUpperCase();}
+function coverClassName(label){
+  var c=coverName(label||'');
+  if(c==='Understudy')return 'coverUnderstudy';
+  if(c==='Standby')return 'coverStandby';
+  if(c==='Alternate')return 'coverAlternate';
+  if(c==='Swing')return 'coverSwing';
+  if(c==='Emergency cover')return 'coverEmergency';
+  if(c==='Temporary replacement')return 'coverTemporary';
+  if(c==='Special appearance')return 'coverSpecial';
+  return '';
+}
+function coverBadgeClass(label){
+  var c=coverName(label||'');
+  if(c==='Understudy')return 'understudy';
+  if(c==='Standby')return 'standby';
+  if(c==='Alternate')return 'alternate';
+  if(c==='Swing')return 'swing';
+  if(c==='Emergency cover')return 'emergency';
+  if(c==='Temporary replacement')return 'temporary';
+  if(c==='Special appearance')return 'special';
+  return '';
+}
+function roleTierClass(n){if(n>=8)return'tier4';if(n>=5)return'tier3';return'tier2';}
+function personButton(personId,currentPerfId){var s=stat(personId,currentPerfId),rw=s.roles===1?'role':'roles',tw=s.other===1?'other time':'other times',flag='';if(s.roles>=2)flag='<span class="roleFlag '+roleTierClass(s.roles)+'">'+s.roles+' '+rw+'</span>';return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button><span class="personTimes">'+s.other+' '+tw+'</span></span>'+flag+'</span>';}
+
+function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button><button class="btn" onclick="TD.random()">Random</button></div></div></div>'+inner;}
+function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='add')h=addEntryPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
+function go(v,id,replace){state.view=v;state.id=id;state.panel=null;if(!replace){if(state.hIndex<state.history.length-1)state.history=state.history.slice(0,state.hIndex+1);state.history.push({v:v,id:id});state.hIndex=state.history.length-1;}else if(!state.history.length){state.history.push({v:v,id:id});state.hIndex=0;}render();setTimeout(function(){window.scrollTo(0,0);},0);}
+function back(){if(state.hIndex>0){state.hIndex--;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
+function forward(){if(state.hIndex<state.history.length-1){state.hIndex++;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
+
+function sortedPerformances(){var ps=vals(db.performances);ps.sort(function(a,b){return state.sort==='old'?String(a.date).localeCompare(String(b.date)):String(b.date).localeCompare(String(a.date));});return ps;}
+function filteredPerformances(){var ps=sortedPerformances(),out=[],q=norm(state.q),i,p,hay;for(i=0;i<ps.length;i++){p=ps[i];if(state.year!=='all'&&yearOf(p.date)!==state.year)continue;if(state.type!=='all'&&(p.type||'Unknown')!==state.type)continue;if(state.cover&&!idx.coverPerf[p.id])continue;if(q){hay=idx.searchText[p.id];if(hay.indexOf(q)===-1)continue;}out.push(p);}return out;}
+function home(){
+  var ps=sortedPerformances(), years={}, types={}, i,p,filtered=filteredPerformances();
+  for(i=0;i<ps.length;i++){years[yearOf(ps[i].date)]=1;types[ps[i].type||'Unknown']=1;}
+  var ys=keys(years).sort();
+  if(!state.selectedJumpYear && ys.length) state.selectedJumpYear=ys[ys.length-1];
+  var recentYear=ys.length?ys[ys.length-1]:state.selectedJumpYear;
+  var out='<main class="wrap"><section class="hero"><h1>Theatre Diary</h1>'+
+    '<div class="sleekHeroSearch"><input id="topSearch" class="input" value="'+esc(state.q)+'" placeholder="Search the diary..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'topSearch\')"><button class="btn" onclick="TD.applySearch(\'topSearch\')">Search diary</button><button class="btn" onclick="TD.diary()">Go to diary</button></div>'+
+    '<div class="homeQuick"><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.random()">Random</button>'+(state.q?'<button class="btn" onclick="TD.clearSearch()">Clear search</button>':'')+'</div>'+
+    topStatsBlock()+'<div class="accentRule"></div></section>'+onThisDayBlock()+
+    '<section class="card"><div class="moduleTitle"><h2>Last 12 months</h2><span class="chip">rolling activity</span></div>'+rollingMonthChart()+'</section>'+
+    '<section class="card libraryCard"><div class="moduleTitle"><div><h2>Library by year</h2><p class="tiny">Pick a year, then a month. The diary below stays continuous.</p></div><span class="chip">'+keys(years).length+' years</span></div><div class="yearChipRail">'+yearChipButtons(countByYear())+'</div>'+monthPop(state.selectedJumpYear)+'</section>'+
+    '<div id="diaryList" class="diaryHead"><div><h2>Diary</h2><p class="tiny">'+(state.q?'Search results for “'+esc(state.q)+'”':'Continuous list, oldest to newest')+'</p></div><div class="toolbar"><input id="diarySearch" class="input" value="'+esc(state.q)+'" placeholder="Search..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'diarySearch\')"><button class="btn" onclick="TD.applySearch(\'diarySearch\')">Search</button><button class="pillBtn '+(state.layout==='lines'?'active':'')+'" onclick="TD.setLayout(\'lines\')">Lines</button><button class="pillBtn '+(state.layout==='cards'?'active':'')+'" onclick="TD.setLayout(\'cards\')">Cards</button></div></div>';
+  if(state.groupYears==='yes')out+=groupedListing(filtered); else out+=renderListing(filtered.slice(0,state.limit));
+  if(filtered.length>state.limit&&state.groupYears!=='yes')out+='<button class="btn loadMore" onclick="TD.more()">Load more</button>';
+  return out+'</main>';
+}
+
+function todayParts(){
+  var d=new Date();
+  return {date:d, month:String(d.getMonth()+1).padStart(2,'0'), day:String(d.getDate()).padStart(2,'0'), year:String(d.getFullYear())};
+}
+function mdOf(iso){return String(iso||'').slice(5,10);}
+function sameWeekKey(d){
+  var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  var day=x.getDay(), diff=(day===0?-6:1-day);
+  x.setDate(x.getDate()+diff);
+  return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
+}
+function weekStartForYearLike(today,yearOffset){
+  var d=new Date(today.getFullYear()+yearOffset,today.getMonth(),today.getDate());
+  return sameWeekKey(d);
+}
+function isInWeek(iso,weekKey){
+  var d=dateObj(iso); if(!d)return false;
+  return sameWeekKey(d)===weekKey;
+}
+function onThisDayBlock(){
+  var t=todayParts(), ps=vals(db.performances), apps=db.appearances||[], firstByPerson={}, todayPerfs=[], sameWeek=[], firstPeople=[], i,p,a,personId,weekKey,out;
+  ps.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});
+  for(i=0;i<ps.length;i++){
+    p=ps[i];
+    if(mdOf(p.date)===t.month+'-'+t.day) todayPerfs.push(p);
+  }
+  for(i=0;i<apps.length;i++){
+    a=apps[i]; p=by(db.performances,a.performanceId); if(!p)continue;
+    personId=a.personId;
+    if(!firstByPerson[personId] || String(p.date).localeCompare(String(firstByPerson[personId].date))<0) firstByPerson[personId]=p;
+  }
+  for(personId in firstByPerson){
+    if(Object.prototype.hasOwnProperty.call(firstByPerson,personId) && mdOf(firstByPerson[personId].date)===t.month+'-'+t.day) firstPeople.push({personId:personId,perf:firstByPerson[personId]});
+  }
+  firstPeople.sort(function(a,b){return personName(a.personId).localeCompare(personName(b.personId));});
+  weekKey=weekStartForYearLike(t.date,-1);
+  for(i=0;i<ps.length;i++) if(isInWeek(ps[i].date,weekKey)) sameWeek.push(ps[i]);
+  sameWeek.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});
+  out='<section class="card onThisDay"><div class="moduleTitle"><div><h2>On This Day</h2><p class="tiny">'+esc(monthName(Number(t.month)-1)+' '+Number(t.day))+' across your theatre diary</p></div><span class="chip">today-ish</span></div><div class="otdGrid">';
+  out+='<div class="otdCard"><div class="otdLabel">You saw on this date</div><div class="otdMain">'+todayPerfs.length+' performance'+(todayPerfs.length===1?'':'s')+'</div>'+otdPerfList(todayPerfs,4)+'</div>';
+  out+='<div class="otdCard"><div class="otdLabel">First appearances on this date</div><div class="otdMain">'+firstPeople.length+' performer/creative firsts</div>'+otdPeopleList(firstPeople,6)+'</div>';
+  out+='<div class="otdCard"><div class="otdLabel">Same week last year</div><div class="otdMain">'+sameWeek.length+' performance'+(sameWeek.length===1?'':'s')+'</div><div class="otdSub">Week of '+esc(fmtDate(weekKey))+'</div>'+otdPerfList(sameWeek,4)+'</div>';
+  out+='</div></section>';
+  return out;
+}
+function otdPerfList(arr,limit){
+  var out='<div class="otdList">',i,p;
+  if(!arr.length)return '<div class="otdSub">Nothing logged yet. The calendar goblin remains quiet.</div>';
+  for(i=0;i<Math.min(arr.length,limit);i++){
+    p=arr[i];
+    out+='<button class="otdItem" onclick="TD.go(\'perf\','+p.id+')"><div class="otdItemTitle">'+esc(showOf(p))+'</div><div class="otdItemMeta">'+esc(fmtDate(p.date)+' · '+venueOf(p))+'</div></button>';
+  }
+  if(arr.length>limit)out+='<div class="otdSub">+'+(arr.length-limit)+' more</div>';
+  return out+'</div>';
+}
+function otdPeopleList(arr,limit){
+  var out='<div class="otdList">',i,item,p;
+  if(!arr.length)return '<div class="otdSub">No first appearances on this date.</div>';
+  for(i=0;i<Math.min(arr.length,limit);i++){
+    item=arr[i]; p=item.perf;
+    out+='<button class="otdItem" onclick="TD.go(\'person\','+item.personId+')"><div class="otdItemTitle">'+esc(personName(item.personId))+'</div><div class="otdItemMeta">'+esc(showOf(p)+' · '+fmtDate(p.date))+'</div></button>';
+  }
+  if(arr.length>limit)out+='<div class="otdSub">+'+(arr.length-limit)+' more firsts</div>';
+  return out+'</div>';
+}
+
+function topStatsBlock(){
+  var ps=vals(db.performances), people=vals(db.people), shows=vals(db.shows), venues=vals(db.venues), cities={}, types={}, i,v,p;
+  for(i=0;i<venues.length;i++){v=venues[i];if(v&&v.city)cities[v.city]=1;}
+  for(i=0;i<ps.length;i++){p=ps[i];if(p.type)types[p.type]=1;}
+  var data=[['Performances',ps.length],['Shows',shows.length],['Performers / creatives',people.length],['Venues',venues.length],['Cities',keys(cities).length],['Production types',keys(types).length]];
+  var out='<div class="topStatGrid">';
+  for(i=0;i<data.length;i++)out+='<div class="topStat"><div class="topStatNum">'+data[i][1]+'</div><div class="topStatLabel">'+esc(data[i][0])+'</div></div>';
+  return out+'</div>';
+}
+function yearChipButtons(rows){
+  var i,out='';
+  for(i=0;i<rows.length;i++)out+='<button class="yearChipBtn '+(String(rows[i].label)===String(state.selectedJumpYear)?'active':'')+'" onclick="TD.setJumpYear(\''+esc(rows[i].label)+'\')">'+esc(rows[i].label)+' <span class="tiny">'+rows[i].n+'</span></button>';
+  return out;
+}
+function monthTinyChart(y){
+  var rows=countByMonthForYear(y), max=1, i, out='<div class="monthTinyChart">';
+  for(i=0;i<rows.length;i++)if(rows[i].n>max)max=rows[i].n;
+  for(i=0;i<rows.length;i++)out+='<button class="monthTinyBar" onclick="TD.goMonth(\''+esc(y)+'\',\''+String(i+1).padStart(2,'0')+'\')" title="'+esc(rows[i].label+': '+rows[i].n)+'"><span class="monthTinyFill" style="height:'+Math.max(3,Math.round(rows[i].n/max*54))+'px"></span><span class="monthTinyLabel">'+esc(rows[i].label.slice(0,1))+'</span></button>';
+  return out+'</div>';
+}
+
+function rollingMonthChart(){
+  var ps=vals(db.performances).slice().sort(function(a,b){return String(a.date).localeCompare(String(b.date));}), latest=ps.length?dateObj(ps[ps.length-1].date):new Date(), months=[], map={}, i,d,key,label,out,max=1, p, mon, yr;
+  latest = latest || new Date();
+  for(i=11;i>=0;i--){
+    d=new Date(latest.getFullYear(), latest.getMonth()-i, 1);
+    mon=monthName(d.getMonth());
+    yr=String(d.getFullYear()).slice(2);
+    key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    label=mon+' '+yr;
+    months.push({key:key,label:label,monthLabel:mon,yearLabel:yr,n:0,year:String(d.getFullYear()),month:String(d.getMonth()+1).padStart(2,'0')});
+    map[key]=months[months.length-1];
+  }
+  for(i=0;i<ps.length;i++){
+    p=ps[i]; key=String(p.date).slice(0,7);
+    if(map[key]) map[key].n++;
+  }
+  for(i=0;i<months.length;i++) if(months[i].n>max) max=months[i].n;
+  out='<div class="monthTinyChart rolling">';
+  for(i=0;i<months.length;i++) out+='<button class="monthTinyBar" onclick="TD.goMonth(\''+months[i].year+'\',\''+months[i].month+'\')" title="'+esc(months[i].label+': '+months[i].n)+'"><span class="monthTinyFill" style="height:'+Math.max(3,Math.round(months[i].n/max*54))+'px"></span><span class="monthTinyLabel"><span class="monthTinyMonth">'+esc(months[i].monthLabel)+'</span><span class="monthTinyYear">'+esc(months[i].yearLabel)+'</span></span></button>';
+  return out+'</div>';
+}
+
+function countByMonthForYear(y){
+  var ps=vals(db.performances),m={},labels=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],i,mo,rows=[];
+  for(i=0;i<12;i++)m[i]=0;
+  for(i=0;i<ps.length;i++){if(yearOf(ps[i].date)!==String(y))continue;mo=Number(String(ps[i].date).slice(5,7))-1;if(mo>=0)m[mo]++;}
+  for(i=0;i<12;i++)rows.push({label:labels[i],n:m[i]});
+  return rows;
+}
+function monthPop(y){
+  if(!y) return '';
+  var ps=vals(db.performances), m={}, order=[], i,p,mo,out='<div class="monthPop"><span class="tiny" style="align-self:center">Months in '+esc(y)+':</span>';
+  for(i=0;i<ps.length;i++){p=ps[i];if(yearOf(p.date)!==String(y)) continue;mo=String(p.date).slice(5,7);if(!m[mo]){m[mo]=0;order.push(mo);}m[mo]++;}
+  order.sort();
+  for(i=0;i<order.length;i++) out+='<button class="monthJump" onclick="TD.goMonth(\''+esc(y)+'\',\''+esc(order[i])+'\')">'+monthName(Number(order[i])-1)+' <span class="tiny">'+m[order[i]]+'</span></button>';
+  return out+'</div>';
+}
+function countByYear(){var ps=vals(db.performances),m={},i,y,rows=[];for(i=0;i<ps.length;i++){y=yearOf(ps[i].date)||'Unknown';m[y]=(m[y]||0)+1;}for(y in m)if(Object.prototype.hasOwnProperty.call(m,y))rows.push({label:y,n:m[y]});rows.sort(function(a,b){return String(a.label).localeCompare(String(b.label));});return rows;}
+function countByMonth(){return countByMonthForYear(state.selectedJumpYear||yearOf(sortedPerformances().slice(-1)[0].date));}
+function dateObj(iso){var x=String(iso||'').split('-');if(x.length!==3)return null;return new Date(Number(x[0]),Number(x[1])-1,Number(x[2]));}
+function groupedListing(filtered){
+  var limited=filtered.slice(0,state.limit), groups={}, order=[], i,p,y,out='';
+  for(i=0;i<limited.length;i++){p=limited[i];y=yearOf(p.date)||'Unknown';if(!groups[y]){groups[y]=[];order.push(y);}groups[y].push(p);}
+  order.sort(function(a,b){return state.sort==='old' ? String(a).localeCompare(String(b)) : String(b).localeCompare(String(a));});
+  for(i=0;i<order.length;i++){y=order[i];out+='<details id="year-'+esc(y)+'" class="yearBox" open><summary><span>'+esc(y)+'</span><span class="chip">'+groups[y].length+'</span></summary>'+monthButtonsForYear(y,groups[y])+'<div class="yearInner">'+renderYearListing(groups[y],y)+'</div></details>';}
+  if(filtered.length>state.limit) out+='<button class="btn loadMore" onclick="TD.more()">Load more</button>';
+  return out;
+}
+function monthButtonsForYear(y,arr){
+  var months={},order=[],i,m,out='<div class="monthJumpBar">';
+  for(i=0;i<arr.length;i++){m=String(arr[i].date).slice(5,7);if(!months[m]){months[m]=1;order.push(m);}}
+  order.sort();
+  for(i=0;i<order.length;i++) out+='<button class="monthJump" onclick="TD.goMonth(\''+esc(y)+'\',\''+esc(order[i])+'\')">'+monthName(Number(order[i])-1)+'</button>';
+  return out+'</div>';
+}
+function renderYearListing(arr,y){
+  var i,out,m,seen={};
+  out=state.layout==='lines'?'<section class="lineList">':'<section class="grid">';
+  for(i=0;i<arr.length;i++){m=String(arr[i].date).slice(5,7);if(!seen[m]){seen[m]=1;out+='<div id="month-'+esc(y)+'-'+esc(m)+'" class="monthAnchor">'+monthName(Number(m)-1)+'</div>';}out+=state.layout==='lines'?perfLine(arr[i]):perfCard(arr[i]);}
+  return out+'</section>';
+}
+function renderListing(arr){var i,out;if(state.layout==='lines'){out='<section class="lineList">';for(i=0;i<arr.length;i++)out+=perfLine(arr[i]);return out+'</section>';}out='<section class="grid">';for(i=0;i<arr.length;i++)out+=perfCard(arr[i]);return out+'</section>';}
+function monthName(i){var a=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return a[i]||'';}
+
+function opts(obj,sel,rev){var a=keys(obj),out='',i;a.sort();if(rev)a.reverse();for(i=0;i<a.length;i++)if(a[i])out+='<option value="'+esc(a[i])+'" '+(a[i]===sel?'selected':'')+'>'+esc(a[i])+'</option>';return out;}
+function perfCounts(p){var apps=idx.perfApps[p.id]||[],covers=0,i;for(i=0;i<apps.length;i++)if(apps[i].coverType||apps[i].coverLabel||apps[i].appearanceType==='swing')covers++;return{covers:covers,cast:apps.length};}
+function perfCard(p){var apps=idx.perfApps[p.id]||[],preview=[],i,a,person,role,c=perfCounts(p);for(i=0;i<apps.length&&preview.length<3;i++){a=apps[i];if(a.appearanceType==='ensemble')continue;person=by(db.people,a.personId);role=by(db.roles,a.roleId);preview.push((person?person.name:'Unknown')+(role?' as '+role.name:''));}return '<article class="card perfCard" onclick="TD.go(\'perf\','+p.id+')"><div class="showTitle">'+esc(showOf(p))+'</div><div class="meta">'+esc(fmtDate(p.date))+' · '+esc(p.time||'')+'</div><div class="meta">'+esc(venueOf(p))+'</div><div class="chips">'+showNumberChips(p)+'<span class="chip">'+esc(p.type||'Unknown')+'</span>'+(c.covers?'<span class="chip cover">'+c.covers+' cover/special</span>':'')+(hasNote(p)?'<span class="chip good">notes</span>':'')+'</div><p class="tiny">'+esc(preview.join(' · '))+'</p></article>';}
+function perfLine(p){var c=perfCounts(p);return '<article class="lineRow" onclick="TD.go(\'perf\','+p.id+')"><div class="lineDate">'+esc(shortDate(p.date))+'<div class="tiny">#'+idx.attendanceNo[p.id]+'</div></div><div class="lineMain"><div class="lineTitle">'+esc(showOf(p))+'</div><div class="lineSub">'+esc(venueOf(p))+' · '+esc(p.time||'')+' · '+esc(p.type||'')+'</div></div><div class="lineBadges"><span class="chip good">show #'+idx.showViewingNo[p.id]+'</span>'+(c.covers?'<span class="chip cover">'+c.covers+' cover</span>':'')+(hasNote(p)?'<span class="chip">notes</span>':'')+'</div></article>';}
+function hasNote(p){var e=edits[String(p.id)]||{};return !!(e.notes||e.privateNote||p.notes);}
+
+function perfPage(id){
+  var p=by(db.performances,id); if(!p)return '<main class="wrap"><section class="card"><h1>Performance not found</h1></section></main>';
+  var np=nextPrev(id), e=edits[String(id)]||{}, note=e.notes!=null?e.notes:(p.notes||''), privateNote=e.privateNote||'', tags=e.tags||'', rating=e.rating||'';
+  return '<main class="wrap"><section class="hero"><div class="tiny">'+esc(p.type||'')+' · '+esc(p.time||'')+'</div><h1>'+esc(showOf(p))+'</h1><p class="muted">'+esc(fmtDate(p.date))+' · '+esc(venueOf(p))+'</p><div class="chips">'+showNumberChips(p)+(idx.coverPerf[p.id]?'<span class="chip cover">covers/special appearances</span>':'')+(rating?'<span class="chip good">'+esc(rating)+' ★</span>':'')+(tags?tagChips(tags):'')+'</div><div class="toolbar"><button class="btn" onclick="TD.go(\'perf\','+np.prev+')">Previous</button><button class="btn" onclick="TD.go(\'perf\','+np.next+')">Next</button><button class="btn" onclick="TD.go(\'show\','+p.showId+')">Show Page</button><button class="btn" onclick="TD.go(\'venue\','+p.venueId+')">Venue Page</button><button class="btn" onclick="TD.copyPerf('+id+',\'plain\')">Copy Info</button><button class="btn" onclick="TD.copyPerf('+id+',\'cast\')">Copy Cast</button><button class="btn" onclick="TD.copyPerf('+id+',\'html\')">Copy Formatted</button></div></section>'+
+  '<section class="card"><h2>Cast</h2>'+castBlock(p)+firstTimeBlock(p)+'</section>'+
+  '<section class="card section"><h2>Creative Team</h2>'+creativeBlock(id)+'</section>'+
+  '<section class="card section">'+relatedBlock(p)+'</section>'+
+  '<section class="notesBottom"><details><summary class="muted">Notes, edits, and raw source</summary>'+(note?'<div class="noteBox">'+esc(note)+'</div>':'')+'<div class="notesGrid"><div><label class="tiny">Public/source note</label><textarea class="textarea" oninput="TD.saveField('+id+',\'notes\',this.value)">'+esc(note)+'</textarea></div><div><label class="tiny">Private note</label><textarea class="textarea" oninput="TD.saveField('+id+',\'privateNote\',this.value)">'+esc(privateNote)+'</textarea></div><div><label class="tiny">Tags</label><input class="input smallInput" value="'+esc(tags)+'" oninput="TD.saveField('+id+',\'tags\',this.value)"></div><div><label class="tiny">Rating / vibe</label><input class="input smallInput" value="'+esc(rating)+'" oninput="TD.saveField('+id+',\'rating\',this.value)" placeholder="5, loved, chaotic, etc."></div></div><p class="tiny">Saved in this browser. Use Edits to export/import.</p><button class="btn" onclick="TD.go(\'edits\',null)">Edits</button><details class="section"><summary class="muted">Raw cast text</summary><pre>'+esc(sourceCast(p))+'</pre></details></details></section></main>';
+}
+function tagChips(tags){var a=String(tags).split(','),out='',i,t;for(i=0;i<a.length;i++){t=a[i].replace(/^\s+|\s+$/g,'');if(t)out+='<span class="chip purple">'+esc(t)+'</span>';}return out;}
+
+function firstTimeBlock(p){
+  var apps=idx.perfApps[p.id]||[], cr=idx.creativeByPerf[p.id]||[], perfPeople={}, creativePeople={}, i,a,c,out='',names=[];
+  for(i=0;i<apps.length;i++){a=apps[i]; if(idx.firstPerformerPerf[a.personId]===p.id) perfPeople[a.personId]=1;}
+  for(i=0;i<cr.length;i++){c=cr[i]; if(idx.firstCreativePerf[c.personId]===p.id && !perfPeople[c.personId]) creativePeople[c.personId]=1;}
+  var ids=keys(perfPeople).sort(function(a,b){return personName(a).localeCompare(personName(b));});
+  if(ids.length){
+    names=[];
+    for(i=0;i<Math.min(ids.length,30);i++) names.push('<button class="nameBtn firstSeenChip" onclick="TD.openPerson('+ids[i]+')">'+esc(personName(ids[i]))+'</button>');
+    out+='<div class="firstSeenBox"><h3>First time seeing</h3><div class="firstSeenNames">'+names.join('')+'</div>'+(ids.length>30?'<p class="tiny">+'+(ids.length-30)+' more</p>':'')+'</div>';
+  }
+  ids=keys(creativePeople).sort(function(a,b){return personName(a).localeCompare(personName(b));});
+  if(ids.length){
+    names=[];
+    for(i=0;i<Math.min(ids.length,18);i++) names.push('<button class="nameBtn firstSeenChip" onclick="TD.openPerson('+ids[i]+')">'+esc(personName(ids[i]))+'</button>');
+    out+='<div class="firstSeenBox"><h3>First-time creative credits in your diary</h3><div class="firstSeenNames">'+names.join('')+'</div>'+(ids.length>18?'<p class="tiny">+'+(ids.length-18)+' more</p>':'')+'</div>';
+  }
+  return out;
+}
+
+
+
+function productionLabelForPerf(p){
+  if(!p)return '';
+  var bits=[];
+  if(p.type)bits.push(p.type);
+  bits.push(venueOf(p));
+  return bits.filter(Boolean).join(' · ');
+}
+function productionSummary(perfs){
+  var seen={}, arr=[], i, label;
+  for(i=0;i<perfs.length;i++){
+    label=productionLabelForPerf(perfs[i]);
+    if(label&&!seen[label]){seen[label]=1;arr.push(label);}
+  }
+  if(!arr.length)return '';
+  return arr.slice(0,2).join(' / ')+(arr.length>2?' / +'+(arr.length-2)+' more':'');
+}
+
+function inlinePersonCarousel(personId,currentPerfId){
+  var active=state.inlinePerson;
+  if(!active || active.personId!==personId || active.perfId!==currentPerfId) return '';
+  var arr=uniquePersonAppearances(personId), groups=personRoleGroups(arr), s=stat(personId,currentPerfId), out='', i,g,j,dates,max=12,prod;
+  out+='<div class="personInline"><div class="personInlineTop"><div><div class="personInlineName">'+esc(upperName(personName(personId)))+'</div><div class="personInlineStats">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' roles</div></div><div class="personInlineActions"><button class="btn" onclick="TD.go(\'person\','+personId+')">Full profile</button><button class="btn" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">Close</button></div></div><div class="personCarousel">';
+  for(i=0;i<Math.min(groups.length,max);i++){
+    g=groups[i]; dates=[]; prod=productionSummary(g.perfs);
+    for(j=0;j<Math.min(g.perfs.length,4);j++) dates.push(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date));
+    out+='<button class="personRoleLine" onclick="TD.go(\'show\','+g.showId+')"><span class="personRoleMain"><span class="personRoleRole">'+esc(cleanTrackRoleLabel(g.roles))+'</span><span class="personRoleProd">'+esc(g.show)+(prod?' · '+esc(prod):'')+'</span><span class="personRoleDates">'+esc(dates.join(' · '))+(g.perfs.length>4?' · +'+(g.perfs.length-4)+' more':'')+'</span></span><span class="personRoleCount">'+g.count+'x</span></button>';
+  }
+  if(groups.length>max) out+='<div class="personMoreLine">+'+(groups.length-max)+' additional groups. Open full profile for everything.</div>';
+  return out+'</div></div>';
+}
+
+function castBlock(p){
+  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ensItems=[],notes='',i,a,r,label,line,roleName,isTrack,coverClass,badgeClass,badge,isOpen,ensInline='';
+  apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
+  for(i=0;i<apps.length;i++){
+    a=apps[i];r=by(db.roles,a.roleId);roleName=r?r.name:(a.roleRaw||'');
+    label=coverName(a.coverLabel||a.coverType||'');
+    if(!label && a.appearanceType==='swing') label='Swing';
+    coverClass=coverClassName(label); badgeClass=coverBadgeClass(label);
+    badge=label?'<span class="coverBadge '+badgeClass+'">'+esc(label)+'</span>':'';
+    isTrack=norm(roleName).indexOf('track')>=0||norm(roleName).indexOf('swing')>=0;
+    isOpen=state.inlinePerson && state.inlinePerson.personId===a.personId && state.inlinePerson.perfId===p.id;
+    if(a.appearanceType==='ensemble'){
+      ensItems.push({name:personName(a.personId),html:'<span class="ensChip">'+personButton(a.personId,p.id)+'</span>',inline:isOpen?inlinePersonCarousel(a.personId,p.id):''});
+    }else if(a.appearanceType==='swing'&&isTrack){
+      notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
+    }else{
+      line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="role">'+roleLink(r)+'</div><div class="castPersonCell">'+personButton(a.personId,p.id)+badge+(a.alsoEnsemble?'<span class="chip">ensemble</span>':'')+'</div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
+      principal+=line;
+      if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
+    }
+  }
+  ensItems.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
+  var ens='', j;
+  for(j=0;j<ensItems.length;j++){ens+=ensItems[j].html;if(ensItems[j].inline)ensInline+=ensItems[j].inline;}
+  var out='<div class="castArea"><div class="principalCast">'+principal+'</div>'+(ens?'<aside class="ensembleSide"><h3>Ensemble</h3><div class="ensemble">'+ens+'</div>'+ensInline+'</aside>':'')+'</div>';
+  if(notes)out+='<div class="section"><h3>Coverage Notes</h3><div class="list">'+notes+'</div></div>';
+  return out;
+}
+function roleLink(r){if(!r)return'';var key=String(r.showId)+'|'+roleNorm(r.name);return '<button class="linkish" onclick="TD.go(\'role\',\''+esc(key)+'\')">'+esc(r.name)+'</button>';}
+function creativeBlock(perfId){var arr=idx.creativeByPerf[perfId]||[],byC={},i,c,p,out='',credit;for(i=0;i<arr.length;i++){c=arr[i];if(!byC[c.credit])byC[c.credit]=[];p=by(db.people,c.personId);byC[c.credit].push('<button class="nameBtn" onclick="TD.openPerson('+c.personId+')">'+esc(p?p.name:c.raw)+'</button>');}for(credit in byC)if(Object.prototype.hasOwnProperty.call(byC,credit))out+='<div class="castLine"><div class="role">'+esc(credit)+'</div><div class="castPersonCell">'+byC[credit].join(' / ')+'</div></div>';return out||'<p class="muted">No creative team listed.</p>';}
+function nextPrev(id){var ps=vals(db.performances);ps.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});var i,ix=0;for(i=0;i<ps.length;i++)if(ps[i].id==id){ix=i;break;}return{prev:ps[(ix-1+ps.length)%ps.length].id,next:ps[(ix+1)%ps.length].id};}
+function relatedBlock(p){var same=(idx.showPerfs[p.showId]||[]).slice(),out='',i,count=0;same.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});for(i=0;i<same.length&&count<5;i++){if(same[i].id==p.id)continue;out+='<div class="row"><button class="linkish" onclick="TD.go(\'perf\','+same[i].id+')">'+esc(fmtDate(same[i].date))+'</button><div class="tiny">'+esc(venueOf(same[i]))+'</div></div>';count++;}return out?'<div class="section"><h2>Related Performances</h2><div class="list">'+out+'</div></div>':'';}
+
+function uniquePersonAppearances(personId){var apps=idx.personApps[personId]||[],map={},arr=[],i,a,p,r,k;for(i=0;i<apps.length;i++){a=apps[i];p=by(db.performances,a.performanceId);r=by(db.roles,a.roleId);if(!p)continue;k=String(p.id);if(!map[k])map[k]={perf:p,roles:[],covers:[]};if(r)map[k].roles.push(r.name);if(a.coverLabel||a.coverType)map[k].covers.push(a.coverLabel||a.coverType);}for(k in map)if(Object.prototype.hasOwnProperty.call(map,k))arr.push(map[k]);arr.sort(function(a,b){return String(b.perf.date).localeCompare(String(a.perf.date));});return arr;}
+function renderPanel(personId){
+  var p=by(db.people,personId),arr=uniquePersonAppearances(personId),s=stat(personId,null),groups=personRoleGroups(arr),out,i,g,dates,j,max=8;
+  out='<aside class="panel"><button class="btn closeBtn" onclick="TD.closePerson()">Close</button><h2>'+esc(p?p.name:'Person')+'</h2><p class="muted">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' roles</p><button class="btn" onclick="TD.go(\'person\','+personId+')">Open full profile</button><div class="section list">';
+  for(i=0;i<Math.min(groups.length,max);i++){
+    g=groups[i]; dates=[];
+    for(j=0;j<Math.min(g.perfs.length,3);j++) dates.push(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date));
+    out+='<div class="panelRoleRow"><div class="panelRoleTop"><button class="linkish panelShow" onclick="TD.go(\'show\','+g.showId+')">'+esc(g.show)+'</button><span class="panelCount">'+g.count+'x</span></div><div class="panelRoleSub">'+esc(cleanTrackRoleLabel(g.roles))+'</div><div class="panelDates">'+esc(dates.join(' · '))+(g.perfs.length>3?' · +'+(g.perfs.length-3)+' more':'')+'</div></div>';
+  }
+  if(groups.length>max) out+='<div class="panelMore">+'+(groups.length-max)+' more role/show groups</div>';
+  return out+'</div></aside>';
+}
+function personPage(id){
+  var p=by(db.people,id), arr=uniquePersonAppearances(id), s=stat(id,null), cr=idx.creativeByPerson[id]||[], summary=personSummary(id,arr), out='';
+  out+='<main class="wrap"><section class="hero"><h1>'+esc(p?p.name:'Person')+'</h1><p class="muted">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' roles</p><div class="personHeroGrid">'+
+    '<div class="stat"><div class="num">'+s.perfs+'</div><div class="lab">performances</div></div>'+
+    '<div class="stat"><div class="num">'+s.shows+'</div><div class="lab">shows</div></div>'+
+    '<div class="stat"><div class="num">'+s.roles+'</div><div class="lab">roles</div></div>'+
+    '<div class="stat"><div class="num">'+esc(summary.span||'—')+'</div><div class="lab">timeline</div></div>'+
+    '</div><div class="chips">'+(summary.first?'<span class="chip">First: '+esc(summary.first)+'</span>':'')+(summary.recent?'<span class="chip">Recent: '+esc(summary.recent)+'</span>':'')+(summary.topRole?'<span class="chip good">Most seen: '+esc(summary.topRole)+'</span>':'')+'</div>'+
+    '<div class="miniNav"><button class="pillBtn '+(state.personLayout==='grouped'?'active':'')+'" onclick="TD.setPersonLayout(\'grouped\')">Grouped by role</button><button class="pillBtn '+(state.personLayout==='chrono'?'active':'')+'" onclick="TD.setPersonLayout(\'chrono\')">Chronological</button><button class="btn" onclick="document.getElementById(\'connections\').scrollIntoView({behavior:\'smooth\'})">Connections</button></div></section>';
+  out+='<div class="split"><section class="card"><div class="moduleTitle"><h2>'+(state.personLayout==='grouped'?'Roles in your diary':'Chronology')+'</h2><span class="chip">'+arr.length+' appearances</span></div>';
+  out+=state.personLayout==='grouped'?groupedPersonAppearances(id,arr):chronologicalPersonAppearances(id,arr);
+  out+='</section><aside class="card"><h2>Career in your diary</h2>'+personTimeline(arr)+'<div class="section"><h2>Creative Credits</h2>'+creativePersonBlock(cr)+'</div></aside></div>';
+  out+='<section id="connections" class="card section"><div class="moduleTitle"><h2>Relationship map</h2><span class="chip">toward the bottom, as requested</span></div>'+relationshipMap(id)+'</section></main>';
+  return out;
+}
+function personSummary(personId,arr){
+  var asc=arr.slice().sort(function(a,b){return String(a.perf.date).localeCompare(String(b.perf.date));}), groups=personRoleGroups(arr), top='', topN=0, i, y1='', y2='';
+  for(i=0;i<groups.length;i++){if(groups[i].count>topN){topN=groups[i].count;top=groups[i].roles;}}
+  if(asc.length){y1=yearOf(asc[0].perf.date);y2=yearOf(asc[asc.length-1].perf.date);}
+  return {first:asc.length?fmtDate(asc[0].perf.date):'',recent:asc.length?fmtDate(asc[asc.length-1].perf.date):'',span:asc.length?(y1===y2?y1:y1+'–'+y2):'',topRole:top?(top+' · '+topN):''};
+}
+function personRoleGroups(arr){
+  var map={}, order=[], i,item,p,roles,key,g;
+  for(i=0;i<arr.length;i++){
+    item=arr[i]; p=item.perf; roles=item.roles&&item.roles.length?item.roles.slice().sort().join(' / '):'Ensemble';
+    key=String(p.showId)+'|'+roles;
+    if(!map[key]){map[key]={showId:p.showId,show:showOf(p),roles:roles,perfs:[],venues:{},count:0};order.push(key);}
+    g=map[key]; g.perfs.push(p); g.venues[venueOf(p)]=1; g.count++;
+  }
+  var rows=[];
+  for(i=0;i<order.length;i++){g=map[order[i]];g.perfs.sort(function(a,b){return String(a.date).localeCompare(String(b.date));});rows.push(g);}
+  rows.sort(function(a,b){return b.count-a.count||a.show.localeCompare(b.show)||a.roles.localeCompare(b.roles);});
+  return rows;
+}
+function groupedPersonAppearances(personId,arr){
+  var groups=personRoleGroups(arr), out='<div class="list">', i,g,j,dates,venueList;
+  if(!groups.length) return '<p class="muted">No performer appearances found.</p>';
+  for(i=0;i<groups.length;i++){
+    g=groups[i]; dates=[]; venueList=keys(g.venues).slice(0,3).join(' · ');
+    for(j=0;j<g.perfs.length;j++) dates.push('<button class="dateChip" onclick="TD.go(\'perf\','+g.perfs[j].id+')">'+esc(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date))+'</button>');
+    out+='<article class="roleGroup"><div class="roleGroupHead"><div><button class="linkish roleGroupTitle" onclick="TD.go(\'show\','+g.showId+')">'+esc(g.show)+'</button><div class="roleGroupRole">'+esc(cleanTrackRoleLabel(g.roles))+'</div></div><span class="roleFlag">'+g.count+'x</span></div><div class="tiny">'+esc(venueList)+'</div><div class="dateChips">'+dates.join('')+'</div></article>';
+  }
+  return out+'</div>';
+}
+function chronologicalPersonAppearances(personId,arr){
+  var out='<div class="list">', i, roles;
+  if(!arr.length) return '<p class="muted">No performer appearances found.</p>';
+  for(i=0;i<arr.length;i++){
+    roles=arr[i].roles.join(' / ')||'Ensemble';
+    out+='<div class="row"><button class="linkish" onclick="TD.go(\'perf\','+arr[i].perf.id+')">'+esc(showOf(arr[i].perf))+'</button><div class="tiny">'+esc(roles)+' · '+esc(fmtDate(arr[i].perf.date))+' · '+esc(venueOf(arr[i].perf))+'</div></div>';
+  }
+  return out+'</div>';
+}
+function personTimeline(arr){
+  var m={}, years=[], i,y,max=1,out='<div class="timeline">';
+  for(i=0;i<arr.length;i++){y=yearOf(arr[i].perf.date)||'Unknown';m[y]=(m[y]||0)+1;}
+  years=keys(m).sort();
+  for(i=0;i<years.length;i++) if(m[years[i]]>max) max=m[years[i]];
+  if(!years.length) return '<p class="muted">No timeline yet.</p>';
+  for(i=0;i<years.length;i++) out+='<div class="timeBar" title="'+esc(years[i]+': '+m[years[i]])+'"><div class="timeFill" style="height:'+Math.max(10,Math.round(m[years[i]]/max*46))+'px"></div><div class="timeYear">'+esc(years[i])+'</div></div>';
+  return out+'</div>';
+}
+function relationshipMap(personId){
+  var together=seenTogether(personId), showLinks=connectedShowsForPerson(personId), out='<div class="connectionGrid">', i, max=1;
+  if(together.length) max=together[0].n||1;
+  out+='<div><h3>Seen with most often</h3><div class="connectionGrid">';
+  for(i=0;i<Math.min(together.length,8);i++) out+='<div class="connectionCard"><button class="linkish" onclick="TD.go(\'person\','+together[i].id+')">'+esc(personName(together[i].id))+'</button><div class="tiny">'+together[i].n+' shared performances</div><div class="connectionBar"><div class="connectionFill" style="width:'+Math.max(6,Math.round(together[i].n/max*100))+'%"></div></div></div>';
+  out+='</div></div><div><h3>Show connections</h3><div class="connectionGrid">';
+  for(i=0;i<Math.min(showLinks.length,8);i++) out+='<div class="connectionCard"><button class="linkish" onclick="TD.go(\'show\','+showLinks[i].id+')">'+esc(showLinks[i].title)+'</button><div class="tiny">'+showLinks[i].n+' appearances</div></div>';
+  out+='</div></div></div>';
+  return out;
+}
+function connectedShowsForPerson(personId){
+  var arr=uniquePersonAppearances(personId), m={}, i,p,rows=[];
+  for(i=0;i<arr.length;i++){p=arr[i].perf;if(!m[p.showId])m[p.showId]={id:p.showId,title:showOf(p),n:0};m[p.showId].n++;}
+  for(i in m) if(Object.prototype.hasOwnProperty.call(m,i)) rows.push(m[i]);
+  rows.sort(function(a,b){return b.n-a.n||a.title.localeCompare(b.title);});
+  return rows;
+}
+
+function seenTogether(personId){var arr=uniquePersonAppearances(personId),counts={},i,j,apps,a;for(i=0;i<arr.length;i++){apps=idx.perfApps[arr[i].perf.id]||[];var set={};for(j=0;j<apps.length;j++){a=apps[j];if(a.personId!=personId)set[a.personId]=1;}for(j in set)if(Object.prototype.hasOwnProperty.call(set,j))counts[j]=(counts[j]||0)+1;}var rows=[],id;for(id in counts)if(Object.prototype.hasOwnProperty.call(counts,id))rows.push({id:id,n:counts[id]});rows.sort(function(a,b){return b.n-a.n||personName(a.id).localeCompare(personName(b.id));});return rows;}
+function seenTogetherBlock(rows){var out='<div class="list">',i;if(!rows.length)return'<p class="muted">No repeated pairings yet.</p>';for(i=0;i<Math.min(rows.length,12);i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'person\','+rows[i].id+')">'+esc(personName(rows[i].id))+'</button><div class="tiny">'+rows[i].n+' shared performances</div></div>';return out+'</div>';}
+function creativePersonBlock(cr){var out='<div class="list">',i,c,p;if(!cr.length)return'<p class="muted">No creative credits found.</p>';for(i=0;i<Math.min(cr.length,20);i++){c=cr[i];p=by(db.performances,c.performanceId);out+='<div class="row"><button class="linkish" onclick="TD.go(\'perf\','+c.performanceId+')">'+esc(p?showOf(p):'Performance')+'</button><div class="tiny">'+esc(c.credit)+' · '+esc(p?fmtDate(p.date):'')+'</div></div>';}return out+'</div>';}
+
+function showPage(id){var show=by(db.shows,id),arr=(idx.showPerfs[id]||[]).slice(),people=idx.showPeople[id]||{},roleRows=showRoleRows(id),i,out,groups,types;arr.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});groups=groupPerformancesByType(arr);types=keys(groups);types.sort();out='<main class="wrap"><section class="hero"><h1>'+esc(show?show.title:'Show')+'</h1><p class="muted">Seen '+arr.length+' times · first seen '+esc(arr.length?fmtDate(arr[arr.length-1].date):'')+' · most recent '+esc(arr.length?fmtDate(arr[0].date):'')+' · '+keys(people).length+' people seen.</p><div class="chips">'+productionChips(groups)+'</div></section><div class="split"><section><section class="card"><h2>Role Matrix</h2>'+roleMatrix(roleRows)+'</section><section class="card section"><h2>Production Groups</h2>';for(i=0;i<types.length;i++){out+='<div class="groupHead"><h3>'+esc(types[i])+'</h3><span class="chip">'+groups[types[i]].length+' performances</span></div>'+renderListing(groups[types[i]]);}out+='</section></section><aside class="card"><h2>Most Seen Roles</h2><div class="list">';for(i=0;i<Math.min(roleRows.length,12);i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'role\',\''+esc(roleRows[i].key)+'\')">'+esc(roleRows[i].name)+'</button><div class="tiny">'+roleRows[i].people+' people · '+roleRows[i].apps+' appearances</div></div>';out+='</div><div class="section"><h2>Cover Story</h2>'+showCoverSummary(id)+'</div><div class="section"><h2>First-Time Seen Here</h2>'+firstTimersForShow(id)+'</div></aside></div></main>';return out;}
+function groupPerformancesByType(arr){var g={},i,t;for(i=0;i<arr.length;i++){t=arr[i].type||'Unknown';if(!g[t])g[t]=[];g[t].push(arr[i]);}return g;}
+function productionChips(groups){var ks=keys(groups),out='',i;ks.sort();for(i=0;i<ks.length;i++)out+='<span class="chip">'+esc(ks[i])+' · '+groups[ks[i]].length+'</span>';return out;}
+function roleMatrix(roleRows){var out='<div class="tableWrap"><table class="table"><thead><tr><th>Role</th><th>People seen</th><th>Covers</th><th>Appearances</th></tr></thead><tbody>',i,row,covers;for(i=0;i<Math.min(roleRows.length,40);i++){row=roleRows[i];covers=row.covers||0;out+='<tr><td><button class="linkish" onclick="TD.go(\'role\',\''+esc(row.key)+'\')">'+esc(row.name)+'</button></td><td>'+row.people+'</td><td>'+covers+'</td><td>'+row.apps+'</td></tr>';}return out+'</tbody></table></div>';}
+function showCoverSummary(showId){var roleRows=showRoleRows(showId),rows=[],i,out='<div class="list">';for(i=0;i<roleRows.length;i++)if(roleRows[i].covers)rows.push(roleRows[i]);rows.sort(function(a,b){return b.covers-a.covers||b.apps-a.apps||a.name.localeCompare(b.name);});if(!rows.length)return'<p class="muted">No covers or special appearances noted for this show.</p>';for(i=0;i<Math.min(rows.length,12);i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'role\',\''+esc(rows[i].key)+'\')">'+esc(rows[i].name)+'</button><div class="tiny">'+rows[i].covers+' cover/special appearances</div></div>';return out+'</div>';}
+function firstTimersForShow(showId){var perfs=(idx.showPerfs[showId]||[]).slice(),seenBefore={},firsts={},i,j,p,apps,a,person,out='<div class="list">';perfs.sort(function(a,b){return String(a.date).localeCompare(String(b.date));});for(i=0;i<perfs.length;i++){p=perfs[i];apps=idx.perfApps[p.id]||[];for(j=0;j<apps.length;j++){a=apps[j];if(!seenBefore[a.personId]){if(!firsts[a.personId])firsts[a.personId]={perf:p,roles:[]};var r=by(db.roles,a.roleId);if(r)firsts[a.personId].roles.push(r.name);}}for(j=0;j<apps.length;j++)seenBefore[apps[j].personId]=1;}var rows=[],id;for(id in firsts)if(Object.prototype.hasOwnProperty.call(firsts,id))rows.push({id:id,perf:firsts[id].perf,roles:firsts[id].roles});rows.sort(function(a,b){return String(a.perf.date).localeCompare(String(b.perf.date))||personName(a.id).localeCompare(personName(b.id));});if(!rows.length)return'<p class="muted">No first-time performer appearances found for this show.</p>';for(i=0;i<Math.min(rows.length,18);i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'person\','+rows[i].id+')">'+esc(personName(rows[i].id))+'</button><div class="tiny">'+esc(rows[i].roles.slice(0,3).join(' / '))+' · first in this show on <button class="linkish" onclick="TD.go(\'perf\','+rows[i].perf.id+')">'+esc(fmtDate(rows[i].perf.date))+'</button></div></div>';return out+'</div>';}
+function showRoleRows(showId){var rows=[],k,o,set,i,a;for(k in idx.allRolesByName)if(Object.prototype.hasOwnProperty.call(idx.allRolesByName,k)){o=idx.allRolesByName[k];if(String(o.showId)!==String(showId))continue;set={};var covers=0;for(i=0;i<o.apps.length;i++){a=o.apps[i];set[a.personId]=1;if(a.coverType||a.coverLabel||a.appearanceType==='swing')covers++;}rows.push({key:k,name:o.roleName,apps:o.apps.length,people:keys(set).length,covers:covers});}rows.sort(function(a,b){return b.apps-a.apps||a.name.localeCompare(b.name);});return rows;}
+function venuePage(id){var v=by(db.venues,id),arr=(idx.venuePerfs[id]||[]).slice(),i,out;arr.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});out='<main class="wrap"><section class="hero"><h1>'+esc(v?v.name:'Venue')+'</h1><p class="muted">'+esc(v&&v.city?v.city:'')+' · '+arr.length+' performances.</p></section>';out+=renderListing(arr);return out+'</main>';}
+
+
+function addEntryPage(){
+  var today=new Date(), iso=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  return '<main class="wrap"><section class="hero"><h1>Add Entry</h1><p class="muted">Build a new performance entry in-browser, preview it, then download a fresh theatre-data.json.</p></section>'+
+  '<section class="card"><div class="addGrid">'+
+  '<div><label class="tiny">Show</label><input id="addShow" class="input" placeholder="Well, I’ll Let You Go"></div>'+
+  '<div><label class="tiny">Date</label><input id="addDate" class="input" type="date" value="'+iso+'"></div>'+
+  '<div><label class="tiny">Venue</label><input id="addVenue" class="input" placeholder="Studio Seaview"></div>'+
+  '<div><label class="tiny">City</label><input id="addCity" class="input" placeholder="New York, NY"></div>'+
+  '<div><label class="tiny">Production type</label><input id="addType" class="input" placeholder="Off-Broadway"></div>'+
+  '<div><label class="tiny">Time</label><input id="addTime" class="input" placeholder="Evening / Matinee / 8:00pm"></div>'+
+  '<div class="addWide"><label class="tiny">Cast, one per line</label><textarea id="addCast" class="textarea" rows="9" placeholder="Role: Performer Name&#10;Role - Performer Name&#10;Role | Performer Name (*u/s Role)"></textarea><p class="addHelp">Accepts Role: Name, Role - Name, or Role | Name. Add cover notation after the name if needed.</p></div>'+
+  '<div class="addWide"><label class="tiny">Creative team, one per line</label><textarea id="addCreative" class="textarea" rows="7" placeholder="Book: Bubba Weiler&#10;Director: Jack Serio&#10;Scenic Design: Frank J. Oliva"></textarea></div>'+
+  '<div class="addWide"><label class="tiny">Notes</label><textarea id="addNotes" class="textarea" rows="3" placeholder="Replacement notes, special events, seat, etc."></textarea></div>'+
+  '</div><div class="addActions"><button class="btn" onclick="TD.previewAddEntry()">Preview</button><button class="btn" onclick="TD.downloadAddEntry()">Download updated JSON</button><button class="btn" onclick="TD.clearAddEntry()">Clear</button></div><div class="onlineSaveBox"><h3>Save online</h3><div class="onlineSaveRow"><div><label class="tiny">Admin password</label><input id="addPassword" class="input" type="password" placeholder="Password stored in Netlify, not this page"></div><button class="btn" onclick="TD.saveAddEntryOnline()">Save to GitHub</button></div><p class="addHelp">Works on the Netlify version of this dashboard after you add the Netlify Function and environment variables.</p></div></section>'+
+  '<section class="card section"><h2>Preview</h2><pre id="addPreview" class="addPreview">Fill out the form, then click Preview.</pre></section></main>';
+}
+function parseRolePersonLine(line){
+  var raw=String(line||'').trim(), m, role='', person='', coverType=null, coverLabel=null, coverMatch;
+  if(!raw)return null;
+  coverMatch=raw.match(/\((\*?(u\/s|s\/b|alt|s\/w|e\/c|t\/r)[^)]*)\)$/i);
+  if(coverMatch){coverLabel=coverMatch[1].replace(/^\*/,'').trim();raw=raw.slice(0,coverMatch.index).trim();}
+  m=raw.match(/^(.+?)\s*[:|\-]\s*(.+)$/);
+  if(m){role=m[1].trim();person=m[2].trim();}else{return null;}
+  if(coverLabel){
+    var c=coverLabel.toLowerCase();
+    if(c.indexOf('u/s')===0)coverType='Understudy';
+    else if(c.indexOf('s/b')===0)coverType='Standby';
+    else if(c.indexOf('alt')===0)coverType='Alternate';
+    else if(c.indexOf('s/w')===0)coverType='Swing';
+    else if(c.indexOf('e/c')===0)coverType='Emergency cover';
+    else if(c.indexOf('t/r')===0)coverType='Temporary replacement';
+  }
+  return {role:role,person:person,coverType:coverType,coverLabel:coverLabel,raw:line};
+}
+function parseCreditLine(line){
+  var raw=String(line||'').trim(), m;
+  if(!raw)return null;
+  m=raw.match(/^(.+?)\s*[:|\-]\s*(.+)$/);
+  if(!m)return null;
+  return {credit:m[1].trim(),person:m[2].trim(),raw:line};
+}
+function buildAddEntryData(){
+  var entry={
+    show:val('addShow'),date:val('addDate'),venue:val('addVenue'),city:val('addCity'),
+    type:val('addType'),time:val('addTime'),notes:val('addNotes'),
+    cast:[],creative:[]
+  }, lines, i, row;
+  lines=val('addCast').split(/\n+/);
+  for(i=0;i<lines.length;i++){row=parseRolePersonLine(lines[i]);if(row)entry.cast.push(row);}
+  lines=val('addCreative').split(/\n+/);
+  for(i=0;i<lines.length;i++){row=parseCreditLine(lines[i]);if(row)entry.creative.push(row);}
+  return entry;
+}
+function val(id){var el=document.getElementById(id);return el?String(el.value||'').trim():'';}
+function previewAddEntry(){
+  var e=buildAddEntryData(), out=[];
+  out.push(e.show+' | '+e.date);
+  out.push([e.venue,e.city,e.type,e.time].filter(Boolean).join(' | '));
+  out.push('');
+  for(var i=0;i<e.cast.length;i++)out.push(e.cast[i].role+' - '+e.cast[i].person+(e.cast[i].coverLabel?' ('+e.cast[i].coverLabel+')':''));
+  if(e.creative.length){out.push('');out.push('Creative:');for(i=0;i<e.creative.length;i++)out.push(e.creative[i].credit+' - '+e.creative[i].person);}
+  if(e.notes){out.push('');out.push('Notes: '+e.notes);}
+  var pre=document.getElementById('addPreview'); if(pre)pre.textContent=out.join('\n');
+}
+function cloneDb(){return JSON.parse(JSON.stringify(db));}
+function nextDictId(obj){var max=0,k;for(k in obj)if(Object.prototype.hasOwnProperty.call(obj,k))max=Math.max(max,Number(k)||0);return max+1;}
+function nextListId(arr){var max=0,i;for(i=0;i<arr.length;i++)max=Math.max(max,Number(arr[i].id)||0);return max+1;}
+function findEntity(obj,field,value,extraFn){
+  var k,v,nv=norm(value);
+  for(k in obj)if(Object.prototype.hasOwnProperty.call(obj,k)){v=obj[k];if(norm(v[field])===nv && (!extraFn||extraFn(v)))return v;}
+  return null;
+}
+function ensurePersonIn(target,name,kind){
+  var p=findEntity(target.people,'name',name), id;
+  if(p){p.kinds=p.kinds||[];if(p.kinds.indexOf(kind)<0)p.kinds.push(kind);return p.id;}
+  id=nextDictId(target.people);target.people[String(id)]={id:id,name:name,sortName:name,kinds:[kind]};return id;
+}
+function ensureShowIn(target,title){var s=findEntity(target.shows,'title',title),id;if(s)return s.id;id=nextDictId(target.shows);target.shows[String(id)]={id:id,title:title};return id;}
+function ensureVenueIn(target,name,city){var v=findEntity(target.venues,'name',name,function(x){return norm(x.city)===norm(city)}),id;if(v)return v.id;id=nextDictId(target.venues);target.venues[String(id)]={id:id,name:name,city:city};return id;}
+function ensureRoleIn(target,showId,role){var r=findEntity(target.roles,'name',role,function(x){return Number(x.showId)===Number(showId)}),id;if(r)return r.id;id=nextDictId(target.roles);target.roles[String(id)]={id:id,showId:showId,name:role};return id;}
+function applyAddEntryToCopy(){
+  var e=buildAddEntryData(), target=cloneDb(), showId, venueId, perfId, appId, crId, i, row, pid, rid, castNorm=[];
+  if(!e.show||!e.date||!e.venue||!e.cast.length)throw new Error('Show, date, venue, and at least one cast line are required.');
+  showId=ensureShowIn(target,e.show); venueId=ensureVenueIn(target,e.venue,e.city||'');
+  perfId=nextDictId(target.performances);
+  target.performances[String(perfId)]={id:perfId,showId:showId,date:e.date,venueId:venueId,type:e.type,time:e.time,notes:e.notes,source:{castNormalized:''}};
+  appId=nextListId(target.appearances);
+  for(i=0;i<e.cast.length;i++){
+    row=e.cast[i]; pid=ensurePersonIn(target,row.person,'performer'); rid=ensureRoleIn(target,showId,row.role);
+    target.appearances.push({id:appId++,performanceId:perfId,personId:pid,roleId:rid,roleRaw:row.role,coverType:row.coverType,coverLabel:row.coverLabel,appearanceType:row.coverType==='Swing'?'swing':'principal',alsoEnsemble:false,displayOrder:i+1,raw:row.person+' ('+(row.coverLabel?'*'+row.coverLabel+' ': '')+row.role+')'});
+    castNorm.push(row.person+' ('+(row.coverLabel?'*'+row.coverLabel+' ':'')+row.role+')');
+  }
+  target.performances[String(perfId)].source.castNormalized=castNorm.join(', ');
+  crId=nextListId(target.creativeCredits);
+  for(i=0;i<e.creative.length;i++){
+    row=e.creative[i]; pid=ensurePersonIn(target,row.person,'creative');
+    target.creativeCredits.push({id:crId++,performanceId:perfId,personId:pid,credit:row.credit,raw:row.person});
+  }
+  target.meta=target.meta||{};target.meta.updatedAt=new Date().toISOString();target.meta.updatedBy='Dashboard Add Entry';
+  return target;
+}
+function downloadAddEntry(){
+  try{
+    var target=applyAddEntryToCopy(), blob=new Blob([JSON.stringify(target,null,2)],{type:'application/json'}), a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);a.download='theatre-data.json';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},0);
+    var pre=document.getElementById('addPreview');if(pre)pre.textContent='Downloaded theatre-data.json. Upload it to GitHub in place of the current theatre-data.json.';
+  }catch(err){var pre=document.getElementById('addPreview');if(pre)pre.textContent='Could not build entry: '+err.message;}
+}
+
+async function saveAddEntryOnline(){
+  var pre=document.getElementById('addPreview'), pw=val('addPassword'), entry=buildAddEntryData();
+  if(pre)pre.textContent='Saving online...';
+  try{
+    if(!pw)throw new Error('Enter the admin password first.');
+    var res=await fetch('/.netlify/functions/save-entry',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:pw,entry:entry})
+    });
+    var txt=await res.text(), data;
+    try{data=JSON.parse(txt);}catch(e){data={message:txt};}
+    if(!res.ok)throw new Error(data.error||data.message||('HTTP '+res.status));
+    if(pre)pre.textContent='Saved to GitHub. Commit: '+(data.commit||'created')+'\n\nNetlify may take a moment to redeploy. Refresh with a cache-buster if needed.';
+  }catch(err){
+    if(pre)pre.textContent='Save failed: '+err.message+'\n\nUse Download updated JSON as a fallback.';
+  }
+}
+
+function clearAddEntry(){
+  ['addShow','addDate','addVenue','addCity','addType','addTime','addCast','addCreative','addNotes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  var pre=document.getElementById('addPreview');if(pre)pre.textContent='Fill out the form, then click Preview.';
+}
+
+function peoplePage(){var rows=vals(db.people),q=norm(state.q),i,p,filtered=[],s;for(i=0;i<rows.length;i++){p=rows[i];if(q&&norm(p.name).indexOf(q)===-1)continue;s=stat(p.id,null);if(s.perfs||idx.creativeByPerson[p.id])filtered.push({p:p,s:s});}if(state.peopleMode==='roles')filtered.sort(function(a,b){return b.s.roles-a.s.roles||b.s.perfs-a.s.perfs||a.p.name.localeCompare(b.p.name);});else filtered.sort(function(a,b){return b.s.perfs-a.s.perfs||b.s.roles-a.s.roles||a.p.name.localeCompare(b.p.name);});var out='<main class="wrap"><section class="hero"><h1>People</h1><div class="toolbar"><input class="input" value="'+esc(state.q)+'" placeholder="Search people..." oninput="TD.setQ(this.value)"><button class="pillBtn '+(state.peopleMode==='appearances'?'active':'')+'" onclick="TD.setPeopleMode(\'appearances\')">Most seen</button><button class="pillBtn '+(state.peopleMode==='roles'?'active':'')+'" onclick="TD.setPeopleMode(\'roles\')">Most roles</button></div></section><section class="card tableWrap"><table class="table"><thead><tr><th>Person</th><th>Performances</th><th>Shows</th><th>Roles</th></tr></thead><tbody>';for(i=0;i<Math.min(filtered.length,500);i++)out+='<tr><td><button class="linkish" onclick="TD.go(\'person\','+filtered[i].p.id+')">'+esc(filtered[i].p.name)+'</button></td><td>'+filtered[i].s.perfs+'</td><td>'+filtered[i].s.shows+'</td><td>'+filtered[i].s.roles+'</td></tr>';return out+'</tbody></table></section></main>';}
+function showsPage(){var rows=vals(db.shows),q=norm(state.q),i,s,perfs,people,filtered=[];for(i=0;i<rows.length;i++){s=rows[i];if(q&&norm(s.title).indexOf(q)===-1)continue;perfs=(idx.showPerfs[s.id]||[]).length;people=keys(idx.showPeople[s.id]||{}).length;filtered.push({s:s,perfs:perfs,people:people});}filtered.sort(function(a,b){return b.perfs-a.perfs||a.s.title.localeCompare(b.s.title);});var out='<main class="wrap"><section class="hero"><h1>Shows</h1><div class="toolbar"><input class="input" value="'+esc(state.q)+'" placeholder="Search shows..." oninput="TD.setQ(this.value)"></div></section><section class="grid">';for(i=0;i<filtered.length;i++)out+='<article class="card perfCard" onclick="TD.go(\'show\','+filtered[i].s.id+')"><div class="showTitle">'+esc(filtered[i].s.title)+'</div><div class="chips"><span class="chip">'+filtered[i].perfs+' performances</span><span class="chip">'+filtered[i].people+' people</span></div></article>';return out+'</section></main>';}
+function rolesPage(){var people=vals(db.people),rows=[],i,p,s;for(i=0;i<people.length;i++){p=people[i];s=stat(p.id,null);if(s.roles>1)rows.push({p:p,s:s});}rows.sort(function(a,b){return b.s.roles-a.s.roles||b.s.perfs-a.s.perfs||a.p.name.localeCompare(b.p.name);});var out='<main class="wrap"><section class="hero"><h1>Most Different Roles</h1><p class="muted">Counts each role name once per person, even if they played it in different productions. Cover type is ignored.</p></section><section class="card tableWrap"><table class="table"><thead><tr><th>Person</th><th>Roles</th><th>Performances</th><th>Shows</th></tr></thead><tbody>';for(i=0;i<Math.min(rows.length,300);i++)out+='<tr><td><button class="linkish" onclick="TD.go(\'person\','+rows[i].p.id+')">'+esc(rows[i].p.name)+'</button></td><td>'+rows[i].s.roles+'</td><td>'+rows[i].s.perfs+'</td><td>'+rows[i].s.shows+'</td></tr>';return out+'</tbody></table></section></main>';}
+function rolePage(key){var o=idx.allRolesByName[key],show=o?by(db.shows,o.showId):null,apps=o?o.apps:[],rows=[],i,a,p,r,personSet={};for(i=0;i<apps.length;i++){a=apps[i];p=by(db.performances,a.performanceId);r=by(db.people,a.personId);if(p&&r){personSet[a.personId]=1;rows.push({a:a,perf:p,person:r});}}rows.sort(function(a,b){return String(b.perf.date).localeCompare(String(a.perf.date));});var out='<main class="wrap"><section class="hero"><h1>'+esc(o?o.roleName:'Role')+'</h1><p class="muted">'+esc(show?show.title:'')+' · '+rows.length+' appearances · '+keys(personSet).length+' people.</p></section><section class="card"><div class="list">';for(i=0;i<rows.length;i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'person\','+rows[i].person.id+')">'+esc(rows[i].person.name)+'</button><div class="tiny"><button class="linkish" onclick="TD.go(\'perf\','+rows[i].perf.id+')">'+esc(fmtDate(rows[i].perf.date))+'</button> · '+esc(venueOf(rows[i].perf))+(coverName(rows[i].a.coverLabel||rows[i].a.coverType)?' · '+esc(coverName(rows[i].a.coverLabel||rows[i].a.coverType)):'')+'</div></div>';return out+'</div></section></main>';}
+function coversPage(){var apps=db.appearances||[],rows=[],i,a,p,r,person;for(i=0;i<apps.length;i++){a=apps[i];if(!(a.coverType||a.coverLabel||a.appearanceType==='swing'))continue;p=by(db.performances,a.performanceId);r=by(db.roles,a.roleId);person=by(db.people,a.personId);if(p&&person)rows.push({a:a,p:p,r:r,person:person});}rows.sort(function(a,b){return String(b.p.date).localeCompare(String(a.p.date));});var out='<main class="wrap"><section class="hero"><h1>Covers & Special Appearances</h1><p class="muted">'+rows.length+' cover/swing/special appearance lines.</p></section><section class="card tableWrap"><table class="table"><thead><tr><th>Date</th><th>Show</th><th>Person</th><th>Role</th><th>Cover</th></tr></thead><tbody>';for(i=0;i<Math.min(rows.length,600);i++)out+='<tr><td><button class="linkish" onclick="TD.go(\'perf\','+rows[i].p.id+')">'+esc(fmtDate(rows[i].p.date))+'</button></td><td>'+esc(showOf(rows[i].p))+'</td><td><button class="linkish" onclick="TD.go(\'person\','+rows[i].person.id+')">'+esc(rows[i].person.name)+'</button></td><td>'+esc(rows[i].r?rows[i].r.name:'')+'</td><td><span class="chip cover">'+esc(coverName(rows[i].a.coverLabel||rows[i].a.coverType||rows[i].a.appearanceType))+'</span></td></tr>';return out+'</tbody></table></section></main>';}
+function statsPage(){var perfs=vals(db.performances),years={},types={},i,p,topShows=[],sid;for(i=0;i<perfs.length;i++){p=perfs[i];years[yearOf(p.date)]=(years[yearOf(p.date)]||0)+1;types[p.type||'Unknown']=(types[p.type||'Unknown']||0)+1;}for(sid in idx.showPerfs)if(Object.prototype.hasOwnProperty.call(idx.showPerfs,sid))topShows.push({id:sid,n:idx.showPerfs[sid].length,title:(by(db.shows,sid)||{}).title});topShows.sort(function(a,b){return b.n-a.n||a.title.localeCompare(b.title);});return '<main class="wrap"><section class="hero"><h1>Stats</h1><div class="statGrid"><div class="stat"><div class="num">'+perfs.length+'</div><div class="lab">performances</div></div><div class="stat"><div class="num">'+vals(db.shows).length+'</div><div class="lab">shows</div></div><div class="stat"><div class="num">'+vals(db.people).length+'</div><div class="lab">people</div></div><div class="stat"><div class="num">'+keys(idx.coverPerf).length+'</div><div class="lab">performances with covers</div></div></div></section><div class="split"><section class="card"><h2>Most Seen Shows</h2>'+simpleRows(topShows,'show')+'</section><aside class="card"><h2>By Year</h2>'+countRows(years,true)+'<div class="section"><h2>By Type</h2>'+countRows(types,false)+'</div></aside></div></main>';}
+function simpleRows(rows,type){var out='<div class="list">',i;for(i=0;i<Math.min(rows.length,15);i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\''+type+'\','+rows[i].id+')">'+esc(rows[i].title)+'</button><div class="tiny">'+rows[i].n+' performances</div></div>';return out+'</div>';}
+function countRows(obj,rev){var a=[],k,i,out='<div class="list">';for(k in obj)if(Object.prototype.hasOwnProperty.call(obj,k))a.push({k:k,n:obj[k]});a.sort(function(a,b){return rev?String(b.k).localeCompare(String(a.k)):b.n-a.n;});for(i=0;i<a.length;i++)out+='<div class="row"><strong>'+esc(a[i].k)+'</strong><div class="tiny">'+a[i].n+' performances</div></div>';return out+'</div>';}
+function editsPage(){return '<main class="wrap"><section class="hero"><h1>Edits</h1><p class="muted">These edits live in this browser/device. Export them before replacing devices or clearing data.</p><div class="toolbar"><button class="btn" onclick="TD.exportEdits()">Copy edits JSON</button><button class="btn" onclick="TD.downloadEdits()">Download edits JSON</button><button class="btn" onclick="TD.importEdits()">Import pasted JSON</button></div></section><section class="card"><h2>Current edits</h2><pre>'+esc(JSON.stringify(edits,null,2))+'</pre></section></main>';}
+
+function readEdits(){try{return JSON.parse(localStorage.getItem('theatreDiaryEdits')||'{}');}catch(e){return{};}}
+function saveEdits(){try{localStorage.setItem('theatreDiaryEdits',JSON.stringify(edits));}catch(e){}}
+function copyText(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t);else window.prompt('Copy this:',t);}
+function copyHtml(html,plain){if(navigator.clipboard&&window.ClipboardItem){try{var item=new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([plain],{type:'text/plain'})});navigator.clipboard.write([item]);return;}catch(e){}}copyText(plain);}
+function coverPrefix(a,plain){
+  var c=coverName(a.coverLabel||a.coverType||'');
+  if(!c && a.appearanceType==='swing') c='Swing';
+  if(!c) return '';
+  var code='';
+  if(c==='Understudy') code='u/s';
+  else if(c==='Standby') code='s/b';
+  else if(c==='Alternate') code='alt';
+  else if(c==='Swing') code='s/w';
+  else if(c==='Emergency cover') code='e/c';
+  else if(c==='Temporary replacement') code='t/r';
+  else code=c;
+  return (plain?'*':'')+code+' ';
+}
+function castCopyItems(id,formatted){
+  var apps=(idx.perfApps[id]||[]).slice(), items=[], ens=[], i,a,r,person,roleName,roleText,item,isCover;
+  apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
+  for(i=0;i<apps.length;i++){
+    a=apps[i]; r=by(db.roles,a.roleId); person=by(db.people,a.personId);
+    if(a.appearanceType==='ensemble'){ens.push(person?person.name:personName(a.personId));continue;}
+    roleName=r?r.name:(a.roleRaw||'');
+    isCover=!!(coverName(a.coverLabel||a.coverType||'') || a.appearanceType==='swing');
+    roleText=coverPrefix(a,!formatted)+roleName;
+    item=(person?person.name:'Unknown')+' ('+roleText+')';
+    if(formatted && isCover)item='***'+item+'***';
+    items.push(item);
+  }
+  if(ens.length)items.push('Ensemble: '+ens.join(', '));
+  return items;
+}
+function castCopyText(id,formatted){
+  return castCopyItems(id,formatted).join(', ');
+}
+function copyPerf(id,mode){
+  var p=by(db.performances,id), plainLines=[], formattedLines=[], location, castPlain, castFormatted, html;
+  if(!p)return;
+  location=venueOf(p)+(p.type?' | '+p.type:'')+(p.time?' | '+p.time:'');
+  castPlain=castCopyText(id,false);
+  castFormatted=castCopyText(id,true);
+  plainLines.push(showOf(p)+' | '+fmtDate(p.date));
+  plainLines.push(location);
+  plainLines.push('');
+  plainLines.push(castPlain);
+  formattedLines.push(showOf(p)+' | '+fmtDate(p.date));
+  formattedLines.push(location);
+  formattedLines.push('');
+  formattedLines.push(castFormatted);
+  if(mode==='cast'){
+    copyText(castPlain);
+  }else if(mode==='html'){
+    html='<p><strong>'+esc(showOf(p)+' | '+fmtDate(p.date))+'</strong><br>'+esc(location)+'</p><p>'+esc(castFormatted).replace(/\*\*\*([^*]+)\*\*\*/g,'<strong><em>$1</em></strong>')+'</p>';
+    copyHtml(html,formattedLines.join('\n'));
+  }else{
+    copyText(plainLines.join('\n'));
+  }
+}
+function saveField(id,field,val){if(!edits[String(id)])edits[String(id)]={};edits[String(id)][field]=val;saveEdits();}
+function exportEdits(){copyText(JSON.stringify(edits,null,2));alert('Edits JSON copied.');}
+function downloadEdits(){var blob=new Blob([JSON.stringify(edits,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='theatre-diary-edits.json';a.click();}
+function importEdits(){var t=window.prompt('Paste edits JSON');if(!t)return;try{edits=JSON.parse(t);saveEdits();render();}catch(e){alert('Could not parse JSON.');}}
+
+window.TD={go:function(v,id){go(v,id,false)},back:back,forward:forward,
+setQ:function(v){state.q=v;state.limit=2000;render()},
+applySearch:function(inputId){var el=document.getElementById(inputId);state.q=el?el.value:state.q;state.limit=2000;state.groupYears='yes';render();setTimeout(function(){var d=document.getElementById('diaryList');if(d)d.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+clearSearch:function(){state.q='';state.limit=2000;render();},
+setYear:function(v){state.year=v;state.limit=2000;render();setTimeout(function(){var el=document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+setType:function(v){state.type=v;state.limit=2000;render()},setSort:function(v){state.sort=v;render()},toggleCovers:function(){state.cover=!state.cover;state.limit=2000;render()},more:function(){state.limit+=72;render()},openPerson:function(id){go('person',id,false)},closePerson:function(){state.inlinePerson=null;render()},togglePersonStats:function(personId,perfId){if(state.inlinePerson&&state.inlinePerson.personId===personId&&state.inlinePerson.perfId===perfId)state.inlinePerson=null;else state.inlinePerson={personId:personId,perfId:perfId};render()},random:function(){var ps=vals(db.performances),p=ps[Math.floor(Math.random()*ps.length)];go('perf',p.id,false)},saveField:saveField,exportEdits:exportEdits,downloadEdits:downloadEdits,importEdits:importEdits,copyPerf:copyPerf,setPeopleMode:function(m){state.peopleMode=m;render()},toggleDensity:function(){state.density=state.density==='compact'?'comfy':'compact';localStorage.setItem('theatreDiaryDensity',state.density);render()},setLayout:function(m){state.layout=m;localStorage.setItem('theatreDiaryLayout',m);render()},toggleYears:function(){state.groupYears=state.groupYears==='yes'?'no':'yes';localStorage.setItem('theatreDiaryGroupYears',state.groupYears);render()},
+diary:function(){state.view='home';state.id=null;state.year='all';state.groupYears='yes';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+setJumpYear:function(y){state.selectedJumpYear=y;render();},
+goYear:function(y){state.view='home';state.id=null;state.year='all';state.selectedJumpYear=y;state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+goMonth:function(y,m){state.view='home';state.id=null;state.year='all';state.selectedJumpYear=y;state.groupYears='yes';state.sort='old';state.limit=2000;render();setTimeout(function(){var el=document.getElementById('month-'+y+'-'+m)||document.getElementById('year-'+y)||document.getElementById('diaryList');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},0);},
+setCalYear:function(y){state.calendarYear=y;state.selectedJumpYear=y;render()},setPersonLayout:function(v){state.personLayout=v;localStorage.setItem('theatreDiaryPersonLayout',v);render()},previewAddEntry:previewAddEntry,downloadAddEntry:downloadAddEntry,saveAddEntryOnline:saveAddEntryOnline,clearAddEntry:clearAddEntry};
+load();
+})();
+</script>
+
+<script id="sort-toggle-patch">
+window.diarySortDirection = 'desc';
+document.addEventListener('click', function(e){
+  if(e.target && e.target.id==='sortNewestBtn'){
+    window.diarySortDirection='desc';
+  }
+  if(e.target && e.target.id==='sortOldestBtn'){
+    window.diarySortDirection='asc';
+  }
+});
+</script>
+
+</body>
+</html>
