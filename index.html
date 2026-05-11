@@ -641,7 +641,7 @@ function cleanTrackRoleLabel(role){
 function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
-function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=tracks-checked-20260511',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
+function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=batch-roles-20260511',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
 function showError(t,m){document.getElementById('app').innerHTML='<main class="wrap"><section class="card"><h1>'+esc(t)+'</h1><p class="muted">'+esc(m)+'</p></section></main>';}
 
 function buildIndexes(){
@@ -983,6 +983,21 @@ var SHOW_DISPLAY_RULES={
   'oliver!':{ensembleStartsAt:8},
   'oliver':{ensembleStartsAt:8},
   'death becomes her':{ensembleStartsAt:7},
+  'bring it on':{ensembleStartsAt:13},
+  'bring it on: the musical':{ensembleStartsAt:13},
+  'chaplin':{ensembleStartsAt:10},
+  "rodgers & hammerstein's cinderella":{ensembleStartsAt:10},
+  'cinderella':{ensembleStartsAt:10},
+  'hello, dolly!':{ensembleStartsAt:9},
+  'hello dolly!':{ensembleStartsAt:9},
+  'hello, dolly':{ensembleStartsAt:9},
+  'hello dolly':{ensembleStartsAt:9},
+  "a gentleman's guide to love and murder":{ensembleStartsAt:6},
+  'aladdin':{ensembleStartsAt:10},
+  'bullets over broadway':{ensembleStartsAt:10},
+  'les misérables':{ensembleStartsAt:13},
+  'les miserables':{ensembleStartsAt:13},
+  'shrek':{ensembleStartsAt:8},
   'waitress':{ensembleStartsAt:10},
   'mamma mia!':{ensembleStartsAt:9},
   'mamma mia':{ensembleStartsAt:9},
@@ -995,8 +1010,8 @@ var SHOW_DISPLAY_RULES={
   'newsies':{ensembleStartsAt:8},
   'the pajama game':{ensembleStartsAt:10},
   'anything goes':{ensembleStartsAt:9},
-  'matilda the musical':{ensembleStartsAt:9},
-  'matilda':{ensembleStartsAt:9},
+  'matilda the musical':{principalRoles:['matilda','matilda wormwood','miss trunchbull','miss honey','mr wormwood','mrs wormwood','mrs phelps','bruce','lavender','michael wormwood'],ensembleStartsAt:9},
+  'matilda':{principalRoles:['matilda','matilda wormwood','miss trunchbull','miss honey','mr wormwood','mrs wormwood','mrs phelps','bruce','lavender','michael wormwood'],ensembleStartsAt:9},
   'cats: the jellicle ball':{ensembleStartsAt:18},
   'cats':{ensembleStartsAt:18},
   'schmigadoon!':{ensembleStartsAt:12},
@@ -1393,7 +1408,7 @@ function coverPrefix(a,plain){
   return (plain?'*':'')+code+' ';
 }
 function castCopyItems(id,formatted){
-  var apps=(idx.perfApps[id]||[]).slice(), items=[], ens=[], i,a,r,person,roleName,roleText,item,isCover,ensRole;
+  var apps=(idx.perfApps[id]||[]).slice(), items=[], ens=[], i,a,r,person,roleName,roleText,item,isCover,ensRole,p=by(db.performances,id),showTitle=p?showTitleForPerf(p):'';
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
   function copyEnsembleRole(raw){
     raw=String(raw||'').trim();
@@ -1401,15 +1416,24 @@ function castCopyItems(id,formatted){
     raw=raw.replace(/\s*\/\s*ensemble\b/ig,'').replace(/\bensemble\s*\/\s*/ig,'').replace(/\s{2,}/g,' ').trim();
     return raw&&norm(raw)!=='ensemble'?raw:'';
   }
+  function isCopyEnsemble(a, roleName){
+    var section=castSectionByShowRule(showTitle,roleName,a);
+    if(section==='Orphans')return false;
+    if(section==='ensemble')return true;
+    return a.appearanceType==='ensemble';
+  }
   for(i=0;i<apps.length;i++){
     a=apps[i]; r=by(db.roles,a.roleId); person=by(db.people,a.personId);
     roleName=r?r.name:(a.roleRaw||'');
-    if(a.appearanceType==='ensemble'){
+    isCover=!!(coverName(a.coverLabel||a.coverType||'') || a.appearanceType==='swing');
+    if(isCopyEnsemble(a,roleName)){
       ensRole=copyEnsembleRole(roleName);
-      ens.push((person?person.name:personName(a.personId))+(ensRole?' ('+ensRole+')':''));
+      roleText=(isCover?coverPrefix(a,!formatted):'')+(ensRole||'');
+      item=(person?person.name:personName(a.personId))+(roleText?' ('+roleText+')':'');
+      if(formatted && isCover)item='***'+item+'***';
+      ens.push(item);
       continue;
     }
-    isCover=!!(coverName(a.coverLabel||a.coverType||'') || a.appearanceType==='swing');
     roleText=coverPrefix(a,!formatted)+roleName;
     item=(person?person.name:'Unknown')+' ('+roleText+')';
     if(formatted && isCover)item='***'+item+'***';
