@@ -641,7 +641,7 @@ function cleanTrackRoleLabel(role){
 function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
-function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=layout2',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
+function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=tracks-checked-20260511',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
 function showError(t,m){document.getElementById('app').innerHTML='<main class="wrap"><section class="card"><h1>'+esc(t)+'</h1><p class="muted">'+esc(m)+'</p></section></main>';}
 
 function buildIndexes(){
@@ -1017,8 +1017,8 @@ var SHOW_DISPLAY_RULES={
   'priscilla queen of the desert':{ensembleStartsAt:8},
   'shrek':{ensembleStartsAt:8},
   'chicago':{ensembleStartsAt:7},
-  '9 to 5':{ensembleStartsAt:99},
-  '9 to 5: the musical':{ensembleStartsAt:99},
+  '9 to 5':{ensembleStartsAt:7},
+  '9 to 5: the musical':{ensembleStartsAt:7},
   'annie':{
     principalRoles:['annie','oliver warbucks','miss hannigan','grace farrell','president franklin delano roosevelt','fdr','rooster hannigan','lily st regis'],
     specialSections:[{label:'Orphans',roles:['molly','pepper','july','kate','tessie','duffy']}],
@@ -1066,7 +1066,7 @@ function castBlock(p){
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
   function ensembleDisplayRole(roleName, appType){
     var raw=String(roleName||'').trim();
-    if(appType==='ensemble'||norm(raw)==='ensemble')return'Ensemble';
+    if(!raw||norm(raw)==='ensemble')return'Ensemble';
     raw=raw.replace(/\s*\/\s*ensemble\b/ig,'').replace(/\bensemble\s*\/\s*/ig,'').replace(/\s{2,}/g,' ').trim();
     return raw||'Ensemble';
   }
@@ -1393,12 +1393,22 @@ function coverPrefix(a,plain){
   return (plain?'*':'')+code+' ';
 }
 function castCopyItems(id,formatted){
-  var apps=(idx.perfApps[id]||[]).slice(), items=[], ens=[], i,a,r,person,roleName,roleText,item,isCover;
+  var apps=(idx.perfApps[id]||[]).slice(), items=[], ens=[], i,a,r,person,roleName,roleText,item,isCover,ensRole;
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
+  function copyEnsembleRole(raw){
+    raw=String(raw||'').trim();
+    if(!raw||norm(raw)==='ensemble')return '';
+    raw=raw.replace(/\s*\/\s*ensemble\b/ig,'').replace(/\bensemble\s*\/\s*/ig,'').replace(/\s{2,}/g,' ').trim();
+    return raw&&norm(raw)!=='ensemble'?raw:'';
+  }
   for(i=0;i<apps.length;i++){
     a=apps[i]; r=by(db.roles,a.roleId); person=by(db.people,a.personId);
-    if(a.appearanceType==='ensemble'){ens.push(person?person.name:personName(a.personId));continue;}
     roleName=r?r.name:(a.roleRaw||'');
+    if(a.appearanceType==='ensemble'){
+      ensRole=copyEnsembleRole(roleName);
+      ens.push((person?person.name:personName(a.personId))+(ensRole?' ('+ensRole+')':''));
+      continue;
+    }
     isCover=!!(coverName(a.coverLabel||a.coverType||'') || a.appearanceType==='swing');
     roleText=coverPrefix(a,!formatted)+roleName;
     item=(person?person.name:'Unknown')+' ('+roleText+')';
