@@ -378,6 +378,15 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 .personRoleProd{font-size:12px;color:#fffdf3;margin-top:2px}
 .personRoleDates{font-size:11px;color:#d8d2b8;margin-top:2px;line-height:1.35}
 .personRoleCount{background:#fffdf3;color:#111;border-radius:999px;font-size:11px;font-weight:950;padding:3px 7px;white-space:nowrap}
+.personCoverTags{display:inline-flex;gap:4px;flex-wrap:wrap;margin-left:6px;vertical-align:middle}
+.personCoverTag{font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.04em;border-radius:999px;padding:2px 5px;border:1px solid rgba(255,255,255,.24)}
+.personCoverTag.understudy{background:#dff3ff;color:#063047}
+.personCoverTag.swing{background:#efe2ff;color:#3f136d}
+.personCoverTag.standby{background:#e2f7e3;color:#183f20}
+.personCoverTag.alternate{background:#fff0c7;color:#4d3200}
+.personCoverTag.emergency{background:#ffd9d6;color:#690d12}
+.personCoverTag.temporary{background:#ffe7cf;color:#5a2a00}
+.personCoverTag.special{background:#f4e8ff;color:#4b1766}
 .personMoreLine{font-size:12px;color:#d8d2b8;padding:8px 2px}
 .monthTinyChart{height:104px!important;align-items:end}
 .monthTinyLabel{font-size:10px!important;line-height:1.05;text-transform:none!important;white-space:normal;text-align:center;display:block;min-height:22px}
@@ -484,17 +493,26 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
   margin-left:2px!important;
   flex:0 0 auto!important;
   font-size:9px!important;
-  padding:3px 5px!important;
+  padding:3px 6px!important;
   border-radius:999px!important;
+  font-weight:950!important;
+  border:1px solid rgba(0,0,0,.16)!important;
 }
+.coverBadge.understudy{background:#dff3ff!important;color:#063047!important;border-color:#9fd1ed!important}
+.coverBadge.swing{background:#efe2ff!important;color:#3f136d!important;border-color:#cdb1ef!important}
+.coverBadge.standby{background:#e2f7e3!important;color:#183f20!important;border-color:#afdcb5!important}
+.coverBadge.alternate{background:#fff0c7!important;color:#4d3200!important;border-color:#e3c46e!important}
+.coverBadge.emergency{background:#ffd9d6!important;color:#690d12!important;border-color:#f0a19b!important}
+.coverBadge.temporary{background:#ffe7cf!important;color:#5a2a00!important;border-color:#efbc8a!important}
+.coverBadge.special{background:#f4e8ff!important;color:#4b1766!important;border-color:#d4b6e6!important}
 .castLine.coverUnderstudy .roleInline,
-.castLine.coverUnderstudy .castPersonCell{background:#fff4bd!important}
+.castLine.coverUnderstudy .castPersonCell{background:#eaf7ff!important}
 .castLine.coverStandby .roleInline,
-.castLine.coverStandby .castPersonCell{background:#f0e1ff!important}
+.castLine.coverStandby .castPersonCell{background:#eaf8ec!important}
 .castLine.coverAlternate .roleInline,
-.castLine.coverAlternate .castPersonCell{background:#e7f2ff!important}
+.castLine.coverAlternate .castPersonCell{background:#fff4d2!important}
 .castLine.coverSwing .roleInline,
-.castLine.coverSwing .castPersonCell{background:#eaf7df!important}
+.castLine.coverSwing .castPersonCell{background:#f2e8ff!important}
 .castLine.coverEmergency .roleInline,
 .castLine.coverEmergency .castPersonCell{background:#ffe0dc!important}
 .castLine.coverTemporary .roleInline,
@@ -623,7 +641,7 @@ function cleanTrackRoleLabel(role){
 function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
-function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=layout1',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
+function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=layout2',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
 function showError(t,m){document.getElementById('app').innerHTML='<main class="wrap"><section class="card"><h1>'+esc(t)+'</h1><p class="muted">'+esc(m)+'</p></section></main>';}
 
 function buildIndexes(){
@@ -675,6 +693,20 @@ function coverBadgeClass(label){
   if(c==='Temporary replacement')return 'temporary';
   if(c==='Special appearance')return 'special';
   return '';
+}
+function coverTagHtml(label){
+  var c=coverName(label||''), cls=coverBadgeClass(c);
+  return c?'<span class="personCoverTag '+cls+'">'+esc(c)+'</span>':'';
+}
+function coverTagsHtml(labels){
+  var seen={}, out='', i, c;
+  labels=labels||[];
+  for(i=0;i<labels.length;i++){
+    c=coverName(labels[i]);
+    if(!c||seen[c])continue;
+    seen[c]=1; out+=coverTagHtml(c);
+  }
+  return out?'<span class="personCoverTags">'+out+'</span>':'';
 }
 function roleTierClass(n){if(n>=8)return'tier4';if(n>=5)return'tier3';if(n>=3)return'tier2';return'tier1';}
 function personButton(personId,currentPerfId){
@@ -924,7 +956,7 @@ function inlinePersonCarousel(personId,currentPerfId){
   for(i=0;i<Math.min(groups.length,max);i++){
     g=groups[i]; dates=[]; prod=productionSummary(g.perfs);
     for(j=0;j<Math.min(g.perfs.length,4);j++) dates.push(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date));
-    out+='<button class="personRoleLine" onclick="TD.go(\'show\','+g.showId+')"><span class="personRoleMain"><span class="personRoleRole">'+esc(cleanTrackRoleLabel(g.roles))+'</span><span class="personRoleProd">'+esc(g.show)+(prod?' · '+esc(prod):'')+'</span><span class="personRoleDates">'+esc(dates.join(' · '))+(g.perfs.length>4?' · +'+(g.perfs.length-4)+' more':'')+'</span></span><span class="personRoleCount">'+g.count+'x</span></button>';
+    out+='<button class="personRoleLine" onclick="TD.go(\'show\','+g.showId+')"><span class="personRoleMain"><span class="personRoleRole">'+esc(cleanTrackRoleLabel(g.roles))+'</span> <span class="personRoleProd">'+esc(g.show)+(prod?' · '+esc(prod):'')+'</span>'+coverTagsHtml(g.covers)+'<span class="personRoleDates">'+esc(dates.join(' · '))+(g.perfs.length>4?' · +'+(g.perfs.length-4)+' more':'')+'</span></span><span class="personRoleCount">'+g.count+'x</span></button>';
   }
   if(groups.length>max) out+='<div class="personMoreLine">+'+(groups.length-max)+' additional groups. Open full profile for everything.</div>';
   return out+'</div></div>';
@@ -932,58 +964,94 @@ function inlinePersonCarousel(personId,currentPerfId){
 
 
 function showTitleForPerf(p){var s=by(db.shows,p.showId);return s?s.title:'';}
-var SHOW_PRINCIPAL_RULES={
-  'wicked':['elphaba','glinda','fiyero','the wonderful wizard of oz','wizard','madame morrible','nessarose','boq','doctor dillamond','dr dillamond'],
-  '& juliet':['juliet','lance','anne','shakespeare','may','angélique','angelique','romeo','françois','francois'],
-  'heathers':['veronica sawyer',"jason 'j.d.' dean",'jason jd dean','jd','heather chandler','heather duke','heather mcnamara','ram sweeney','kurt kelly','martha dunnstock'],
-  'death becomes her':['madeline ashton','helen sharp','ernest menville','viola van horn','chagall','stefan'],
-  'annie':['annie','oliver warbucks','miss hannigan','grace farrell','rooster hannigan','lily st regis','president franklin delano roosevelt','fdr'],
-  'mamma mia!':['donna sheridan','sophie sheridan','rosie','tanya','sky','harry bright','bill austin','sam carmichael'],
-  'waitress':['jenna','becky','dawn','dr pomatter','earl','joe','ogie','cal'],
-  'dear evan hansen':['evan hansen','heidi hansen','cynthia murphy','larry murphy','connor murphy','zoe murphy','jared kleinman','alana beck'],
-  'six':['catherine of aragon','anne boleyn','jane seymour','anna of cleves','katherine howard','catherine parr'],
-  'a wrinkle in time: a new musical':['meg','charles wallace','calvin','mrs whatsit','mrs which','mrs who','paper girl','man with the red eyes','happy medium beast','mother aunt beast','camazotzian brother','beast','father','affirmations man'],
-  'newsies':['jack kelly','katherine plumber','medda larkin','davey jacobs','crutchie','les','joseph pulitzer','joseph pultizer'],
-  'oliver!':['oliver','fagin','nancy','bill sikes','artful dodger','mr bumble','bet','mr brownlow','charlotte','widow corney strawberry seller','widow corney','mr sowerberry','ms sowerberry ms bedwin','mrs sowerberry mrs bedwin','noah claypole','charley bates'],
-  'anything goes':['reno sweeney','moonface martin','billy crocker','hope harcourt','lord evelyn oakleigh','erma','elisha whitney','evangelina harcourt','mrs evangeline harcourt','captain'],
-  'kinky boots':['charlie price','lola','lauren','nicola','don','george','mr price','young charlie','young lola','simon sr','pat','harry','trish'],
-  'legally blonde: the musical':['elle woods','emmett forrest','professor callahan','vivienne kensington','warner huntington iii','warner hunington iii','paulette bonafante','brooke wyndam','brooke wyndham','margot','serena','pilar','enid'],
-  'the color purple':['celie','nettie','pa','mister','harpo','sofia','squeak','shug avery','ol mister preacher','ol mister preacher prison guard','ol mister'],
-  'sister act':['deloris van cartier','mother superior','monsignor o hara','eddie souther','curtis jackson','sister mary robert','sister mary patrick','sister mary lazarus','joey','tj','pablo'],
-  'pippin':['pippin','leading player','catherine','charles','fastrada','berthe','lewis','theo'],
-  'sweeney todd':['sweeney todd','mrs lovett','johanna barker','judge turpin','anthony hope','tobias ragg','beggar woman','pirelli','beadle bamford','the beadle'],
-  'chicago':['roxie hart','velma kelly','billy flynn','amos hart','mary sunshine','matron mama morton'],
-  'hairspray':['tracy turnblad','edna turnblad','link larkin','amber von tussle','velma von tussle','penny pingleton','penny pingelton','corny collins','seaweed stubbs','seaweed j stubbs','wilbur','wilbur turnblad','motormouth maybelle','motormouh maybelle','little inez','inez','male authority figure','female authority figure'],
-  'into the woods':['the witch','the baker','the baker s wife','cinderella','little red ridinghood','jack','jack s mother','cinderella s stepmother','florinda','lucinda','cinderella s father','narrator mysterious man','mysterious man narrator','wolf cinderella s prince','cinderella s prince wolf','rapunzel s prince','rapunzel','cinderella s mother granny giant','cinderella s mother granny giant s wife','steward','milky white'],
-  'titanique':['céline dion','celine dion','jack dawson','rose dewitt bukater','cal hockley','ruth dewitt bukater','molly brown','victor garber luigi','the seaman iceberg','the iceberg'],
-  'little shop of horrors':['seymour krelborn','audrey','mr mushnik','orin','orin scrivello dds','chiffon','ronnette','crystal','audrey ii','voice of audrey ii','audrey ii voice'],
-  'cats: the jellicle ball':['old deuteronomy','munkustrap','rum tum tugger','grizabella','jennyanydots','bustopher jones','gus','gus the theatre cat','magical mister mistoffelees','mistoffelees','jellylorum','skimbleshanks','victoria','mungojerrie','rumpleteazer','macavity','demeter','bombalurina','sillabub','cassandra skimbleshanks']
+var SHOW_DISPLAY_RULES={
+  'wicked':{ensembleStartsAt:9},
+  '& juliet':{ensembleStartsAt:9},
+  'juliet':{ensembleStartsAt:9},
+  'heathers':{ensembleStartsAt:10},
+  'six':{allPrincipal:true},
+  'into the woods':{ensembleStartsAt:12},
+  'the music man':{ensembleStartsAt:11},
+  'the color purple':{ensembleStartsAt:9},
+  'dear evan hansen':{allPrincipal:true},
+  'oliver!':{ensembleStartsAt:8},
+  'oliver':{ensembleStartsAt:8},
+  'death becomes her':{ensembleStartsAt:7},
+  'waitress':{ensembleStartsAt:10},
+  'mamma mia!':{ensembleStartsAt:9},
+  'mamma mia':{ensembleStartsAt:9},
+  'hairspray':{ensembleStartsAt:13},
+  'company':{allPrincipal:true},
+  'a strange loop':{allPrincipal:true},
+  'paradise square':{ensembleStartsAt:10},
+  'catch me if you can':{ensembleStartsAt:6},
+  'dave':{ensembleStartsAt:6},
+  'newsies':{ensembleStartsAt:7},
+  'the pajama game':{ensembleStartsAt:10},
+  'anything goes':{ensembleStartsAt:9},
+  'matilda the musical':{ensembleStartsAt:9},
+  'matilda':{ensembleStartsAt:9},
+  'cats: the jellicle ball':{ensembleStartsAt:18},
+  'cats':{ensembleStartsAt:18},
+  'schmigadoon!':{ensembleStartsAt:12},
+  'schmigadoon':{ensembleStartsAt:12},
+  'carousel':{ensembleStartsAt:10},
+  'titanique':{ensembleStartsAt:9},
+  'kinky boots':{ensembleStartsAt:7},
+  'evita':{ensembleStartsAt:6},
+  'the 25th annual putnam county spelling bee':{allPrincipal:true},
+  '25th annual putnam county spelling bee':{allPrincipal:true},
+  'something rotten!':{ensembleStartsAt:10},
+  'something rotten':{ensembleStartsAt:10},
+  'legally blonde':{ensembleStartsAt:13},
+  'legally blonde: the musical':{ensembleStartsAt:13},
+  'sister act':{ensembleStartsAt:12},
+  'pippin':{ensembleStartsAt:9},
+  'cabaret':{ensembleStartsAt:8},
+  'annie':{
+    principalRoles:['annie','oliver warbucks','miss hannigan','grace farrell','president franklin delano roosevelt','fdr','rooster hannigan','lily st regis'],
+    specialSections:[{label:'Orphans',roles:['molly','pepper','july','kate','tessie','duffy']}],
+    ensembleStartsAt:8
+  }
 };
 
-/* show hierarchy aliases */
-SHOW_PRINCIPAL_RULES['juliet']=SHOW_PRINCIPAL_RULES['& juliet'];
-SHOW_PRINCIPAL_RULES['mamma mia']=SHOW_PRINCIPAL_RULES['mamma mia!'];
-
+function getShowDisplayRule(showTitle){
+  var showKey=norm(showTitle), rule=SHOW_DISPLAY_RULES[showKey];
+  if(!rule && showKey.indexOf('juliet')>=0) rule=SHOW_DISPLAY_RULES['& juliet'];
+  if(!rule && showKey.indexOf('mamma mia')>=0) rule=SHOW_DISPLAY_RULES['mamma mia!'];
+  if(!rule && showKey.indexOf('cats')>=0) rule=SHOW_DISPLAY_RULES['cats'];
+  if(!rule && showKey.indexOf('schmigadoon')>=0) rule=SHOW_DISPLAY_RULES['schmigadoon!'];
+  return rule||null;
+}
 function splitRolePartsForRule(roleName){
   var raw=String(roleName||'');
   return raw.split('/').map(function(x){return roleNorm(x);}).filter(Boolean);
 }
-function isPrincipalByShowRule(showTitle,roleName){
-  var showKey=norm(showTitle), rules=SHOW_PRINCIPAL_RULES[showKey];
-  if(!rules && showKey.indexOf('juliet')>=0) rules=SHOW_PRINCIPAL_RULES['juliet'];
-  if(!rules && showKey.indexOf('mamma mia')>=0) rules=SHOW_PRINCIPAL_RULES['mamma mia'];
-  if(!rules)return null;
+function roleMatchesAny(roleName,roleList){
   var r=roleNorm(roleName), parts=splitRolePartsForRule(roleName), i, j, rr;
-  for(i=0;i<rules.length;i++){
-    rr=roleNorm(rules[i]);
+  for(i=0;i<(roleList||[]).length;i++){
+    rr=roleNorm(roleList[i]);
     if(r===rr)return true;
     for(j=0;j<parts.length;j++) if(parts[j]===rr)return true;
   }
   return false;
 }
+function castSectionByShowRule(showTitle,roleName,a){
+  var rule=getShowDisplayRule(showTitle), i, order=Number(a&&a.displayOrder||0);
+  if(!rule)return null;
+  if(rule.allPrincipal)return 'principal';
+  if(rule.principalRoles&&roleMatchesAny(roleName,rule.principalRoles))return 'principal';
+  if(rule.specialSections){
+    for(i=0;i<rule.specialSections.length;i++){
+      if(roleMatchesAny(roleName,rule.specialSections[i].roles))return rule.specialSections[i].label;
+    }
+  }
+  if(rule.ensembleStartsAt&&order>=rule.ensembleStartsAt)return 'ensemble';
+  return 'principal';
+}
 
 function castBlock(p){
-  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',namedEnsembleRows=[],plainEnsembleRows=[],notes='',i,a,r,label,line,roleName,displayRole,isTrack,isEnsembleTrack,showRule,coverClass,badgeClass,badge,isOpen,showTitle=showTitleForPerf(p);
+  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',orphanRows=[],namedEnsembleRows=[],plainEnsembleRows=[],notes='',i,a,r,label,line,roleName,displayRole,isTrack,isEnsembleTrack,castSection,coverClass,badgeClass,badge,isOpen,showTitle=showTitleForPerf(p);
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
   function ensembleDisplayRole(roleName, appType){
     var raw=String(roleName||'').trim();
@@ -995,27 +1063,24 @@ function castBlock(p){
     var n=norm(roleName);
     return appType==='ensemble'||n==='ensemble'||/(^|\/)\s*ensemble\s*(\/|$)/i.test(String(roleName||''))||/\bensemble\b/i.test(String(roleName||''));
   }
-  function ensembleLine(a,labelText){
+  function ensembleLine(a,labelText,coverClass,badge){
     var isOpen=state.inlinePerson&&state.inlinePerson.personId===a.personId&&state.inlinePerson.perfId===p.id;
-    return '<div class="castLine ensembleLine '+(isOpen?'isOpen':'')+'"><div class="castOneLine"><span class="roleInline ensembleRole">'+esc(labelText||'Ensemble')+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
+    return '<div class="castLine ensembleLine '+(coverClass||'')+' '+(isOpen?'isOpen':'')+'"><div class="castOneLine"><span class="roleInline ensembleRole">'+esc(labelText||'Ensemble')+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+(badge||'')+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
   }
   for(i=0;i<apps.length;i++){
     a=apps[i];r=by(db.roles,a.roleId);roleName=r?r.name:(a.roleRaw||'');
     label=coverName(a.coverLabel||a.coverType||'');if(!label&&a.appearanceType==='swing')label='Swing';
     coverClass=coverClassName(label);badgeClass=coverBadgeClass(label);badge=label?'<span class="coverBadge '+badgeClass+'">'+esc(label)+'</span>':'';
     isTrack=norm(roleName).indexOf('track')>=0||norm(roleName).indexOf('swing')>=0;
-    showRule=isPrincipalByShowRule(showTitle,roleName);
-    /* JULIET_DISPLAY_ORDER_RULE: first 8 cast rows are principals, all following rows are Ensemble */
-    if(norm(showTitle).indexOf('juliet')>=0){
-      isEnsembleTrack=(Number(a.displayOrder||0)>8);
-    }else{
-      isEnsembleTrack=showRule===null?isEnsembleTrackRole(roleName,a.appearanceType):!showRule;
-    }
+    castSection=castSectionByShowRule(showTitle,roleName,a);
+    isEnsembleTrack=castSection?castSection==='ensemble':isEnsembleTrackRole(roleName,a.appearanceType);
     displayRole=ensembleDisplayRole(roleName,a.appearanceType);
     isOpen=state.inlinePerson&&state.inlinePerson.personId===a.personId&&state.inlinePerson.perfId===p.id;
-    if(isEnsembleTrack){
-      if(displayRole==='Ensemble') plainEnsembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole),order:a.displayOrder||9999});
-      else namedEnsembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole),order:a.displayOrder||9999});
+    if(castSection==='Orphans'){
+      orphanRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole,coverClass,badge),order:a.displayOrder||9999});
+    }else if(isEnsembleTrack){
+      if(displayRole==='Ensemble') plainEnsembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole,coverClass,badge),order:a.displayOrder||9999});
+      else namedEnsembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole,coverClass,badge),order:a.displayOrder||9999});
     }else if(a.appearanceType==='swing'&&isTrack){
       notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }else{
@@ -1024,16 +1089,22 @@ function castBlock(p){
       if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }
   }
+  orphanRows.sort(function(a,b){return (a.order-b.order)||lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
   namedEnsembleRows.sort(function(a,b){return (a.order-b.order)||lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
   plainEnsembleRows.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
-  var ensembleSection='',j;
+  var orphanSection='',ensembleSection='',j;
+  if(orphanRows.length){
+    orphanSection='<div class="ensembleInlineSection"><h3>Orphans</h3>';
+    for(j=0;j<orphanRows.length;j++)orphanSection+=orphanRows[j].html;
+    orphanSection+='</div>';
+  }
   if(namedEnsembleRows.length||plainEnsembleRows.length){
     ensembleSection='<div class="ensembleInlineSection"><h3>Ensemble</h3>';
     for(j=0;j<namedEnsembleRows.length;j++)ensembleSection+=namedEnsembleRows[j].html;
     for(j=0;j<plainEnsembleRows.length;j++)ensembleSection+=plainEnsembleRows[j].html;
     ensembleSection+='</div>';
   }
-  var out='<div class="castArea"><div class="principalCast">'+principal+ensembleSection+'</div></div>';
+  var out='<div class="castArea"><div class="principalCast">'+principal+orphanSection+ensembleSection+'</div></div>';
   if(notes)out+='<div class="section"><h3>Coverage Notes</h3><div class="list">'+notes+'</div></div>';
   return out;
 }
@@ -1042,14 +1113,14 @@ function creativeBlock(perfId){var arr=idx.creativeByPerf[perfId]||[],byC={},i,c
 function nextPrev(id){var ps=vals(db.performances);ps.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});var i,ix=0;for(i=0;i<ps.length;i++)if(ps[i].id==id){ix=i;break;}return{prev:ps[(ix-1+ps.length)%ps.length].id,next:ps[(ix+1)%ps.length].id};}
 function relatedBlock(p){var same=(idx.showPerfs[p.showId]||[]).slice(),out='',i,count=0;same.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});for(i=0;i<same.length&&count<5;i++){if(same[i].id==p.id)continue;out+='<div class="row"><button class="linkish" onclick="TD.go(\'perf\','+same[i].id+')">'+esc(fmtDate(same[i].date))+'</button><div class="tiny">'+esc(venueOf(same[i]))+'</div></div>';count++;}return out?'<div class="section"><h2>Related Performances</h2><div class="list">'+out+'</div></div>':'';}
 
-function uniquePersonAppearances(personId){var apps=idx.personApps[personId]||[],map={},arr=[],i,a,p,r,k;for(i=0;i<apps.length;i++){a=apps[i];p=by(db.performances,a.performanceId);r=by(db.roles,a.roleId);if(!p)continue;k=String(p.id);if(!map[k])map[k]={perf:p,roles:[],covers:[]};if(r)map[k].roles.push(r.name);if(a.coverLabel||a.coverType)map[k].covers.push(a.coverLabel||a.coverType);}for(k in map)if(Object.prototype.hasOwnProperty.call(map,k))arr.push(map[k]);arr.sort(function(a,b){return String(b.perf.date).localeCompare(String(a.perf.date));});return arr;}
+function uniquePersonAppearances(personId){var apps=idx.personApps[personId]||[],map={},arr=[],i,a,p,r,k,label;for(i=0;i<apps.length;i++){a=apps[i];p=by(db.performances,a.performanceId);r=by(db.roles,a.roleId);if(!p)continue;k=String(p.id);if(!map[k])map[k]={perf:p,roles:[],covers:[]};if(r)map[k].roles.push(r.name);label=coverName(a.coverLabel||a.coverType||'');if(!label&&a.appearanceType==='swing')label='Swing';if(label)map[k].covers.push(label);}for(k in map)if(Object.prototype.hasOwnProperty.call(map,k))arr.push(map[k]);arr.sort(function(a,b){return String(b.perf.date).localeCompare(String(a.perf.date));});return arr;}
 function renderPanel(personId){
   var p=by(db.people,personId),arr=uniquePersonAppearances(personId),s=stat(personId,null),groups=personRoleGroups(arr),out,i,g,dates,j,max=8;
   out='<aside class="panel"><button class="btn closeBtn" onclick="TD.closePerson()">Close</button><h2>'+esc(p?p.name:'Person')+'</h2><p class="muted">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' roles</p><button class="btn" onclick="TD.go(\'person\','+personId+')">Open full profile</button><div class="section list">';
   for(i=0;i<Math.min(groups.length,max);i++){
     g=groups[i]; dates=[];
     for(j=0;j<Math.min(g.perfs.length,3);j++) dates.push(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date));
-    out+='<div class="panelRoleRow"><div class="panelRoleTop"><button class="linkish panelShow" onclick="TD.go(\'show\','+g.showId+')">'+esc(g.show)+'</button><span class="panelCount">'+g.count+'x</span></div><div class="panelRoleSub">'+esc(cleanTrackRoleLabel(g.roles))+'</div><div class="panelDates">'+esc(dates.join(' · '))+(g.perfs.length>3?' · +'+(g.perfs.length-3)+' more':'')+'</div></div>';
+    out+='<div class="panelRoleRow"><div class="panelRoleTop"><button class="linkish panelShow" onclick="TD.go(\'show\','+g.showId+')">'+esc(g.show)+'</button><span class="panelCount">'+g.count+'x</span></div><div class="panelRoleSub">'+esc(cleanTrackRoleLabel(g.roles))+coverTagsHtml(g.covers)+'</div><div class="panelDates">'+esc(dates.join(' · '))+(g.perfs.length>3?' · +'+(g.perfs.length-3)+' more':'')+'</div></div>';
   }
   if(groups.length>max) out+='<div class="panelMore">+'+(groups.length-max)+' more role/show groups</div>';
   return out+'</div></aside>';
@@ -1076,12 +1147,13 @@ function personSummary(personId,arr){
   return {first:asc.length?fmtDate(asc[0].perf.date):'',recent:asc.length?fmtDate(asc[asc.length-1].perf.date):'',span:asc.length?(y1===y2?y1:y1+'–'+y2):'',topRole:top?(top+' · '+topN):''};
 }
 function personRoleGroups(arr){
-  var map={}, order=[], i,item,p,roles,key,g;
+  var map={}, order=[], i,item,p,roles,key,g,j,c;
   for(i=0;i<arr.length;i++){
     item=arr[i]; p=item.perf; roles=item.roles&&item.roles.length?item.roles.slice().sort().join(' / '):'Ensemble';
     key=String(p.showId)+'|'+roles;
-    if(!map[key]){map[key]={showId:p.showId,show:showOf(p),roles:roles,perfs:[],venues:{},count:0};order.push(key);}
+    if(!map[key]){map[key]={showId:p.showId,show:showOf(p),roles:roles,perfs:[],venues:{},covers:[],count:0};order.push(key);}
     g=map[key]; g.perfs.push(p); g.venues[venueOf(p)]=1; g.count++;
+    for(j=0;j<(item.covers||[]).length;j++){c=coverName(item.covers[j]);if(c)g.covers.push(c);}
   }
   var rows=[];
   for(i=0;i<order.length;i++){g=map[order[i]];g.perfs.sort(function(a,b){return String(a.date).localeCompare(String(b.date));});rows.push(g);}
@@ -1094,7 +1166,7 @@ function groupedPersonAppearances(personId,arr){
   for(i=0;i<groups.length;i++){
     g=groups[i]; dates=[]; venueList=keys(g.venues).slice(0,3).join(' · ');
     for(j=0;j<g.perfs.length;j++) dates.push('<button class="dateChip" onclick="TD.go(\'perf\','+g.perfs[j].id+')">'+esc(shortDate(g.perfs[j].date)+', '+yearOf(g.perfs[j].date))+'</button>');
-    out+='<article class="roleGroup"><div class="roleGroupHead"><div><button class="linkish roleGroupTitle" onclick="TD.go(\'show\','+g.showId+')">'+esc(g.show)+'</button><div class="roleGroupRole">'+esc(cleanTrackRoleLabel(g.roles))+'</div></div><span class="roleFlag">'+g.count+'x</span></div><div class="tiny">'+esc(venueList)+'</div><div class="dateChips">'+dates.join('')+'</div></article>';
+    out+='<article class="roleGroup"><div class="roleGroupHead"><div><button class="linkish roleGroupTitle" onclick="TD.go(\'show\','+g.showId+')">'+esc(g.show)+'</button><div class="roleGroupRole">'+esc(cleanTrackRoleLabel(g.roles))+coverTagsHtml(g.covers)+'</div></div><span class="roleFlag">'+g.count+'x</span></div><div class="tiny">'+esc(venueList)+'</div><div class="dateChips">'+dates.join('')+'</div></article>';
   }
   return out+'</div>';
 }
@@ -1103,7 +1175,7 @@ function chronologicalPersonAppearances(personId,arr){
   if(!arr.length) return '<p class="muted">No performer appearances found.</p>';
   for(i=0;i<arr.length;i++){
     roles=arr[i].roles.join(' / ')||'Ensemble';
-    out+='<div class="row"><button class="linkish" onclick="TD.go(\'perf\','+arr[i].perf.id+')">'+esc(showOf(arr[i].perf))+'</button><div class="tiny">'+esc(roles)+' · '+esc(fmtDate(arr[i].perf.date))+' · '+esc(venueOf(arr[i].perf))+'</div></div>';
+    out+='<div class="row"><button class="linkish" onclick="TD.go(\'perf\','+arr[i].perf.id+')">'+esc(showOf(arr[i].perf))+'</button><div class="tiny">'+esc(roles)+coverTagsHtml(arr[i].covers)+' · '+esc(fmtDate(arr[i].perf.date))+' · '+esc(venueOf(arr[i].perf))+'</div></div>';
   }
   return out+'</div>';
 }
@@ -1141,10 +1213,10 @@ function creativePersonBlock(cr){var out='<div class="list">',i,c,p;if(!cr.lengt
 function showPage(id){var show=by(db.shows,id),arr=(idx.showPerfs[id]||[]).slice(),people=idx.showPeople[id]||{},roleRows=showRoleRows(id),i,out,groups,types;arr.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});groups=groupPerformancesByType(arr);types=keys(groups);types.sort();out='<main class="wrap"><section class="hero"><h1>'+esc(show?show.title:'Show')+'</h1><p class="muted">Seen '+arr.length+' times · first seen '+esc(arr.length?fmtDate(arr[arr.length-1].date):'')+' · most recent '+esc(arr.length?fmtDate(arr[0].date):'')+' · '+keys(people).length+' people seen.</p><div class="chips">'+productionChips(groups)+'</div></section><div class="split"><section><section class="card"><h2>Role Matrix</h2>'+roleMatrix(roleRows)+'</section><section class="card section"><h2>Production Groups</h2>';for(i=0;i<types.length;i++){out+='<div class="groupHead"><h3>'+esc(types[i])+'</h3><span class="chip">'+groups[types[i]].length+' performances</span></div>'+renderListing(groups[types[i]]);}out+='</section></section><aside class="card"><h2>Most Seen Roles</h2><div class="list">';for(i=0;i<Math.min(roleRows.length,12);i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'role\',\''+esc(roleRows[i].key)+'\')">'+esc(roleRows[i].name)+'</button><div class="tiny">'+roleRows[i].people+' people · '+roleRows[i].apps+' appearances</div></div>';out+='</div><div class="section"><h2>Cover Story</h2>'+showCoverSummary(id)+'</div><div class="section"><h2>First-Time Seen Here</h2>'+firstTimersForShow(id)+'</div></aside></div></main>';return out;}
 function groupPerformancesByType(arr){var g={},i,t;for(i=0;i<arr.length;i++){t=arr[i].type||'Unknown';if(!g[t])g[t]=[];g[t].push(arr[i]);}return g;}
 function productionChips(groups){var ks=keys(groups),out='',i;ks.sort();for(i=0;i<ks.length;i++)out+='<span class="chip">'+esc(ks[i])+' · '+groups[ks[i]].length+'</span>';return out;}
-function roleMatrix(roleRows){var out='<div class="tableWrap"><table class="table"><thead><tr><th>Role</th><th>People seen</th><th>Covers</th><th>Appearances</th></tr></thead><tbody>',i,row,covers;for(i=0;i<Math.min(roleRows.length,40);i++){row=roleRows[i];covers=row.covers||0;out+='<tr><td><button class="linkish" onclick="TD.go(\'role\',\''+esc(row.key)+'\')">'+esc(row.name)+'</button></td><td>'+row.people+'</td><td>'+covers+'</td><td>'+row.apps+'</td></tr>';}return out+'</tbody></table></div>';}
+function roleMatrix(roleRows){var out='<div class="tableWrap"><table class="table"><thead><tr><th>Role</th><th>People seen</th><th>Covers</th><th>Appearances</th></tr></thead><tbody>',i,row,covers,peopleList;for(i=0;i<Math.min(roleRows.length,60);i++){row=roleRows[i];covers=row.covers||0;peopleList=(row.peopleList||[]).slice(0,5).map(function(pp){return '<button class="linkish" onclick="TD.go(\'person\','+pp.id+')">'+esc(pp.name)+'</button>';}).join(' / ');if(row.peopleList&&row.peopleList.length>5)peopleList+=' <span class="muted">+ '+(row.peopleList.length-5)+' more</span>';out+='<tr><td><button class="linkish" onclick="TD.go(\'role\',\''+esc(row.key)+'\')">'+esc(row.name)+'</button></td><td>'+peopleList+'</td><td>'+covers+'</td><td>'+row.apps+'</td></tr>';}return out+'</tbody></table></div>';}
 function showCoverSummary(showId){var roleRows=showRoleRows(showId),rows=[],i,out='<div class="list">';for(i=0;i<roleRows.length;i++)if(roleRows[i].covers)rows.push(roleRows[i]);rows.sort(function(a,b){return b.covers-a.covers||b.apps-a.apps||a.name.localeCompare(b.name);});if(!rows.length)return'<p class="muted">No covers or special appearances noted for this show.</p>';for(i=0;i<Math.min(rows.length,12);i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'role\',\''+esc(rows[i].key)+'\')">'+esc(rows[i].name)+'</button><div class="tiny">'+rows[i].covers+' cover/special appearances</div></div>';return out+'</div>';}
 function firstTimersForShow(showId){var perfs=(idx.showPerfs[showId]||[]).slice(),seenBefore={},firsts={},i,j,p,apps,a,person,out='<div class="list">';perfs.sort(function(a,b){return String(a.date).localeCompare(String(b.date));});for(i=0;i<perfs.length;i++){p=perfs[i];apps=idx.perfApps[p.id]||[];for(j=0;j<apps.length;j++){a=apps[j];if(!seenBefore[a.personId]){if(!firsts[a.personId])firsts[a.personId]={perf:p,roles:[]};var r=by(db.roles,a.roleId);if(r)firsts[a.personId].roles.push(r.name);}}for(j=0;j<apps.length;j++)seenBefore[apps[j].personId]=1;}var rows=[],id;for(id in firsts)if(Object.prototype.hasOwnProperty.call(firsts,id))rows.push({id:id,perf:firsts[id].perf,roles:firsts[id].roles});rows.sort(function(a,b){return String(a.perf.date).localeCompare(String(b.perf.date))||personName(a.id).localeCompare(personName(b.id));});if(!rows.length)return'<p class="muted">No first-time performer appearances found for this show.</p>';for(i=0;i<Math.min(rows.length,18);i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'person\','+rows[i].id+')">'+esc(personName(rows[i].id))+'</button><div class="tiny">'+esc(rows[i].roles.slice(0,3).join(' / '))+' · first in this show on <button class="linkish" onclick="TD.go(\'perf\','+rows[i].perf.id+')">'+esc(fmtDate(rows[i].perf.date))+'</button></div></div>';return out+'</div>';}
-function showRoleRows(showId){var rows=[],k,o,set,i,a;for(k in idx.allRolesByName)if(Object.prototype.hasOwnProperty.call(idx.allRolesByName,k)){o=idx.allRolesByName[k];if(String(o.showId)!==String(showId))continue;set={};var covers=0;for(i=0;i<o.apps.length;i++){a=o.apps[i];set[a.personId]=1;if(a.coverType||a.coverLabel||a.appearanceType==='swing')covers++;}rows.push({key:k,name:o.roleName,apps:o.apps.length,people:keys(set).length,covers:covers});}rows.sort(function(a,b){return b.apps-a.apps||a.name.localeCompare(b.name);});return rows;}
+function showRoleRows(showId){var rows=[],k,o,set,i,a;for(k in idx.allRolesByName)if(Object.prototype.hasOwnProperty.call(idx.allRolesByName,k)){o=idx.allRolesByName[k];if(String(o.showId)!==String(showId))continue;set={};var covers=0;for(i=0;i<o.apps.length;i++){a=o.apps[i];set[a.personId]=1;if(a.coverType||a.coverLabel||a.appearanceType==='swing')covers++;}var plist=keys(set).map(function(id){return {id:id,name:personName(id)};});plist.sort(function(a,b){return a.name.localeCompare(b.name);});rows.push({key:k,name:o.roleName,apps:o.apps.length,people:keys(set).length,peopleList:plist,covers:covers});}rows.sort(function(a,b){return b.apps-a.apps||a.name.localeCompare(b.name);});return rows;}
 function venuePage(id){var v=by(db.venues,id),arr=(idx.venuePerfs[id]||[]).slice(),i,out;arr.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});out='<main class="wrap"><section class="hero"><h1>'+esc(v?v.name:'Venue')+'</h1><p class="muted">'+esc(v&&v.city?v.city:'')+' · '+arr.length+' performances.</p></section>';out+=renderListing(arr);return out+'</main>';}
 
 
@@ -1284,7 +1356,7 @@ function clearAddEntry(){
 function peoplePage(){var rows=vals(db.people),q=norm(state.q),i,p,filtered=[],s;for(i=0;i<rows.length;i++){p=rows[i];if(q&&norm(p.name).indexOf(q)===-1)continue;s=stat(p.id,null);if(s.perfs||idx.creativeByPerson[p.id])filtered.push({p:p,s:s});}if(state.peopleMode==='roles')filtered.sort(function(a,b){return b.s.roles-a.s.roles||b.s.perfs-a.s.perfs||a.p.name.localeCompare(b.p.name);});else filtered.sort(function(a,b){return b.s.perfs-a.s.perfs||b.s.roles-a.s.roles||a.p.name.localeCompare(b.p.name);});var out='<main class="wrap"><section class="hero"><h1>People</h1><div class="toolbar"><input class="input" value="'+esc(state.q)+'" placeholder="Search people..." oninput="TD.setQ(this.value)"><button class="pillBtn '+(state.peopleMode==='appearances'?'active':'')+'" onclick="TD.setPeopleMode(\'appearances\')">Most seen</button><button class="pillBtn '+(state.peopleMode==='roles'?'active':'')+'" onclick="TD.setPeopleMode(\'roles\')">Most roles</button></div></section><section class="card tableWrap"><table class="table"><thead><tr><th>Person</th><th>Performances</th><th>Shows</th><th>Roles</th></tr></thead><tbody>';for(i=0;i<Math.min(filtered.length,500);i++)out+='<tr><td><button class="linkish" onclick="TD.go(\'person\','+filtered[i].p.id+')">'+esc(filtered[i].p.name)+'</button></td><td>'+filtered[i].s.perfs+'</td><td>'+filtered[i].s.shows+'</td><td>'+filtered[i].s.roles+'</td></tr>';return out+'</tbody></table></section></main>';}
 function showsPage(){var rows=vals(db.shows),q=norm(state.q),i,s,perfs,people,filtered=[];for(i=0;i<rows.length;i++){s=rows[i];if(q&&norm(s.title).indexOf(q)===-1)continue;perfs=(idx.showPerfs[s.id]||[]).length;people=keys(idx.showPeople[s.id]||{}).length;filtered.push({s:s,perfs:perfs,people:people});}filtered.sort(function(a,b){return b.perfs-a.perfs||a.s.title.localeCompare(b.s.title);});var out='<main class="wrap"><section class="hero"><h1>Shows</h1><div class="toolbar"><input class="input" value="'+esc(state.q)+'" placeholder="Search shows..." oninput="TD.setQ(this.value)"></div></section><section class="grid">';for(i=0;i<filtered.length;i++)out+='<article class="card perfCard" onclick="TD.go(\'show\','+filtered[i].s.id+')"><div class="showTitle">'+esc(filtered[i].s.title)+'</div><div class="chips"><span class="chip">'+filtered[i].perfs+' performances</span><span class="chip">'+filtered[i].people+' people</span></div></article>';return out+'</section></main>';}
 function rolesPage(){var people=vals(db.people),rows=[],i,p,s;for(i=0;i<people.length;i++){p=people[i];s=stat(p.id,null);if(s.roles>1)rows.push({p:p,s:s});}rows.sort(function(a,b){return b.s.roles-a.s.roles||b.s.perfs-a.s.perfs||a.p.name.localeCompare(b.p.name);});var out='<main class="wrap"><section class="hero"><h1>Most Different Roles</h1><p class="muted">Counts each role name once per person, even if they played it in different productions. Cover type is ignored.</p></section><section class="card tableWrap"><table class="table"><thead><tr><th>Person</th><th>Roles</th><th>Performances</th><th>Shows</th></tr></thead><tbody>';for(i=0;i<Math.min(rows.length,300);i++)out+='<tr><td><button class="linkish" onclick="TD.go(\'person\','+rows[i].p.id+')">'+esc(rows[i].p.name)+'</button></td><td>'+rows[i].s.roles+'</td><td>'+rows[i].s.perfs+'</td><td>'+rows[i].s.shows+'</td></tr>';return out+'</tbody></table></section></main>';}
-function rolePage(key){var o=idx.allRolesByName[key],show=o?by(db.shows,o.showId):null,apps=o?o.apps:[],rows=[],i,a,p,r,personSet={};for(i=0;i<apps.length;i++){a=apps[i];p=by(db.performances,a.performanceId);r=by(db.people,a.personId);if(p&&r){personSet[a.personId]=1;rows.push({a:a,perf:p,person:r});}}rows.sort(function(a,b){return String(b.perf.date).localeCompare(String(a.perf.date));});var out='<main class="wrap"><section class="hero"><h1>'+esc(o?o.roleName:'Role')+'</h1><p class="muted">'+esc(show?show.title:'')+' · '+rows.length+' appearances · '+keys(personSet).length+' people.</p></section><section class="card"><div class="list">';for(i=0;i<rows.length;i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'person\','+rows[i].person.id+')">'+esc(rows[i].person.name)+'</button><div class="tiny"><button class="linkish" onclick="TD.go(\'perf\','+rows[i].perf.id+')">'+esc(fmtDate(rows[i].perf.date))+'</button> · '+esc(venueOf(rows[i].perf))+(coverName(rows[i].a.coverLabel||rows[i].a.coverType)?' · '+esc(coverName(rows[i].a.coverLabel||rows[i].a.coverType)):'')+'</div></div>';return out+'</div></section></main>';}
+function rolePage(key){var o=idx.allRolesByName[key],show=o?by(db.shows,o.showId):null,apps=o?o.apps:[],rows=[],i,a,p,r,personSet={},personCounts={},personRows=[],pid,label;for(i=0;i<apps.length;i++){a=apps[i];p=by(db.performances,a.performanceId);r=by(db.people,a.personId);if(p&&r){personSet[a.personId]=1;personCounts[a.personId]=(personCounts[a.personId]||0)+1;rows.push({a:a,perf:p,person:r});}}rows.sort(function(a,b){return String(b.perf.date).localeCompare(String(a.perf.date));});for(pid in personSet)if(Object.prototype.hasOwnProperty.call(personSet,pid))personRows.push({id:pid,name:personName(pid),n:personCounts[pid]||0});personRows.sort(function(a,b){return b.n-a.n||a.name.localeCompare(b.name);});var out='<main class="wrap"><section class="hero"><h1>'+esc(o?o.roleName:'Role')+'</h1><p class="muted">'+esc(show?show.title:'')+' · '+rows.length+' appearances · '+keys(personSet).length+' people.</p></section><div class="split"><section class="card"><h2>Who you’ve seen in this role</h2><div class="list">';for(i=0;i<personRows.length;i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\'person\','+personRows[i].id+')">'+esc(personRows[i].name)+'</button><div class="tiny">'+personRows[i].n+' appearance'+(personRows[i].n===1?'':'s')+'</div></div>';out+='</div></section><aside class="card"><h2>Appearances</h2><div class="list">';for(i=0;i<rows.length;i++){label=coverName(rows[i].a.coverLabel||rows[i].a.coverType||'');if(!label&&rows[i].a.appearanceType==='swing')label='Swing';out+='<div class="row"><button class="linkish" onclick="TD.go(\'person\','+rows[i].person.id+')">'+esc(rows[i].person.name)+'</button><div class="tiny"><button class="linkish" onclick="TD.go(\'perf\','+rows[i].perf.id+')">'+esc(fmtDate(rows[i].perf.date))+'</button> · '+esc(venueOf(rows[i].perf))+(label?coverTagsHtml([label]):'')+'</div></div>';}return out+'</div></aside></div></main>';}
 function coversPage(){var apps=db.appearances||[],rows=[],i,a,p,r,person;for(i=0;i<apps.length;i++){a=apps[i];if(!(a.coverType||a.coverLabel||a.appearanceType==='swing'))continue;p=by(db.performances,a.performanceId);r=by(db.roles,a.roleId);person=by(db.people,a.personId);if(p&&person)rows.push({a:a,p:p,r:r,person:person});}rows.sort(function(a,b){return String(b.p.date).localeCompare(String(a.p.date));});var out='<main class="wrap"><section class="hero"><h1>Covers & Special Appearances</h1><p class="muted">'+rows.length+' cover/swing/special appearance lines.</p></section><section class="card tableWrap"><table class="table"><thead><tr><th>Date</th><th>Show</th><th>Person</th><th>Role</th><th>Cover</th></tr></thead><tbody>';for(i=0;i<Math.min(rows.length,600);i++)out+='<tr><td><button class="linkish" onclick="TD.go(\'perf\','+rows[i].p.id+')">'+esc(fmtDate(rows[i].p.date))+'</button></td><td>'+esc(showOf(rows[i].p))+'</td><td><button class="linkish" onclick="TD.go(\'person\','+rows[i].person.id+')">'+esc(rows[i].person.name)+'</button></td><td>'+esc(rows[i].r?rows[i].r.name:'')+'</td><td><span class="chip cover">'+esc(coverName(rows[i].a.coverLabel||rows[i].a.coverType||rows[i].a.appearanceType))+'</span></td></tr>';return out+'</tbody></table></section></main>';}
 function statsPage(){var perfs=vals(db.performances),years={},types={},i,p,topShows=[],sid;for(i=0;i<perfs.length;i++){p=perfs[i];years[yearOf(p.date)]=(years[yearOf(p.date)]||0)+1;types[p.type||'Unknown']=(types[p.type||'Unknown']||0)+1;}for(sid in idx.showPerfs)if(Object.prototype.hasOwnProperty.call(idx.showPerfs,sid))topShows.push({id:sid,n:idx.showPerfs[sid].length,title:(by(db.shows,sid)||{}).title});topShows.sort(function(a,b){return b.n-a.n||a.title.localeCompare(b.title);});return '<main class="wrap"><section class="hero"><h1>Stats</h1><div class="statGrid"><div class="stat"><div class="num">'+perfs.length+'</div><div class="lab">performances</div></div><div class="stat"><div class="num">'+vals(db.shows).length+'</div><div class="lab">shows</div></div><div class="stat"><div class="num">'+vals(db.people).length+'</div><div class="lab">people</div></div><div class="stat"><div class="num">'+keys(idx.coverPerf).length+'</div><div class="lab">performances with covers</div></div></div></section><div class="split"><section class="card"><h2>Most Seen Shows</h2>'+simpleRows(topShows,'show')+'</section><aside class="card"><h2>By Year</h2>'+countRows(years,true)+'<div class="section"><h2>By Type</h2>'+countRows(types,false)+'</div></aside></div></main>';}
 function simpleRows(rows,type){var out='<div class="list">',i;for(i=0;i<Math.min(rows.length,15);i++)out+='<div class="row"><button class="linkish" onclick="TD.go(\''+type+'\','+rows[i].id+')">'+esc(rows[i].title)+'</button><div class="tiny">'+rows[i].n+' performances</div></div>';return out+'</div>';}
