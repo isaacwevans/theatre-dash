@@ -1005,7 +1005,12 @@ function castBlock(p){
     coverClass=coverClassName(label);badgeClass=coverBadgeClass(label);badge=label?'<span class="coverBadge '+badgeClass+'">'+esc(label)+'</span>':'';
     isTrack=norm(roleName).indexOf('track')>=0||norm(roleName).indexOf('swing')>=0;
     showRule=isPrincipalByShowRule(showTitle,roleName);
-    isEnsembleTrack=showRule===null?isEnsembleTrackRole(roleName,a.appearanceType):!showRule;
+    /* JULIET_DISPLAY_ORDER_RULE: first 8 cast rows are principals, all following rows are Ensemble */
+    if(norm(showTitle).indexOf('juliet')>=0){
+      isEnsembleTrack=(Number(a.displayOrder||0)>8);
+    }else{
+      isEnsembleTrack=showRule===null?isEnsembleTrackRole(roleName,a.appearanceType):!showRule;
+    }
     displayRole=ensembleDisplayRole(roleName,a.appearanceType);
     isOpen=state.inlinePerson&&state.inlinePerson.personId===a.personId&&state.inlinePerson.perfId===p.id;
     if(isEnsembleTrack){
