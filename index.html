@@ -568,6 +568,23 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 .ensembleInlineSection .castLine{margin-bottom:5px!important}
 .ensembleInlineSection .ensembleRole{background:#fff2ad!important;color:#111!important}
 
+
+/* === Cast cutoff fix + hierarchy lookup fix === */
+.castOneLine{grid-template-columns:minmax(78px,.38fr) minmax(0,.62fr)!important;align-items:stretch!important}
+.roleInline{min-width:0!important;white-space:normal!important;overflow:visible!important;overflow-wrap:anywhere!important;word-break:normal!important;line-height:1.08!important;height:auto!important;min-height:36px!important}
+.castPersonCell{min-width:0!important;overflow:visible!important;flex-wrap:wrap!important;row-gap:3px!important}
+.castPersonName{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important}
+.personWrap,.personLeft{min-width:0!important;overflow:visible!important}
+.personLeft{flex-wrap:wrap!important}
+.roleFlag,.coverBadge{flex:0 0 auto!important}
+@media(max-width:760px){
+  .castOneLine{grid-template-columns:minmax(82px,.34fr) minmax(0,.66fr)!important}
+  .roleInline{font-size:11.5px!important;padding:6px!important}
+  .castPersonCell{padding:6px!important}
+  .castPersonName{font-size:11.2px!important;letter-spacing:.045em!important}
+  .personTimes{font-size:9px!important}
+}
+
 </style>
 </head>
 <body>
@@ -942,12 +959,19 @@ var SHOW_PRINCIPAL_RULES={
   'little shop of horrors':['seymour krelborn','audrey','mr mushnik','orin','orin scrivello dds','chiffon','ronnette','crystal','audrey ii','voice of audrey ii','audrey ii voice'],
   'cats: the jellicle ball':['old deuteronomy','munkustrap','rum tum tugger','grizabella','jennyanydots','bustopher jones','gus','gus the theatre cat','magical mister mistoffelees','mistoffelees','jellylorum','skimbleshanks','victoria','mungojerrie','rumpleteazer','macavity','demeter','bombalurina','sillabub','cassandra skimbleshanks']
 };
+
+/* show hierarchy aliases */
+SHOW_PRINCIPAL_RULES['juliet']=SHOW_PRINCIPAL_RULES['& juliet'];
+SHOW_PRINCIPAL_RULES['mamma mia']=SHOW_PRINCIPAL_RULES['mamma mia!'];
+
 function splitRolePartsForRule(roleName){
   var raw=String(roleName||'');
   return raw.split('/').map(function(x){return roleNorm(x);}).filter(Boolean);
 }
 function isPrincipalByShowRule(showTitle,roleName){
-  var rules=SHOW_PRINCIPAL_RULES[norm(showTitle)];
+  var showKey=norm(showTitle), rules=SHOW_PRINCIPAL_RULES[showKey];
+  if(!rules && showKey.indexOf('juliet')>=0) rules=SHOW_PRINCIPAL_RULES['juliet'];
+  if(!rules && showKey.indexOf('mamma mia')>=0) rules=SHOW_PRINCIPAL_RULES['mamma mia'];
   if(!rules)return null;
   var r=roleNorm(roleName), parts=splitRolePartsForRule(roleName), i, j, rr;
   for(i=0;i<rules.length;i++){
