@@ -942,19 +942,39 @@ var SHOW_PRINCIPAL_RULES={
   'little shop of horrors':['seymour krelborn','audrey','mr mushnik','orin','orin scrivello dds','chiffon','ronnette','crystal','audrey ii','voice of audrey ii','audrey ii voice'],
   'cats: the jellicle ball':['old deuteronomy','munkustrap','rum tum tugger','grizabella','jennyanydots','bustopher jones','gus','gus the theatre cat','magical mister mistoffelees','mistoffelees','jellylorum','skimbleshanks','victoria','mungojerrie','rumpleteazer','macavity','demeter','bombalurina','sillabub','cassandra skimbleshanks']
 };
+function splitRolePartsForRule(roleName){
+  var raw=String(roleName||'');
+  return raw.split('/').map(function(x){return roleNorm(x);}).filter(Boolean);
+}
 function isPrincipalByShowRule(showTitle,roleName){
   var rules=SHOW_PRINCIPAL_RULES[norm(showTitle)];
   if(!rules)return null;
-  var r=roleNorm(roleName);
-  for(var i=0;i<rules.length;i++)if(r===roleNorm(rules[i]))return true;
+  var r=roleNorm(roleName), parts=splitRolePartsForRule(roleName), i, j, rr;
+  for(i=0;i<rules.length;i++){
+    rr=roleNorm(rules[i]);
+    if(r===rr)return true;
+    for(j=0;j<parts.length;j++) if(parts[j]===rr)return true;
+  }
   return false;
 }
+
 function castBlock(p){
-  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',ensembleRows=[],notes='',i,a,r,label,line,roleName,displayRole,isTrack,isEnsembleTrack,showRule,coverClass,badgeClass,badge,isOpen,showTitle=showTitleForPerf(p);
+  var apps=(idx.perfApps[p.id]||[]).slice(),principal='',namedEnsembleRows=[],plainEnsembleRows=[],notes='',i,a,r,label,line,roleName,displayRole,isTrack,isEnsembleTrack,showRule,coverClass,badgeClass,badge,isOpen,showTitle=showTitleForPerf(p);
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
-  function ensembleDisplayRole(roleName, appType){var raw=String(roleName||'').trim();if(appType==='ensemble'||norm(raw)==='ensemble')return'Ensemble';raw=raw.replace(/\s*\/\s*ensemble\b/ig,'').replace(/\bensemble\s*\/\s*/ig,'').replace(/\s{2,}/g,' ').trim();return raw||'Ensemble';}
-  function isEnsembleTrackRole(roleName, appType){var n=norm(roleName);return appType==='ensemble'||n==='ensemble'||/(^|\/)\s*ensemble\s*(\/|$)/i.test(String(roleName||''))||/\bensemble\b/i.test(String(roleName||''));}
-  function ensembleLine(a,labelText){var isOpen=state.inlinePerson&&state.inlinePerson.personId===a.personId&&state.inlinePerson.perfId===p.id;return '<div class="castLine ensembleLine '+(isOpen?'isOpen':'')+'"><div class="castOneLine"><span class="roleInline ensembleRole">'+esc(labelText||'Ensemble')+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';}
+  function ensembleDisplayRole(roleName, appType){
+    var raw=String(roleName||'').trim();
+    if(appType==='ensemble'||norm(raw)==='ensemble')return'Ensemble';
+    raw=raw.replace(/\s*\/\s*ensemble\b/ig,'').replace(/\bensemble\s*\/\s*/ig,'').replace(/\s{2,}/g,' ').trim();
+    return raw||'Ensemble';
+  }
+  function isEnsembleTrackRole(roleName, appType){
+    var n=norm(roleName);
+    return appType==='ensemble'||n==='ensemble'||/(^|\/)\s*ensemble\s*(\/|$)/i.test(String(roleName||''))||/\bensemble\b/i.test(String(roleName||''));
+  }
+  function ensembleLine(a,labelText){
+    var isOpen=state.inlinePerson&&state.inlinePerson.personId===a.personId&&state.inlinePerson.perfId===p.id;
+    return '<div class="castLine ensembleLine '+(isOpen?'isOpen':'')+'"><div class="castOneLine"><span class="roleInline ensembleRole">'+esc(labelText||'Ensemble')+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
+  }
   for(i=0;i<apps.length;i++){
     a=apps[i];r=by(db.roles,a.roleId);roleName=r?r.name:(a.roleRaw||'');
     label=coverName(a.coverLabel||a.coverType||'');if(!label&&a.appearanceType==='swing')label='Swing';
@@ -964,12 +984,26 @@ function castBlock(p){
     isEnsembleTrack=showRule===null?isEnsembleTrackRole(roleName,a.appearanceType):!showRule;
     displayRole=ensembleDisplayRole(roleName,a.appearanceType);
     isOpen=state.inlinePerson&&state.inlinePerson.personId===a.personId&&state.inlinePerson.perfId===p.id;
-    if(isEnsembleTrack){ensembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole)});}
-    else if(a.appearanceType==='swing'&&isTrack){notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';}
-    else{line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="castOneLine"><span class="roleInline">'+roleLink(r)+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+badge+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';principal+=line;if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';}
+    if(isEnsembleTrack){
+      if(displayRole==='Ensemble') plainEnsembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole),order:a.displayOrder||9999});
+      else namedEnsembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole),order:a.displayOrder||9999});
+    }else if(a.appearanceType==='swing'&&isTrack){
+      notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
+    }else{
+      line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="castOneLine"><span class="roleInline">'+roleLink(r)+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+badge+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
+      principal+=line;
+      if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
+    }
   }
-  ensembleRows.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
-  var ensembleSection='',j;if(ensembleRows.length){ensembleSection='<div class="ensembleInlineSection"><h3>Ensemble</h3>';for(j=0;j<ensembleRows.length;j++)ensembleSection+=ensembleRows[j].html;ensembleSection+='</div>';}
+  namedEnsembleRows.sort(function(a,b){return (a.order-b.order)||lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
+  plainEnsembleRows.sort(function(a,b){return lastNameKey(a.name).localeCompare(lastNameKey(b.name));});
+  var ensembleSection='',j;
+  if(namedEnsembleRows.length||plainEnsembleRows.length){
+    ensembleSection='<div class="ensembleInlineSection"><h3>Ensemble</h3>';
+    for(j=0;j<namedEnsembleRows.length;j++)ensembleSection+=namedEnsembleRows[j].html;
+    for(j=0;j<plainEnsembleRows.length;j++)ensembleSection+=plainEnsembleRows[j].html;
+    ensembleSection+='</div>';
+  }
   var out='<div class="castArea"><div class="principalCast">'+principal+ensembleSection+'</div></div>';
   if(notes)out+='<div class="section"><h3>Coverage Notes</h3><div class="list">'+notes+'</div></div>';
   return out;
