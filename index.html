@@ -26,7 +26,7 @@ h1,h2,h3{font-family:inherit;line-height:1.05}h1{font-size:36px;margin:0 0 6px}h
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:10px}.card{border:1px solid rgba(83,58,45,.13);background:rgba(255,253,247,.66);border-radius:18px;padding:12px;min-width:0;box-shadow:0 10px 28px rgba(83,58,45,.08)}
 .perfCard{cursor:pointer;transition:transform .12s ease,background .12s ease}.perfCard:hover,.lineRow:hover{transform:translateY(-1px);background:rgba(255,253,247,.92)}
 .showTitle{font-family:inherit;font-weight:900;font-size:21px;line-height:1.05;margin-bottom:4px;color:#2f2119}.meta{font-size:13px;color:rgba(45,33,27,.64);line-height:1.32}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{border:1px solid rgba(83,58,45,.13);background:rgba(255,255,255,.55);border-radius:999px;padding:4px 7px;font-size:12px;color:#6b4936}.cover{border-color:rgba(176,110,66,.34);background:rgba(210,146,92,.16);color:#774625;font-weight:850}.good{border-color:rgba(102,143,107,.32);background:rgba(145,184,145,.16);color:#3f6947}.purple{border-color:rgba(161,138,170,.28);background:rgba(161,138,170,.12);color:#65506f}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{border:1px solid rgba(83,58,45,.13);background:rgba(255,255,255,.55);border-radius:999px;padding:4px 7px;font-size:12px;color:#6b4936}.cover{border-color:rgba(176,110,66,.34);background:rgba(210,146,92,.16);color:#774625;font-weight:850}.good{border-color:rgba(102,143,107,.32);background:rgba(145,184,145,.16);color:#3f6947}.purple{border-color:rgba(161,138,170,.28);background:rgba(161,138,170,.12);color:#65506f}.conductorChip{border-color:rgba(66,111,166,.30)!important;background:rgba(221,236,255,.70)!important;color:#244f78!important;font-weight:850}
 .yearBox{border:1px solid rgba(83,58,45,.13);background:rgba(255,253,247,.50);border-radius:20px;margin:10px 0;overflow:hidden}
 .yearBox summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.36);font-family:inherit;font-size:22px;font-weight:900}
 .yearBox summary::-webkit-details-marker{display:none}.yearBox summary:after{content:"▾";font-family:Arial;font-size:14px;color:#7a4e35}.yearBox:not([open]) summary:after{content:"▸"}
@@ -899,10 +899,16 @@ function perfCard(p){var apps=idx.perfApps[p.id]||[],preview=[],i,a,person,role,
 function perfLine(p){var c=perfCounts(p);return '<article class="lineRow" onclick="TD.go(\'perf\','+p.id+')"><div class="lineDate">'+esc(shortDate(p.date))+'<div class="tiny">#'+idx.attendanceNo[p.id]+'</div></div><div class="lineMain"><div class="lineTitle">'+esc(showOf(p))+'</div><div class="lineSub">'+esc(venueOf(p))+' · '+esc(p.time||'')+' · '+esc(p.type||'')+'</div></div><div class="lineBadges"><span class="chip good">show #'+idx.showViewingNo[p.id]+'</span>'+(c.covers?'<span class="chip cover">'+c.covers+' cover</span>':'')+(hasNote(p)?'<span class="chip">notes</span>':'')+'</div></article>';}
 function hasNote(p){var e=edits[String(p.id)]||{};return !!(e.notes||e.privateNote||p.notes);}
 
+function conductorChip(p){
+  if(!p || !p.conductedBy) return '';
+  var label='Conducted by '+p.conductedBy+(p.conductedByVerified?' ✓':'');
+  return '<span class="chip conductorChip">'+esc(label)+'</span>';
+}
+
 function perfPage(id){
   var p=by(db.performances,id); if(!p)return '<main class="wrap"><section class="card"><h1>Performance not found</h1></section></main>';
   var np=nextPrev(id), e=edits[String(id)]||{}, note=e.notes!=null?e.notes:(p.notes||''), privateNote=e.privateNote||'', tags=e.tags||'', rating=e.rating||'';
-  return '<main class="wrap"><section class="hero"><div class="tiny">'+esc(p.type||'')+' · '+esc(p.time||'')+'</div><h1>'+esc(showOf(p))+'</h1><p class="muted">'+esc(fmtDate(p.date))+' · '+esc(venueOf(p))+'</p><div class="chips">'+showNumberChips(p)+(idx.coverPerf[p.id]?'<span class="chip cover">covers/special appearances</span>':'')+(rating?'<span class="chip good">'+esc(rating)+' ★</span>':'')+(tags?tagChips(tags):'')+'</div><div class="toolbar"><button class="btn" onclick="TD.go(\'perf\','+np.prev+')">Previous</button><button class="btn" onclick="TD.go(\'perf\','+np.next+')">Next</button><button class="btn" onclick="TD.go(\'show\','+p.showId+')">Show Page</button><button class="btn" onclick="TD.go(\'venue\','+p.venueId+')">Venue Page</button><button class="btn" onclick="TD.copyPerf('+id+',\'plain\')">Copy Info</button><button class="btn" onclick="TD.copyPerf('+id+',\'cast\')">Copy Cast</button><button class="btn" onclick="TD.copyPerf('+id+',\'html\')">Copy Formatted</button></div></section>'+
+  return '<main class="wrap"><section class="hero"><div class="tiny">'+esc(p.type||'')+' · '+esc(p.time||'')+'</div><h1>'+esc(showOf(p))+'</h1><p class="muted">'+esc(fmtDate(p.date))+' · '+esc(venueOf(p))+'</p><div class="chips">'+showNumberChips(p)+conductorChip(p)+(idx.coverPerf[p.id]?'<span class="chip cover">covers/special appearances</span>':'')+(rating?'<span class="chip good">'+esc(rating)+' ★</span>':'')+(tags?tagChips(tags):'')+'</div><div class="toolbar"><button class="btn" onclick="TD.go(\'perf\','+np.prev+')">Previous</button><button class="btn" onclick="TD.go(\'perf\','+np.next+')">Next</button><button class="btn" onclick="TD.go(\'show\','+p.showId+')">Show Page</button><button class="btn" onclick="TD.go(\'venue\','+p.venueId+')">Venue Page</button><button class="btn" onclick="TD.copyPerf('+id+',\'plain\')">Copy Info</button><button class="btn" onclick="TD.copyPerf('+id+',\'cast\')">Copy Cast</button><button class="btn" onclick="TD.copyPerf('+id+',\'html\')">Copy Formatted</button></div></section>'+
   '<section class="card"><h2>Cast</h2>'+castBlock(p)+firstTimeBlock(p)+'</section>'+
   '<section class="card section"><h2>Creative Team</h2>'+creativeBlock(id)+'</section>'+
   '<section class="card section">'+relatedBlock(p)+'</section>'+
@@ -986,7 +992,7 @@ var SHOW_DISPLAY_RULES={
   'paradise square':{ensembleStartsAt:10},
   'catch me if you can':{ensembleStartsAt:6},
   'dave':{ensembleStartsAt:6},
-  'newsies':{ensembleStartsAt:7},
+  'newsies':{ensembleStartsAt:8},
   'the pajama game':{ensembleStartsAt:10},
   'anything goes':{ensembleStartsAt:9},
   'matilda the musical':{ensembleStartsAt:9},
@@ -1008,6 +1014,11 @@ var SHOW_DISPLAY_RULES={
   'sister act':{ensembleStartsAt:12},
   'pippin':{ensembleStartsAt:9},
   'cabaret':{ensembleStartsAt:8},
+  'priscilla queen of the desert':{ensembleStartsAt:8},
+  'shrek':{ensembleStartsAt:8},
+  'chicago':{ensembleStartsAt:7},
+  '9 to 5':{ensembleStartsAt:99},
+  '9 to 5: the musical':{ensembleStartsAt:99},
   'annie':{
     principalRoles:['annie','oliver warbucks','miss hannigan','grace farrell','president franklin delano roosevelt','fdr','rooster hannigan','lily st regis'],
     specialSections:[{label:'Orphans',roles:['molly','pepper','july','kate','tessie','duffy']}],
