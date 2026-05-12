@@ -374,9 +374,9 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 .personRoleLine{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;width:100%;border:0;border-bottom:1px solid rgba(255,255,255,.16);background:transparent;color:#fffdf3;text-align:left;padding:8px 2px}
 .personRoleLine:hover{background:rgba(244,208,0,.08)}
 .personRoleMain{min-width:0}
-.personRoleRole{font-size:12px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;color:var(--pb-yellow)}
-.personRoleProd{font-size:12px;color:#fffdf3;margin-top:2px}
-.personRoleDates{font-size:11px;color:#d8d2b8;margin-top:2px;line-height:1.35}
+.personRoleRole{display:block;font-size:12px;font-weight:950;letter-spacing:.04em;text-transform:uppercase;color:var(--pb-yellow)}
+.personRoleProd{display:block;font-size:12px;color:#fffdf3;margin-top:2px}
+.personRoleDates{display:block;font-size:11px;color:#d8d2b8;margin-top:2px;line-height:1.35}
 .personRoleCount{background:#fffdf3;color:#111;border-radius:999px;font-size:11px;font-weight:950;padding:3px 7px;white-space:nowrap}
 .personMoreLine{font-size:12px;color:#d8d2b8;padding:8px 2px}
 .monthTinyChart{height:104px!important;align-items:end}
@@ -587,7 +587,7 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 
 
 /* === v5 UI additions === */
-.firstBadge{display:inline-block;margin-left:5px;background:var(--pb-yellow);color:#111;border-radius:999px;padding:2px 5px;font-size:9px;font-weight:900;text-transform:uppercase;vertical-align:middle}
+.firstBadge{display:none!important}
 .understudyBoard{margin:14px 0 8px;border:2px solid #111;background:#fffdf3;border-radius:10px;overflow:hidden}
 .boardTitle{background:#111;color:var(--pb-yellow);font-weight:900;text-transform:uppercase;letter-spacing:.08em;padding:8px 10px}
 .understudyBoard table{width:100%;border-collapse:collapse}.understudyBoard th,.understudyBoard td{border-top:1px solid var(--pb-line);padding:8px;text-align:left;vertical-align:top}.understudyBoard th{font-size:11px;text-transform:uppercase;color:#111;background:#fff3ad}.boardRole{font-weight:900}.lineageTable td:first-child{min-width:160px}.tradingGrid,.statSections{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}.personTrading{margin-bottom:12px}.bigMini{font-size:28px;font-weight:900}.castGridWrap{max-height:70vh}.castGrid th{position:sticky;top:0;z-index:2}.castGrid td,.castGrid th{min-width:120px}.castGrid td:first-child,.castGrid th:first-child{position:sticky;left:0;background:#fffdf3;z-index:3;min-width:104px}.castGridPerson{display:inline-block;border:1px solid rgba(0,0,0,.10);border-radius:999px;padding:3px 6px;margin:2px;font-weight:800;color:#111}.castGridPerson em{font-size:10px;color:#4c3a24}.connectionGrid .connectionCard strong{font-weight:900}
@@ -1426,6 +1426,16 @@ function personColor(pid){
   var n=Number(pid)||0,h=(n*47)%360;
   return 'hsl('+h+', 72%, 86%)';
 }
+function baseRoleNameForCastGrid(roleName){
+  var raw=String(roleName||'').trim();
+  raw=raw.replace(/\s*(?:--|—|–|-)\s*act\s*(?:one|two|1|2)\s*$/i,'');
+  raw=raw.replace(/\s*,?\s*act\s*(?:one|two|1|2)\s*$/i,'');
+  raw=raw.replace(/\s*\(\s*act\s*(?:one|two|1|2)\s*\)\s*$/i,'');
+  raw=raw.replace(/\s{2,}/g,' ').trim();
+  if(norm(raw)==='sister mary robert') raw='Mary Robert';
+  return raw||String(roleName||'').trim();
+}
+function castGridRoleKey(roleName){return roleNorm(baseRoleNameForCastGrid(roleName));}
 function firstRoleForPersonInPerf(personId,perfId){
   var apps=idx.perfApps[perfId]||[],i,a,r,roles=[];
   for(i=0;i<apps.length;i++)if(String(apps[i].personId)===String(personId)){r=by(db.roles,apps[i].roleId);if(r)roles.push(r.name);}
@@ -1439,7 +1449,7 @@ function coverCountForPerson(personId){
 function personButton(personId,currentPerfId){
   var s=stat(personId,currentPerfId), flag='', times='', first='';
   if(s.other>0) times='<span class="personTimes">('+s.other+')</span>';
-  if(idx.firstPerformerPerf[personId]===currentPerfId) first='<span class="firstBadge">first time</span>';
+  /* first-time inline badges intentionally hidden */
   if(s.roles>=2) flag='<span class="roleFlag '+roleTierClass(s.roles)+'" title="'+s.roles+' roles">'+s.roles+'</span>';
   return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button>'+times+first+'</span>'+flag+'</span>';
 }
@@ -1450,27 +1460,28 @@ function coverageTargetFromApp(a,roleName){
   return '';
 }
 function understudyBoard(p){
-  var apps=(idx.perfApps[p.id]||[]).slice(), rows=[], i,a,r,person,label,roleName,target,left,sub;
-  apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
+  var apps=(idx.perfApps[p.id]||[]).slice(), roleRows=[], swingRows=[], i,a,r,person,label,roleName,target;
   for(i=0;i<apps.length;i++){
     a=apps[i]; label=coverName(a.coverLabel||a.coverType||''); if(!label&&a.appearanceType==='swing')label='Swing';
     if(!label)continue;
     r=by(db.roles,a.roleId); roleName=r?r.name:(a.roleRaw||''); person=by(db.people,a.personId);
     if(label==='Swing'){
-      target=coverageTargetFromApp(a,roleName);
-      left=target?target:(roleName||'Swing track');
-      sub=target?roleName:'';
-      rows.push({left:left,right:person?person.name:personName(a.personId),label:label,sub:sub,isSwing:true});
+      target=coverageTargetFromApp(a,roleName)||roleName||'Swing track';
+      swingRows.push({left:target,right:person?person.name:personName(a.personId)});
     }else{
-      rows.push({left:roleName,right:person?person.name:personName(a.personId),label:label,sub:'',isSwing:false});
+      roleRows.push({left:roleName,right:person?person.name:personName(a.personId)});
     }
   }
-  if(!rows.length)return '';
-  var out='<section class="understudyBoard"><div class="boardTitle">At This Performance</div><table><thead><tr><th>'+esc('THE ROLE OF...')+'</th><th>'+esc('WILL BE PLAYED BY...')+'</th></tr></thead><tbody>';
-  for(i=0;i<rows.length;i++){
-    out+='<tr><td><div class="boardRole">'+(rows[i].isSwing?'Roles usually played by ':'')+esc(rows[i].left)+'</div>'+(rows[i].sub?'<div class="tiny">'+esc(rows[i].sub)+'</div>':'')+'<span class="chip cover">'+esc(rows[i].label)+'</span></td><td><strong>'+esc(rows[i].right)+'</strong></td></tr>';
+  if(!roleRows.length&&!swingRows.length)return '';
+  function boardTable(rows,leftHead,wide){
+    var j,out='<table class="'+(wide?'wideBoard':'')+'"><thead><tr><th>'+esc(leftHead)+'</th><th>'+esc('WILL BE PLAYED BY')+'</th></tr></thead><tbody>';
+    for(j=0;j<rows.length;j++)out+='<tr><td><div class="boardRole">'+esc(rows[j].left)+'</div></td><td><strong>'+esc(rows[j].right)+'</strong></td></tr>';
+    return out+'</tbody></table>';
   }
-  return out+'</tbody></table></section>';
+  var out='<section class="understudyBoard"><div class="boardTitle">At This Performance</div>';
+  if(roleRows.length)out+=boardTable(roleRows,'THE ROLE OF',false);
+  if(swingRows.length)out+=boardTable(swingRows,'THE ROLE(S) USUALLY PLAYED BY',true);
+  return out+'</section>';
 }
 function perfPage(id){
   var p=by(db.performances,id); if(!p)return '<main class="wrap"><section class="card"><h1>Performance not found</h1></section></main>';
@@ -1537,15 +1548,15 @@ function showCastGridData(showId){
       if(norm(roleName)==='ensemble')continue;
       section=castSectionByShowRule(show?show.title:'',roleName,a);
       if(section==='ensemble')continue;
-      key=roleNorm(roleName);
-      if(!roleMap[key]){roleMap[key]={key:key,name:roleName,order:a.displayOrder||9999};roleOrder.push(key);} else if((a.displayOrder||9999)<roleMap[key].order){roleMap[key].order=a.displayOrder||9999;}
+      key=castGridRoleKey(roleName);
+      if(!roleMap[key]){roleMap[key]={key:key,name:baseRoleNameForCastGrid(roleName),order:a.displayOrder||9999};roleOrder.push(key);} else if((a.displayOrder||9999)<roleMap[key].order){roleMap[key].order=a.displayOrder||9999; roleMap[key].name=baseRoleNameForCastGrid(roleName);}
     }
   }
   roleOrder.sort(function(x,y){return (roleMap[x].order-roleMap[y].order)||roleMap[x].name.localeCompare(roleMap[y].name);});
   for(i=0;i<perfs.length;i++){
     p=perfs[i]; cell={}; apps=(idx.perfApps[p.id]||[]);
     for(j=0;j<apps.length;j++){
-      a=apps[j]; r=by(db.roles,a.roleId); roleName=r?r.name:(a.roleRaw||''); key=roleNorm(roleName); if(!roleMap[key])continue;
+      a=apps[j]; r=by(db.roles,a.roleId); roleName=r?r.name:(a.roleRaw||''); key=castGridRoleKey(roleName); if(!roleMap[key])continue;
       if(!cell[key])cell[key]=[];
       cell[key].push({personId:a.personId,name:personName(a.personId),cover:coverName(a.coverLabel||a.coverType||'')||(a.appearanceType==='swing'?'Swing':'')});
     }
