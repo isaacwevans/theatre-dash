@@ -593,6 +593,9 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 .understudyBoard table{width:100%;border-collapse:collapse}.understudyBoard th,.understudyBoard td{border-top:1px solid var(--pb-line);padding:8px;text-align:left;vertical-align:top}.understudyBoard th{font-size:11px;text-transform:uppercase;color:#111;background:#fff3ad}.boardRole{font-weight:900}.lineageTable td:first-child{min-width:160px}.tradingGrid,.statSections{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}.personTrading{margin-bottom:12px}.bigMini{font-size:28px;font-weight:900}.castGridWrap{max-height:70vh}.castGrid th{position:sticky;top:0;z-index:2}.castGrid td,.castGrid th{min-width:120px}.castGrid td:first-child,.castGrid th:first-child{position:sticky;left:0;background:#fffdf3;z-index:3;min-width:104px}.castGridPerson{display:inline-block;border:1px solid rgba(0,0,0,.10);border-radius:999px;padding:3px 6px;margin:2px;font-weight:800;color:#111}.castGridPerson em{font-size:10px;color:#4c3a24}.connectionGrid .connectionCard strong{font-weight:900}
 @media(max-width:760px){.tradingGrid,.statSections{grid-template-columns:1fr}.castGrid td,.castGrid th{min-width:100px}.understudyBoard th,.understudyBoard td{font-size:12px}}
 
+
+.buildTile{margin-left:auto;border:1px solid rgba(244,208,0,.35);background:linear-gradient(135deg,#fff8bc,#f2f6ff);color:#222;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+body.compact{font-size:13px;--gap:6px}body.compact .wrap{max-width:1180px;padding:10px}body.compact .topbar{padding:4px 0}body.compact .topin{gap:6px}body.compact .brand{font-size:18px}body.compact .btn,body.compact .pillBtn{font-size:11px;padding:5px 7px;border-radius:9px}body.compact .card{padding:7px!important;border-radius:12px!important}body.compact .hero{padding:10px!important;border-radius:14px!important}body.compact h1{font-size:28px}body.compact h2{font-size:17px}body.compact h3{font-size:13px}body.compact .castLine{min-height:0;padding:2px 0!important;gap:4px!important}body.compact .castOneLine{min-height:34px}body.compact .roleInline,body.compact .role{font-size:12px!important;padding:6px 8px!important}body.compact .castPersonCell{font-size:13px!important;padding:6px 8px!important}body.compact .personTimes{font-size:10px}body.compact .roleFlag{width:23px;height:23px;font-size:11px}body.compact .lineRow{padding:7px!important;min-height:0}body.compact .lineTitle{font-size:15px}body.compact .lineSub,.tiny{line-height:1.2}body.compact .grid{gap:6px!important}body.compact .stat{padding:8px;border-radius:10px}body.compact .num{font-size:22px}.castLine.coverSwing .roleInline,.castLine.coverSwing .castPersonCell,.castLine.coverSwing .ensembleRole{background:#dff5cc!important;border-color:#74b84a!important}.ensembleLine.coverSwing{box-shadow:inset 4px 0 0 #5fae36}.ensembleLine .coverBadge{margin-left:8px}
 </style>
 </head>
 <body>
@@ -600,12 +603,19 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 <script>
 (function(){
 var db=null, idx=null, edits=readEdits();
-var state={view:'home',id:null,q:'',year:'all',type:'all',cover:false,limit:2000,history:[],hIndex:-1,panel:null,peopleMode:'appearances',personLayout:(localStorage.getItem('theatreDiaryPersonLayout')||'grouped'),sort:'old',density:(localStorage.getItem('theatreDiaryDensity')||'comfy'),layout:(localStorage.getItem('theatreDiaryLayout')||'lines'),groupYears:(localStorage.getItem('theatreDiaryGroupYears')||'yes'),calendarYear:null,selectedJumpYear:null,inlinePerson:null,qDelay:null,focusId:null};
+var state={view:'home',id:null,q:'',year:'all',type:'all',cover:false,limit:2000,history:[],hIndex:-1,panel:null,peopleMode:'appearances',personLayout:(localStorage.getItem('theatreDiaryPersonLayout')||'grouped'),sort:'new',density:(localStorage.getItem('theatreDiaryDensity')||'comfy'),layout:(localStorage.getItem('theatreDiaryLayout')||'lines'),groupYears:(localStorage.getItem('theatreDiaryGroupYears')||'yes'),calendarYear:null,selectedJumpYear:null,inlinePerson:null,qDelay:null,focusId:null};
 window.onerror=function(msg,src,line,col,err){showError('Dashboard crashed',String(msg)+' at line '+line);};
 
 function esc(s){s=s==null?'':String(s);return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function norm(s){return (s==null?'':String(s)).toLowerCase().replace(/[\u2018\u2019]/g,"'").replace(/[^a-z0-9]+/g,' ').replace(/^\s+|\s+$/g,'');}
-function roleNorm(s){s=norm(s).replace(/\bensemble\b/g,'').replace(/\btrack\b/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');return s||'ensemble';}
+function roleNorm(s){
+  var raw=(s==null?'':String(s));
+  raw=raw.replace(/[‘’]/g,"'").replace(/\s*(?:--|—|–|-)\s*act\s*(?:one|two|1|2)\s*$/i,'').replace(/\s*,?\s*act\s*(?:one|two|1|2)\s*$/i,'');
+  var parts=raw.split('/').map(function(x){return norm(x).replace(/ensemble/g,'').replace(/track/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');}).filter(Boolean);
+  if(parts.length>1){parts.sort();return parts.join(' / ');}
+  var s2=parts[0]||norm(raw).replace(/ensemble/g,'').replace(/track/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');
+  return s2||'ensemble';
+}
 function vals(o){var a=[],k;for(k in o){if(Object.prototype.hasOwnProperty.call(o,k))a.push(o[k]);}return a;}
 function keys(o){var a=[],k;for(k in o){if(Object.prototype.hasOwnProperty.call(o,k))a.push(k);}return a;}
 function by(map,id){return map&&map[String(id)]?map[String(id)]:null;}
@@ -625,13 +635,13 @@ function lastNameKey(name){
 function cleanTrackRoleLabel(role){
   role=String(role||'');
   var m=role.match(/^(.+?)'s track$/i);
-  if(m)return 'in '+m[1]+'’s track';
+  if(m)return m[1]+'’s track';
   return role;
 }
 function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
-function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v5-20260512',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
+function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v9-20260513',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
 function showError(t,m){document.getElementById('app').innerHTML='<main class="wrap"><section class="card"><h1>'+esc(t)+'</h1><p class="muted">'+esc(m)+'</p></section></main>';}
 
 function buildIndexes(){
@@ -692,7 +702,7 @@ function personButton(personId,currentPerfId){
   return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button>'+times+'</span>'+flag+'</span>';
 }
 
-function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button><button class="btn" onclick="TD.random()">Random</button></div></div></div>'+inner;}
+function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button></div><div class="buildTile">Build v9 · May 13, 2026 · '+esc((db&&db.meta&&db.meta.buildTime)||'')+'</div></div></div>'+inner;}
 function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='add')h=addEntryPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
 function go(v,id,replace){state.view=v;state.id=id;state.panel=null;if(!replace){if(state.hIndex<state.history.length-1)state.history=state.history.slice(0,state.hIndex+1);state.history.push({v:v,id:id});state.hIndex=state.history.length-1;}else if(!state.history.length){state.history.push({v:v,id:id});state.hIndex=0;}render();setTimeout(function(){window.scrollTo(0,0);},0);}
 function back(){if(state.hIndex>0){state.hIndex--;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
@@ -708,11 +718,11 @@ function home(){
   var recentYear=ys.length?ys[ys.length-1]:state.selectedJumpYear;
   var out='<main class="wrap"><section class="hero"><h1>Theatre Diary</h1>'+
     '<div class="sleekHeroSearch"><input id="topSearch" class="input" value="'+esc(state.q)+'" placeholder="Search the diary..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'topSearch\')"><button class="btn" onclick="TD.applySearch(\'topSearch\')">Search diary</button><button class="btn" onclick="TD.diary()">Go to diary</button></div>'+
-    '<div class="homeQuick"><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.random()">Random</button>'+(state.q?'<button class="btn" onclick="TD.clearSearch()">Clear search</button>':'')+'</div>'+
+    '<div class="homeQuick"><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button>'+(state.q?'<button class="btn" onclick="TD.clearSearch()">Clear search</button>':'')+'</div>'+
     topStatsBlock()+'<div class="accentRule"></div></section>'+onThisDayBlock()+
     '<section class="card"><div class="moduleTitle"><h2>Last 12 months</h2><span class="chip">rolling activity</span></div>'+rollingMonthChart()+'</section>'+
     '<section class="card libraryCard"><div class="moduleTitle"><div><h2>Library by year</h2><p class="tiny">Pick a year, then a month. The diary below stays continuous.</p></div><span class="chip">'+keys(years).length+' years</span></div><div class="yearChipRail">'+yearChipButtons(countByYear())+'</div>'+monthPop(state.selectedJumpYear)+'</section>'+
-    '<div id="diaryList" class="diaryHead"><div><h2>Diary</h2><p class="tiny">'+(state.q?'Search results for “'+esc(state.q)+'”':'Continuous list, oldest to newest')+'</p></div><div class="toolbar"><input id="diarySearch" class="input" value="'+esc(state.q)+'" placeholder="Search..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'diarySearch\')"><button class="btn" onclick="TD.applySearch(\'diarySearch\')">Search</button><button class="pillBtn '+(state.layout==='lines'?'active':'')+'" onclick="TD.setLayout(\'lines\')">Lines</button><button class="pillBtn '+(state.layout==='cards'?'active':'')+'" onclick="TD.setLayout(\'cards\')">Cards</button></div></div>';
+    '<div id="diaryList" class="diaryHead"><div><h2>Diary</h2><p class="tiny">'+(state.q?'Search results for “'+esc(state.q)+'”':(state.sort==='old'?'Continuous list, oldest to newest':'Continuous list, newest to oldest'))+'</p></div><div class="toolbar"><input id="diarySearch" class="input" value="'+esc(state.q)+'" placeholder="Search..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'diarySearch\')"><button class="btn" onclick="TD.applySearch(\'diarySearch\')">Search</button><button class="pillBtn '+(state.layout==='lines'?'active':'')+'" onclick="TD.setLayout(\'lines\')">Lines</button><button class="pillBtn '+(state.layout==='cards'?'active':'')+'" onclick="TD.setLayout(\'cards\')">Cards</button><button class="pillBtn '+(state.sort!=='old'?'active':'')+'" onclick="TD.setSort(\'new\')">Newest first</button><button class="pillBtn '+(state.sort==='old'?'active':'')+'" onclick="TD.setSort(\'old\')">Oldest first</button></div></div>';
   if(state.groupYears==='yes')out+=groupedListing(filtered); else out+=renderListing(filtered.slice(0,state.limit));
   if(filtered.length>state.limit&&state.groupYears!=='yes')out+='<button class="btn loadMore" onclick="TD.more()">Load more</button>';
   return out+'</main>';
@@ -1039,9 +1049,9 @@ function castBlock(p){
     var n=norm(roleName);
     return appType==='ensemble'||n==='ensemble'||/(^|\/)\s*ensemble\s*(\/|$)/i.test(String(roleName||''))||/\bensemble\b/i.test(String(roleName||''));
   }
-  function ensembleLine(a,labelText){
+  function ensembleLine(a,labelText,coverClass,badge){
     var isOpen=state.inlinePerson&&state.inlinePerson.personId===a.personId&&state.inlinePerson.perfId===p.id;
-    return '<div class="castLine ensembleLine '+(isOpen?'isOpen':'')+'"><div class="castOneLine"><span class="roleInline ensembleRole">'+esc(labelText||'Ensemble')+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
+    return '<div class="castLine ensembleLine '+(coverClass||'')+(isOpen?' isOpen':'')+'"><div class="castOneLine"><span class="roleInline ensembleRole">'+esc(labelText||'Ensemble')+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+(badge||'')+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
   }
   for(i=0;i<apps.length;i++){
     a=apps[i];r=by(db.roles,a.roleId);roleName=r?r.name:(a.roleRaw||'');
@@ -1053,10 +1063,10 @@ function castBlock(p){
     displayRole=ensembleDisplayRole(roleName,a.appearanceType);
     isOpen=state.inlinePerson&&state.inlinePerson.personId===a.personId&&state.inlinePerson.perfId===p.id;
     if(castSection==='Orphans'){
-      orphanRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole),order:a.displayOrder||9999});
+      orphanRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole,coverClass,badge),order:a.displayOrder||9999});
     }else if(isEnsembleTrack){
-      if(displayRole==='Ensemble') plainEnsembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole),order:a.displayOrder||9999});
-      else namedEnsembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole),order:a.displayOrder||9999});
+      if(displayRole==='Ensemble') plainEnsembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole,coverClass,badge),order:a.displayOrder||9999});
+      else namedEnsembleRows.push({name:personName(a.personId),html:ensembleLine(a,displayRole,coverClass,badge),order:a.displayOrder||9999});
     }else if(a.appearanceType==='swing'&&isTrack){
       notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }else{
@@ -1460,19 +1470,20 @@ function coverageTargetFromApp(a,roleName){
   return '';
 }
 function understudyBoard(p){
-  var apps=(idx.perfApps[p.id]||[]).slice(), roleRows=[], swingRows=[], i,a,r,person,label,roleName,target;
+  var apps=(idx.perfApps[p.id]||[]).slice(), roleRows=[], trackRows=[], i,a,r,person,label,roleName,target,section,showTitle=showTitleForPerf(p);
   for(i=0;i<apps.length;i++){
     a=apps[i]; label=coverName(a.coverLabel||a.coverType||''); if(!label&&a.appearanceType==='swing')label='Swing';
     if(!label)continue;
     r=by(db.roles,a.roleId); roleName=r?r.name:(a.roleRaw||''); person=by(db.people,a.personId);
-    if(label==='Swing'){
-      target=coverageTargetFromApp(a,roleName)||roleName||'Swing track';
-      swingRows.push({left:target,right:person?person.name:personName(a.personId)});
+    target=coverageTargetFromApp(a,roleName);
+    section=castSectionByShowRule(showTitle,roleName,a);
+    if(label==='Swing' || (target && section==='ensemble')){
+      trackRows.push({left:target||'Unknown ensemble track',right:person?person.name:personName(a.personId)});
     }else{
       roleRows.push({left:roleName,right:person?person.name:personName(a.personId)});
     }
   }
-  if(!roleRows.length&&!swingRows.length)return '';
+  if(!roleRows.length&&!trackRows.length)return '';
   function boardTable(rows,leftHead,wide){
     var j,out='<table class="'+(wide?'wideBoard':'')+'"><thead><tr><th>'+esc(leftHead)+'</th><th>'+esc('WILL BE PLAYED BY')+'</th></tr></thead><tbody>';
     for(j=0;j<rows.length;j++)out+='<tr><td><div class="boardRole">'+esc(rows[j].left)+'</div></td><td><strong>'+esc(rows[j].right)+'</strong></td></tr>';
@@ -1480,7 +1491,7 @@ function understudyBoard(p){
   }
   var out='<section class="understudyBoard"><div class="boardTitle">At This Performance</div>';
   if(roleRows.length)out+=boardTable(roleRows,'THE ROLE OF',false);
-  if(swingRows.length)out+=boardTable(swingRows,'THE ROLE(S) USUALLY PLAYED BY',true);
+  if(trackRows.length)out+=boardTable(trackRows,'THE ROLE(S) USUALLY PLAYED BY',true);
   return out+'</section>';
 }
 function perfPage(id){
@@ -1594,7 +1605,10 @@ function castGridPlain(showId){
 }
 function copyCastGrid(showId){copyText(castGridPlain(showId));alert('Cast grid TSV copied.');}
 function downloadCastGrid(showId){
-  var show=by(db.shows,showId), data=showCastGridData(showId), i,j,html='<html><head><meta charset="utf-8"><title>'+esc(show?show.title:'Cast Grid')+'</title><style>body{font-family:Arial,sans-serif}table{border-collapse:collapse}th,td{border:1px solid #bbb;padding:6px;vertical-align:top}th{background:#111;color:#f4d000}.p{display:inline-block;border-radius:9px;padding:3px 6px;margin:1px}</style></head><body><h1>'+esc(show?show.title:'Cast Grid')+'</h1><table><thead><tr><th>Date</th>';
+  var show=by(db.shows,showId), data=showCastGridData(showId), i,j,html='<html><head><meta charset="utf-8"><title>'+esc(show?show.title:'Cast Grid')+'</title><style>body{font-family:Arial,sans-serif}table{border-collapse:collapse}th,td{border:1px solid #bbb;padding:6px;vertical-align:top}th{background:#111;color:#f4d000}.p{display:inline-block;border-radius:9px;padding:3px 6px;margin:1px}
+.buildTile{margin-left:auto;border:1px solid rgba(244,208,0,.35);background:linear-gradient(135deg,#fff8bc,#f2f6ff);color:#222;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+body.compact{font-size:13px;--gap:6px}body.compact .wrap{max-width:1180px;padding:10px}body.compact .topbar{padding:4px 0}body.compact .topin{gap:6px}body.compact .brand{font-size:18px}body.compact .btn,body.compact .pillBtn{font-size:11px;padding:5px 7px;border-radius:9px}body.compact .card{padding:7px!important;border-radius:12px!important}body.compact .hero{padding:10px!important;border-radius:14px!important}body.compact h1{font-size:28px}body.compact h2{font-size:17px}body.compact h3{font-size:13px}body.compact .castLine{min-height:0;padding:2px 0!important;gap:4px!important}body.compact .castOneLine{min-height:34px}body.compact .roleInline,body.compact .role{font-size:12px!important;padding:6px 8px!important}body.compact .castPersonCell{font-size:13px!important;padding:6px 8px!important}body.compact .personTimes{font-size:10px}body.compact .roleFlag{width:23px;height:23px;font-size:11px}body.compact .lineRow{padding:7px!important;min-height:0}body.compact .lineTitle{font-size:15px}body.compact .lineSub,.tiny{line-height:1.2}body.compact .grid{gap:6px!important}body.compact .stat{padding:8px;border-radius:10px}body.compact .num{font-size:22px}.castLine.coverSwing .roleInline,.castLine.coverSwing .castPersonCell,.castLine.coverSwing .ensembleRole{background:#dff5cc!important;border-color:#74b84a!important}.ensembleLine.coverSwing{box-shadow:inset 4px 0 0 #5fae36}.ensembleLine .coverBadge{margin-left:8px}
+</style></head><body><h1>'+esc(show?show.title:'Cast Grid')+'</h1><table><thead><tr><th>Date</th>';
   for(i=0;i<data.roles.length;i++)html+='<th>'+esc(data.roles[i].name)+'</th>';html+='</tr></thead><tbody>';
   for(i=0;i<data.rows.length;i++){html+='<tr><td>'+esc(fmtDate(data.rows[i].perf.date))+'</td>';for(j=0;j<data.roles.length;j++){html+='<td>'+((data.rows[i].cells[data.roles[j].key]||[]).map(function(x){return '<span class="p" style="background:'+personColor(x.personId)+'">'+esc(x.name)+(x.cover?' <em>'+esc(x.cover)+'</em>':'')+'</span>';}).join('')||'')+'</td>';}html+='</tr>';}
   html+='</tbody></table></body></html>';var blob=new Blob([html],{type:'text/html'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cast-grid-'+(show?show.title:'show').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase()+'.html';a.click();
@@ -1654,11 +1668,11 @@ function home(){
   if(!state.selectedJumpYear && ys.length) state.selectedJumpYear=ys[ys.length-1];
   var out='<main class="wrap"><section class="hero"><h1>Theatre Diary</h1>'+ 
     '<div class="sleekHeroSearch"><input id="topSearch" class="input" value="'+esc(state.q)+'" placeholder="Search the diary..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'topSearch\')"><button class="btn" onclick="TD.applySearch(\'topSearch\')">Search diary</button><button class="btn" onclick="TD.diary()">Go to diary</button></div>'+ 
-    '<div class="homeQuick"><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.random()">Random</button>'+(state.q?'<button class="btn" onclick="TD.clearSearch()">Clear search</button>':'')+'</div>'+ 
-    topStatsBlock()+'<div class="accentRule"></div></section>'+onThisDayBlock()+smartRandomBlock()+
+    '<div class="homeQuick"><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button>'+(state.q?'<button class="btn" onclick="TD.clearSearch()">Clear search</button>':'')+'</div>'+ 
+    topStatsBlock()+'<div class="accentRule"></div></section>'+onThisDayBlock()+
     '<section class="card"><div class="moduleTitle"><h2>Last 12 months</h2><span class="chip">rolling activity</span></div>'+rollingMonthChart()+'</section>'+ 
     '<section class="card libraryCard"><div class="moduleTitle"><div><h2>Library by year</h2><p class="tiny">Pick a year, then a month. The diary below stays continuous.</p></div><span class="chip">'+keys(years).length+' years</span></div><div class="yearChipRail">'+yearChipButtons(countByYear())+'</div>'+monthPop(state.selectedJumpYear)+'</section>'+ 
-    '<div id="diaryList" class="diaryHead"><div><h2>Diary</h2><p class="tiny">'+(state.q?'Search results for “'+esc(state.q)+'”':'Continuous list, oldest to newest')+'</p></div><div class="toolbar"><input id="diarySearch" class="input" value="'+esc(state.q)+'" placeholder="Search..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'diarySearch\')"><button class="btn" onclick="TD.applySearch(\'diarySearch\')">Search</button><button class="pillBtn '+(state.layout==='lines'?'active':'')+'" onclick="TD.setLayout(\'lines\')">Lines</button><button class="pillBtn '+(state.layout==='cards'?'active':'')+'" onclick="TD.setLayout(\'cards\')">Cards</button></div></div>';
+    '<div id="diaryList" class="diaryHead"><div><h2>Diary</h2><p class="tiny">'+(state.q?'Search results for “'+esc(state.q)+'”':(state.sort==='old'?'Continuous list, oldest to newest':'Continuous list, newest to oldest'))+'</p></div><div class="toolbar"><input id="diarySearch" class="input" value="'+esc(state.q)+'" placeholder="Search..." onkeydown="if(event.key===\'Enter\')TD.applySearch(\'diarySearch\')"><button class="btn" onclick="TD.applySearch(\'diarySearch\')">Search</button><button class="pillBtn '+(state.layout==='lines'?'active':'')+'" onclick="TD.setLayout(\'lines\')">Lines</button><button class="pillBtn '+(state.layout==='cards'?'active':'')+'" onclick="TD.setLayout(\'cards\')">Cards</button><button class="pillBtn '+(state.sort!=='old'?'active':'')+'" onclick="TD.setSort(\'new\')">Newest first</button><button class="pillBtn '+(state.sort==='old'?'active':'')+'" onclick="TD.setSort(\'old\')">Oldest first</button></div></div>';
   if(state.groupYears==='yes')out+=groupedListing(filtered); else out+=renderListing(filtered.slice(0,state.limit));
   if(filtered.length>state.limit&&state.groupYears!=='yes')out+='<button class="btn loadMore" onclick="TD.more()">Load more</button>';
   return out+'</main>';
@@ -1688,6 +1702,10 @@ SHOW_DISPLAY_RULES['a gentleman s guide to love and murder']={ensembleStartsAt:6
 SHOW_DISPLAY_RULES["rodgers hammerstein s cinderella"]={ensembleStartsAt:10};
 SHOW_DISPLAY_RULES["rodgers hammerstein's cinderella"]={ensembleStartsAt:10};
 SHOW_DISPLAY_RULES['the book of mormon']={ensembleStartsAt:17};
+SHOW_DISPLAY_RULES['heathers the musical']={ensembleStartsAt:10};
+SHOW_DISPLAY_RULES['freaky friday']={ensembleStartsAt:8};
+SHOW_DISPLAY_RULES['the rocky horror show']={ensembleStartsAt:10};
+
 
 
 window.TD={go:function(v,id){go(v,id,false)},back:back,forward:forward,
