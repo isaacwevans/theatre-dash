@@ -614,9 +614,9 @@ function norm(s){return (s==null?'':String(s)).toLowerCase().replace(/[\u2018\u2
 function roleNorm(s){
   var raw=(s==null?'':String(s));
   raw=raw.replace(/[‘’]/g,"'").replace(/\s*(?:--|—|–|-)\s*act\s*(?:one|two|1|2)\s*$/i,'').replace(/\s*,?\s*act\s*(?:one|two|1|2)\s*$/i,'');
-  var parts=raw.split('/').map(function(x){return norm(x).replace(/ensemble/g,'').replace(/track/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');}).filter(Boolean);
+  var parts=raw.split('/').map(function(x){return norm(x).replace(/\bensemble\b/g,'').replace(/track/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');}).filter(Boolean);
   if(parts.length>1){parts.sort();return parts.join(' / ');}
-  var s2=parts[0]||norm(raw).replace(/ensemble/g,'').replace(/track/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');
+  var s2=parts[0]||norm(raw).replace(/\bensemble\b/g,'').replace(/track/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');
   return s2||'ensemble';
 }
 function vals(o){var a=[],k;for(k in o){if(Object.prototype.hasOwnProperty.call(o,k))a.push(o[k]);}return a;}
@@ -641,7 +641,7 @@ function cleanTrackRoleLabel(role){
   if(m)return m[1]+'’s track';
   return role;
 }
-function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
+function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0||n.indexOf('u s ')===0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0||n.indexOf('s b ')===0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0||n.indexOf('alt ')===0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0||n.indexOf('s w ')===0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0||n.indexOf('e c ')===0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0||n.indexOf('t r ')===0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
 function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v12-20260514',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
@@ -705,7 +705,7 @@ function personButton(personId,currentPerfId){
   return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button>'+times+'</span>'+flag+'</span>';
 }
 
-function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button></div><div class="buildTile">Build v12 · May 14, 2026 · '+esc((db&&db.meta&&db.meta.buildTime)||'')+'</div></div></div>'+inner;}
+function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.random()">Random</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button></div><div class="buildTile">Build v14 · May 14, 2026 · '+esc((db&&db.meta&&db.meta.buildTime)||'')+'</div></div></div>'+inner;}
 function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='add')h=addEntryPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
 function go(v,id,replace){state.view=v;state.id=id;state.panel=null;if(!replace){if(state.hIndex<state.history.length-1)state.history=state.history.slice(0,state.hIndex+1);state.history.push({v:v,id:id});state.hIndex=state.history.length-1;}else if(!state.history.length){state.history.push({v:v,id:id});state.hIndex=0;}render();setTimeout(function(){window.scrollTo(0,0);},0);}
 function back(){if(state.hIndex>0){state.hIndex--;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
@@ -1048,15 +1048,16 @@ function castBlock(p){
   var apps=(idx.perfApps[p.id]||[]).slice(),principal='',customRows={},customOrder=[],namedEnsembleRows=[],plainEnsembleRows=[],notes='',i,a,r,label,line,roleName,displayRole,isTrack,isEnsembleTrack,castSection,coverClass,badgeClass,badge,isOpen,showTitle=showTitleForPerf(p),trackNote;
   apps.sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
   function trackOwnerLabel(a,roleName){
-    var lbl=String((a&&a.coverLabel)||''), m;
-    m=lbl.match(/s\/?w\s+(.+?)['’]s track/i); if(m)return m[1];
-    m=String(roleName||'').match(/^(.+?)['’]s track$/i); if(m)return m[1];
+    var lbl=String((a&&a.coverLabel)||''), m, tn=(a&&(a.trackOwnerName||a.trackOwnerPersonId))?String(a.trackOwnerName||personName(a.trackOwnerPersonId)):'';
+    if(tn)return tn;
+    m=lbl.match(/(?:s\/?w|t\/?r|u\/?s|s\/?b|alt|e\/?c)?\s*([A-Z][^()]*?)['’]s track/i); if(m)return m[1].trim();
+    m=String(roleName||'').match(/^(.+?)['’]s track$/i); if(m)return m[1].trim();
     return '';
   }
   function ensembleDisplayRole(roleName, appType, a){
     var raw=String(roleName||'').trim(), owner=trackOwnerLabel(a,raw);
-    if(appType==='swing' && owner) return 'Ensemble';
     if(!raw||norm(raw)==='ensemble')return'Ensemble';
+    if(owner && /^(.+?)['’]s track$/i.test(raw)) return 'Ensemble';
     raw=raw.replace(/\s*\/\s*ensemble\b/ig,'').replace(/\bensemble\s*\/\s*/ig,'').replace(/\s{2,}/g,' ').trim();
     return raw||'Ensemble';
   }
@@ -1081,7 +1082,7 @@ function castBlock(p){
     isEnsembleTrack=castSection?castSection==='ensemble':isEnsembleTrackRole(roleName,a.appearanceType);
     trackNote='';
     var owner=trackOwnerLabel(a,roleName);
-    if(a.appearanceType==='swing'&&owner) trackNote='in '+owner+'’s track';
+    if(owner && (a.coverType||a.coverLabel||a.appearanceType==='swing')) trackNote='in '+owner+'’s track';
     displayRole=ensembleDisplayRole(roleName,a.appearanceType,a);
     isOpen=state.inlinePerson&&state.inlinePerson.personId===a.personId&&state.inlinePerson.perfId===p.id;
     if(castSection&&castSection!=='principal'&&castSection!=='ensemble'){
@@ -1506,9 +1507,10 @@ function personButton(personId,currentPerfId){
   return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button>'+times+first+'</span>'+flag+'</span>';
 }
 function coverageTargetFromApp(a,roleName){
-  var lbl=String(a.coverLabel||''), m;
-  m=lbl.match(/s\/?w\s+(.+?)['’]s track/i); if(m)return m[1];
-  m=String(roleName||'').match(/^(.+?)['’]s track$/i); if(m)return m[1];
+  var lbl=String(a.coverLabel||''), m, tn=(a&&(a.trackOwnerName||a.trackOwnerPersonId))?String(a.trackOwnerName||personName(a.trackOwnerPersonId)):'';
+  if(tn)return tn;
+  m=lbl.match(/(?:s\/?w|t\/?r|u\/?s|s\/?b|alt|e\/?c)?\s*([A-Z][^()]*?)['’]s track/i); if(m)return m[1].trim();
+  m=String(roleName||'').match(/^(.+?)['’]s track$/i); if(m)return m[1].trim();
   return '';
 }
 function understudyBoard(p){
@@ -1519,10 +1521,10 @@ function understudyBoard(p){
     r=by(db.roles,a.roleId); roleName=r?r.name:(a.roleRaw||''); person=by(db.people,a.personId);
     target=coverageTargetFromApp(a,roleName);
     section=castSectionByShowRule(showTitle,roleName,a);
-    if(label==='Swing' || (target && section==='ensemble')){
-      trackRows.push({left:target||cleanTrackRoleLabel(roleName)||'Ensemble',right:person?person.name:personName(a.personId)});
+    if(target && section!=='principal'){
+      trackRows.push({left:target,right:person?person.name:personName(a.personId)});
     }else{
-      roleRows.push({left:roleName,right:person?person.name:personName(a.personId)});
+      roleRows.push({left:cleanTrackRoleLabel(roleName)||roleName,right:person?person.name:personName(a.personId)});
     }
   }
   if(!roleRows.length&&!trackRows.length)return '';
