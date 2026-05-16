@@ -590,8 +590,8 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 .firstBadge{display:none!important}
 .understudyBoard{margin:14px 0 8px;border:2px solid #111;background:#fffdf3;border-radius:10px;overflow:hidden}
 .boardTitle{background:#111;color:var(--pb-yellow);font-weight:900;text-transform:uppercase;letter-spacing:.08em;padding:8px 10px}
-.understudyBoard table{width:100%;border-collapse:collapse}.understudyBoard th,.understudyBoard td{border-top:1px solid var(--pb-line);padding:8px;text-align:left;vertical-align:top}.understudyBoard th{font-size:11px;text-transform:uppercase;color:#111;background:#fff3ad}.boardRole{font-weight:900}.lineageTable td:first-child{min-width:160px}.tradingGrid,.statSections{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}.personTrading{margin-bottom:12px}.bigMini{font-size:28px;font-weight:900}.castGridWrap{max-height:70vh}.castGrid th{position:sticky;top:0;z-index:2}.castGrid td,.castGrid th{min-width:120px}.castGrid td:first-child,.castGrid th:first-child{position:sticky;left:0;background:#fffdf3;z-index:3;min-width:104px}.castGridPerson{display:inline-block;border:1px solid rgba(0,0,0,.10);border-radius:999px;padding:3px 6px;margin:2px;font-weight:800;color:#111}.castGridPerson em{font-size:10px;color:#4c3a24}.connectionGrid .connectionCard strong{font-weight:900}
-@media(max-width:760px){.tradingGrid,.statSections{grid-template-columns:1fr}.castGrid td,.castGrid th{min-width:100px}.understudyBoard th,.understudyBoard td{font-size:12px}}
+.understudyBoard table{width:100%;border-collapse:collapse}.understudyBoard th,.understudyBoard td{border-top:1px solid var(--pb-line);padding:8px;text-align:left;vertical-align:top}.understudyBoard th{font-size:11px;text-transform:uppercase;color:#111;background:#fff3ad}.boardRole{font-weight:900}.lineageTable td:first-child{min-width:160px}.tradingGrid,.statSections{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}.personTrading{margin-bottom:12px}.bigMini{font-size:28px;font-weight:900}.castGridWrap{max-height:70vh;overflow:auto}.castGrid{table-layout:auto;border-collapse:separate;border-spacing:0}.castGrid th{position:sticky;top:0;z-index:2;white-space:normal;line-height:1.12}.castGrid td,.castGrid th{min-width:135px;max-width:180px}.castGrid td{vertical-align:top;overflow:hidden}.castGrid td:first-child,.castGrid th:first-child{position:sticky;left:0;background:#fffdf3;z-index:3;min-width:104px;max-width:104px}.castGridPerson{display:block;width:100%;max-width:100%;box-sizing:border-box;border:1px solid rgba(0,0,0,.22);border-radius:10px;padding:5px 7px;margin:3px 0;font-weight:900;color:#111;line-height:1.16;white-space:normal;overflow-wrap:break-word;word-break:normal;box-shadow:inset 0 -1px 0 rgba(255,255,255,.22),0 1px 0 rgba(0,0,0,.06)}.castGridPerson em{display:block;margin-top:2px;font-size:10px;line-height:1.12;color:inherit!important;opacity:.82}.connectionGrid .connectionCard strong{font-weight:900}
+@media(max-width:760px){.tradingGrid,.statSections{grid-template-columns:1fr}.castGrid td,.castGrid th{min-width:132px;max-width:132px;padding:6px 5px}.castGrid td:first-child,.castGrid th:first-child{min-width:92px;max-width:92px}.castGridPerson{border-radius:8px;padding:5px 6px;font-size:12px;letter-spacing:.01em}.understudyBoard th,.understudyBoard td{font-size:12px}}
 
 
 .roleInline .roleMain{display:block;width:100%;white-space:normal;overflow-wrap:normal;word-break:normal}
@@ -644,7 +644,7 @@ function cleanTrackRoleLabel(role){
 function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0||n.indexOf('u s ')===0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0||n.indexOf('s b ')===0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0||n.indexOf('alt ')===0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0||n.indexOf('s w ')===0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0||n.indexOf('e c ')===0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0||n.indexOf('t r ')===0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
-function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v12-20260514',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
+function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v15-20260516',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
 function showError(t,m){document.getElementById('app').innerHTML='<main class="wrap"><section class="card"><h1>'+esc(t)+'</h1><p class="muted">'+esc(m)+'</p></section></main>';}
 
 function buildIndexes(){
@@ -705,7 +705,7 @@ function personButton(personId,currentPerfId){
   return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button>'+times+'</span>'+flag+'</span>';
 }
 
-function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.random()">Random</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button></div><div class="buildTile">Build v14 · May 14, 2026 · '+esc((db&&db.meta&&db.meta.buildTime)||'')+'</div></div></div>'+inner;}
+function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.random()">Random</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button></div><div class="buildTile">Build v16 · May 15, 2026 · '+esc((db&&db.meta&&db.meta.buildTime)||'')+'</div></div></div>'+inner;}
 function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='add')h=addEntryPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
 function go(v,id,replace){state.view=v;state.id=id;state.panel=null;if(!replace){if(state.hIndex<state.history.length-1)state.history=state.history.slice(0,state.hIndex+1);state.history.push({v:v,id:id});state.hIndex=state.history.length-1;}else if(!state.history.length){state.history.push({v:v,id:id});state.hIndex=0;}render();setTimeout(function(){window.scrollTo(0,0);},0);}
 function back(){if(state.hIndex>0){state.hIndex--;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
@@ -1475,9 +1475,27 @@ function globalEnsembleDisplayRole(roleName, appType){
   raw=raw.replace(/\s*\/\s*ensemble\b/ig,'').replace(/\bensemble\s*\/\s*/ig,'').replace(/\s{2,}/g,' ').trim();
   return raw||'Ensemble';
 }
+var CAST_GRID_PALETTE=[
+  ['#0b3d91','#ffffff','#06285d'],['#ffd23f','#111111','#b88b00'],['#7b1e54','#ffffff','#4a1233'],['#8fd17f','#111111','#4f8e44'],
+  ['#b00020','#ffffff','#730014'],['#7ec8e3','#111111','#3d8aaa'],['#4b2e83','#ffffff','#2d1b50'],['#ff9f1c','#111111','#b66b00'],
+  ['#005f73','#ffffff','#003f4c'],['#f7c6d9','#111111','#c47091'],['#3a5a40','#ffffff','#203424'],['#f4f1bb','#111111','#c5bd54'],
+  ['#6d597a','#ffffff','#403348'],['#e76f51','#111111','#a33f27'],['#1d3557','#ffffff','#0d1d31'],['#a8dadc','#111111','#5a9b9e'],
+  ['#9b2226','#ffffff','#5b1215'],['#caffbf','#111111','#70a967'],['#386641','#ffffff','#1d3722'],['#ffcad4','#111111','#c77788'],
+  ['#3c096c','#ffffff','#240542'],['#ffbe0b','#111111','#b38100'],['#006d77','#ffffff','#003f45'],['#e0aaff','#111111','#9864b5'],
+  ['#2f3e46','#ffffff','#171f23'],['#bde0fe','#111111','#6aa6d4'],['#7f4f24','#ffffff','#4d2e13'],['#d8f3dc','#111111','#83b58c'],
+  ['#2b2d42','#ffffff','#11121c'],['#f28482','#111111','#a94e4b'],['#264653','#ffffff','#10242b'],['#e9c46a','#111111','#a87d1e'],
+  ['#5f0f40','#ffffff','#350823'],['#90be6d','#111111','#527a36'],['#0f4c5c','#ffffff','#082a33'],['#fbd1a2','#111111','#bc7e3a'],
+  ['#4a4e69','#ffffff','#262938'],['#f2e9e4','#111111','#c7b7ad'],['#6a040f','#ffffff','#3b0208'],['#bee3db','#111111','#6ea99e'],
+  ['#353535','#ffffff','#111111'],['#ffb703','#111111','#b87f00'],['#023047','#ffffff','#011f2e'],['#fb8500','#111111','#aa5900'],
+  ['#31572c','#ffffff','#172b15'],['#ecbcfd','#111111','#aa77bd'],['#540b0e','#ffffff','#2f0608'],['#94d2bd','#111111','#4d9079']
+];
+function castGridPersonStyle(i){
+  var c=CAST_GRID_PALETTE[((Number(i)||0)%CAST_GRID_PALETTE.length+CAST_GRID_PALETTE.length)%CAST_GRID_PALETTE.length];
+  return 'background:'+c[0]+';color:'+c[1]+';border-color:'+c[2];
+}
 function personColor(pid){
-  var n=Number(pid)||0,h=(n*47)%360;
-  return 'hsl('+h+', 72%, 86%)';
+  var n=Number(pid)||0;
+  return CAST_GRID_PALETTE[((n*17)%CAST_GRID_PALETTE.length+CAST_GRID_PALETTE.length)%CAST_GRID_PALETTE.length][0];
 }
 function baseRoleNameForCastGrid(roleName){
   var raw=String(roleName||'').trim();
@@ -1608,21 +1626,24 @@ function showCastGridData(showId){
     }
   }
   roleOrder.sort(function(x,y){return (roleMap[x].order-roleMap[y].order)||roleMap[x].name.localeCompare(roleMap[y].name);});
+  var colorMap={}, nextColor=0, pidKey;
   for(i=0;i<perfs.length;i++){
     p=perfs[i]; cell={}; apps=(idx.perfApps[p.id]||[]);
     for(j=0;j<apps.length;j++){
       a=apps[j]; r=by(db.roles,a.roleId); roleName=r?r.name:(a.roleRaw||''); key=castGridRoleKey(roleName); if(!roleMap[key])continue;
       if(!cell[key])cell[key]=[];
-      cell[key].push({personId:a.personId,name:personName(a.personId),cover:coverName(a.coverLabel||a.coverType||'')||(a.appearanceType==='swing'?'Swing':'')});
+      pidKey=String(a.personId);
+      if(colorMap[pidKey]===undefined)colorMap[pidKey]=nextColor++;
+      cell[key].push({personId:a.personId,colorIndex:colorMap[pidKey],name:personName(a.personId),cover:coverName(a.coverLabel||a.coverType||'')||(a.appearanceType==='swing'?'Swing':'')});
     }
     rows.push({perf:p,cells:cell});
   }
-  return {roles:roleOrder.map(function(k){return roleMap[k];}), rows:rows};
+  return {roles:roleOrder.map(function(k){return roleMap[k];}), rows:rows, colorMap:colorMap};
 }
 function castGridCellHtml(items){
   if(!items||!items.length)return '<span class="muted">—</span>';
   var out='',i;
-  for(i=0;i<items.length;i++)out+='<span class="castGridPerson" style="background:'+personColor(items[i].personId)+'">'+esc(items[i].name)+(items[i].cover?' <em>'+esc(items[i].cover)+'</em>':'')+'</span>';
+  for(i=0;i<items.length;i++)out+='<span class="castGridPerson" style="'+castGridPersonStyle(items[i].colorIndex)+'">'+esc(items[i].name)+(items[i].cover?' <em>'+esc(items[i].cover)+'</em>':'')+'</span>';
   return out;
 }
 function showCastComparisonTable(showId){
@@ -1651,7 +1672,7 @@ function copyCastGrid(showId){copyText(castGridPlain(showId));alert('Cast grid T
 function downloadCastGrid(showId){
   var show=by(db.shows,showId), data=showCastGridData(showId), i,j,html='<html><head><meta charset="utf-8"><title>'+esc(show?show.title:'Cast Grid')+'</title><style>body{font-family:Arial,sans-serif}table{border-collapse:collapse}th,td{border:1px solid #bbb;padding:6px;vertical-align:top}th{background:#111;color:#f4d000}.p{display:inline-block;border-radius:9px;padding:3px 6px;margin:1px}</style></head><body><h1>'+esc(show?show.title:'Cast Grid')+'</h1><table><thead><tr><th>Date</th>';
   for(i=0;i<data.roles.length;i++)html+='<th>'+esc(data.roles[i].name)+'</th>';html+='</tr></thead><tbody>';
-  for(i=0;i<data.rows.length;i++){html+='<tr><td>'+esc(fmtDate(data.rows[i].perf.date))+'</td>';for(j=0;j<data.roles.length;j++){html+='<td>'+((data.rows[i].cells[data.roles[j].key]||[]).map(function(x){return '<span class="p" style="background:'+personColor(x.personId)+'">'+esc(x.name)+(x.cover?' <em>'+esc(x.cover)+'</em>':'')+'</span>';}).join('')||'')+'</td>';}html+='</tr>';}
+  for(i=0;i<data.rows.length;i++){html+='<tr><td>'+esc(fmtDate(data.rows[i].perf.date))+'</td>';for(j=0;j<data.roles.length;j++){html+='<td>'+((data.rows[i].cells[data.roles[j].key]||[]).map(function(x){return '<span class="p" style="'+castGridPersonStyle(x.colorIndex)+'">'+esc(x.name)+(x.cover?' <em>'+esc(x.cover)+'</em>':'')+'</span>';}).join('')||'')+'</td>';}html+='</tr>';}
   html+='</tbody></table></body></html>';var blob=new Blob([html],{type:'text/html'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cast-grid-'+(show?show.title:'show').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase()+'.html';a.click();
 }
 function coverHallOfFame(){
