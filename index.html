@@ -1002,9 +1002,10 @@ var SHOW_DISPLAY_RULES={
   'heathers':{ensembleStartsAt:10},
   'heathers the musical':{ensembleStartsAt:10},
   'six':{allPrincipal:true},
-  'into the woods':{ensembleStartsAt:12},
+  'celebrity autobiography':{allPrincipal:true},
+  'into the woods':{principalRoles:['the baker','the baker\'s wife','the witch','cinderella','jack','little red ridinghood','wolf/cinderella\'s prince','cinderella’s prince / wolf','cinderella\'s prince / wolf','rapunzel\'s prince','rapunzel','mysterious man/narrator','narrator / mysterious man','mysterious man'],principalRolesOnly:true},
   'the music man':{ensembleStartsAt:11},
-  'the color purple':{ensembleStartsAt:9},
+  'the color purple':{principalRoles:['celie','shug avery','mister','sofia','sophia','harpo','nettie','squeak'],ensembleStartsAt:9},
   'dear evan hansen':{allPrincipal:true},
   'oliver!':{ensembleStartsAt:8},
   'oliver':{ensembleStartsAt:8},
@@ -1012,11 +1013,13 @@ var SHOW_DISPLAY_RULES={
   'waitress':{ensembleStartsAt:10},
   'mamma mia!':{ensembleStartsAt:9},
   'mamma mia':{ensembleStartsAt:9},
-  'hairspray':{ensembleStartsAt:13},
-  'company':{allPrincipal:true},
+  'hairspray':{ensembleStartsAt:12},
+  'company':{principalRoles:['bobbie','joanne','larry','paul','pj','jenny','jamie','andy','david','peter','theo','susan','harry','sarah'],ensembleStartsAt:15},
   'a strange loop':{allPrincipal:true},
-  'paradise square':{ensembleStartsAt:10},
-  'catch me if you can':{ensembleStartsAt:6},
+  'paradise square':{ensembleStartsAt:7},
+  'catch me if you can':{ensembleStartsAt:9},
+  'the rocky horror show':{allPrincipal:true},
+  'rocky horror':{allPrincipal:true},
   'dave':{ensembleStartsAt:6},
   'newsies':{ensembleStartsAt:7},
   'the pajama game':{ensembleStartsAt:10},
@@ -1082,6 +1085,7 @@ function castSectionByShowRule(showTitle,roleName,a){
       if(roleMatchesAny(roleName,rule.specialSections[i].roles))return rule.specialSections[i].label;
     }
   }
+  if(rule.principalRolesOnly)return 'ensemble';
   if(rule.ensembleStartsAt&&order>=rule.ensembleStartsAt)return 'ensemble';
   return 'principal';
 }
@@ -1853,7 +1857,7 @@ function timeRank(p){
   return 50;
 }
 function perfCompareAsc(a,b){return String(a.date).localeCompare(String(b.date))||(timeRank(a)-timeRank(b))||(Number(a.id||0)-Number(b.id||0));}
-function perfCompareDesc(a,b){return String(b.date).localeCompare(String(a.date))||(timeRank(a)-timeRank(b))||(Number(b.id||0)-Number(a.id||0));}
+function perfCompareDesc(a,b){return String(b.date).localeCompare(String(a.date))||(timeRank(b)-timeRank(a))||(Number(b.id||0)-Number(a.id||0));}
 function perfTimeLabel(p){var t=String((p&&p.time)||'').trim(), n=norm(t), m,h,ap;if(!t)return 'Performance';if(n.indexOf('matinee')>=0||n==='mat'||n.indexOf('afternoon')>=0)return 'Matinee';if(n.indexOf('evening')>=0||n==='eve'||n.indexOf('night')>=0)return 'Evening';m=t.match(/(\d{1,2})(?::(\d{2}))?\s*(a|p)?/i);if(m){h=Number(m[1]);ap=(m[3]||'').toLowerCase();if(ap==='p'&&h<12)h+=12;if(ap==='a'&&h===12)h=0;return h<18?'Matinee':'Evening';}return t;}
 function perfDateTimeLabel(p){return fmtDate(p.date)+' · '+perfTimeLabel(p);}
 function perfShortDateTimeLabel(p){return shortDate(p.date)+' · '+perfTimeLabel(p);}
