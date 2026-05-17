@@ -369,6 +369,13 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 .otdItemMeta{font-size:11px;color:var(--muted);margin-top:1px}
 
 
+
+/* On This Day scroll/cutoff polish */
+.otdList.otdScrollable{max-height:232px;overflow:auto;padding-right:3px}
+.otdList.otdScrollable .otdSub{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(255,253,243,.88),#fffdf3);padding-top:5px}
+.otdYearGroup{border-top:1px solid var(--pb-line);padding-top:7px;margin-top:7px}
+.otdYearHead{font-size:11px;font-weight:950;color:#111;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+
 /* Refined click-down lines + literal month chart labels */
 .personCarousel{display:block;overflow:visible;padding:0;border-top:1px solid rgba(255,255,255,.18)}
 .personRoleLine{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;width:100%;border:0;border-bottom:1px solid rgba(255,255,255,.16);background:transparent;color:#fffdf3;text-align:left;padding:8px 2px}
@@ -590,8 +597,8 @@ h3{font-size:13px!important;text-transform:uppercase;letter-spacing:.04em!import
 .firstBadge{display:none!important}
 .understudyBoard{margin:14px 0 8px;border:2px solid #111;background:#fffdf3;border-radius:10px;overflow:hidden}
 .boardTitle{background:#111;color:var(--pb-yellow);font-weight:900;text-transform:uppercase;letter-spacing:.08em;padding:8px 10px}
-.understudyBoard table{width:100%;border-collapse:collapse}.understudyBoard th,.understudyBoard td{border-top:1px solid var(--pb-line);padding:8px;text-align:left;vertical-align:top}.understudyBoard th{font-size:11px;text-transform:uppercase;color:#111;background:#fff3ad}.boardRole{font-weight:900}.lineageTable td:first-child{min-width:160px}.tradingGrid,.statSections{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}.personTrading{margin-bottom:12px}.bigMini{font-size:28px;font-weight:900}.castGridWrap{max-height:70vh;overflow:auto}.castGrid{table-layout:auto;border-collapse:separate;border-spacing:0}.castGrid th{position:sticky;top:0;z-index:2;white-space:normal;line-height:1.12}.castGrid td,.castGrid th{min-width:135px;max-width:180px}.castGrid td{vertical-align:top;overflow:hidden}.castGrid td:first-child,.castGrid th:first-child{position:sticky;left:0;background:#fffdf3;z-index:3;min-width:104px;max-width:104px}.castGridPerson{display:block;width:100%;max-width:100%;box-sizing:border-box;border:1px solid rgba(0,0,0,.22);border-radius:10px;padding:5px 7px;margin:3px 0;font-weight:900;color:#111;line-height:1.16;white-space:normal;overflow-wrap:break-word;word-break:normal;box-shadow:inset 0 -1px 0 rgba(255,255,255,.22),0 1px 0 rgba(0,0,0,.06)}.castGridPerson em{display:block;margin-top:2px;font-size:10px;line-height:1.12;color:inherit!important;opacity:.82}.connectionGrid .connectionCard strong{font-weight:900}
-@media(max-width:760px){.tradingGrid,.statSections{grid-template-columns:1fr}.castGrid td,.castGrid th{min-width:132px;max-width:132px;padding:6px 5px}.castGrid td:first-child,.castGrid th:first-child{min-width:92px;max-width:92px}.castGridPerson{border-radius:8px;padding:5px 6px;font-size:12px;letter-spacing:.01em}.understudyBoard th,.understudyBoard td{font-size:12px}}
+.understudyBoard table{width:100%;border-collapse:collapse}.understudyBoard th,.understudyBoard td{border-top:1px solid var(--pb-line);padding:8px;text-align:left;vertical-align:top}.understudyBoard th{font-size:11px;text-transform:uppercase;color:#111;background:#fff3ad}.boardRole{font-weight:900}.lineageTable td:first-child{min-width:160px}.tradingGrid,.statSections{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}.personTrading{margin-bottom:12px}.bigMini{font-size:28px;font-weight:900}.castGridWrap{max-height:70vh}.castGrid th{position:sticky;top:0;z-index:2}.castGrid td,.castGrid th{min-width:120px}.castGrid td:first-child,.castGrid th:first-child{position:sticky;left:0;background:#fffdf3;z-index:3;min-width:104px}.castGridPerson{display:inline-block;border:1px solid rgba(0,0,0,.22);border-radius:999px;padding:3px 7px;margin:2px;font-weight:900;color:#111;box-shadow:inset 0 -1px 0 rgba(255,255,255,.22),0 1px 0 rgba(0,0,0,.06)}.castGridPerson em{font-size:10px;color:inherit!important;opacity:.82}.connectionGrid .connectionCard strong{font-weight:900}
+@media(max-width:760px){.tradingGrid,.statSections{grid-template-columns:1fr}.castGrid td,.castGrid th{min-width:100px}.understudyBoard th,.understudyBoard td{font-size:12px}}
 
 
 .roleInline .roleMain{display:block;width:100%;white-space:normal;overflow-wrap:normal;word-break:normal}
@@ -614,6 +621,7 @@ function norm(s){return (s==null?'':String(s)).toLowerCase().replace(/[\u2018\u2
 function roleNorm(s){
   var raw=(s==null?'':String(s));
   raw=raw.replace(/[‘’]/g,"'").replace(/\s*(?:--|—|–|-)\s*act\s*(?:one|two|1|2)\s*$/i,'').replace(/\s*,?\s*act\s*(?:one|two|1|2)\s*$/i,'');
+  if(/^.+?'s track$/i.test(raw)||/track/i.test(raw)&&/ensemble/i.test(raw)) return 'ensemble';
   var parts=raw.split('/').map(function(x){return norm(x).replace(/\bensemble\b/g,'').replace(/track/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');}).filter(Boolean);
   if(parts.length>1){parts.sort();return parts.join(' / ');}
   var s2=parts[0]||norm(raw).replace(/\bensemble\b/g,'').replace(/track/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');
@@ -637,14 +645,20 @@ function lastNameKey(name){
 }
 function cleanTrackRoleLabel(role){
   role=String(role||'');
-  var m=role.match(/^(.+?)'s track$/i);
-  if(m)return m[1]+'’s track';
+  if(/^(.+?)['’]s track$/i.test(role)) return 'Ensemble';
   return role;
+}
+function normalizedPersonHistoryRole(roleName,a){
+  var raw=String(roleName||'').trim();
+  if(!raw) return 'Ensemble';
+  if(/^(.+?)['’]s track$/i.test(raw)) return 'Ensemble';
+  if(/track/i.test(raw)&&/ensemble/i.test(raw)) return 'Ensemble';
+  return raw;
 }
 function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0||n.indexOf('u s ')===0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0||n.indexOf('s b ')===0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0||n.indexOf('alt ')===0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0||n.indexOf('s w ')===0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0||n.indexOf('e c ')===0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0||n.indexOf('t r ')===0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
-function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v15-20260516',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
+function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v18-index-remodel-20260516',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
 function showError(t,m){document.getElementById('app').innerHTML='<main class="wrap"><section class="card"><h1>'+esc(t)+'</h1><p class="muted">'+esc(m)+'</p></section></main>';}
 
 function buildIndexes(){
@@ -705,7 +719,7 @@ function personButton(personId,currentPerfId){
   return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button>'+times+'</span>'+flag+'</span>';
 }
 
-function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.random()">Random</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button></div><div class="buildTile">Build v16 · May 15, 2026 · '+esc((db&&db.meta&&db.meta.buildTime)||'')+'</div></div></div>'+inner;}
+function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.random()">Random</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button></div><div class="buildTile">Build v15 · May 15, 2026 · '+esc((db&&db.meta&&db.meta.buildTime)||'')+'</div></div></div>'+inner;}
 function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='add')h=addEntryPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
 function go(v,id,replace){state.view=v;state.id=id;state.panel=null;if(!replace){if(state.hIndex<state.history.length-1)state.history=state.history.slice(0,state.hIndex+1);state.history.push({v:v,id:id});state.hIndex=state.history.length-1;}else if(!state.history.length){state.history.push({v:v,id:id});state.hIndex=0;}render();setTimeout(function(){window.scrollTo(0,0);},0);}
 function back(){if(state.hIndex>0){state.hIndex--;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
@@ -751,7 +765,7 @@ function isInWeek(iso,weekKey){
   return sameWeekKey(d)===weekKey;
 }
 function onThisDayBlock(){
-  var t=todayParts(), ps=vals(db.performances), apps=db.appearances||[], firstByPerson={}, todayPerfs=[], sameWeek=[], firstPeople=[], i,p,a,personId,weekKey,out;
+  var t=todayParts(), ps=vals(db.performances), apps=db.appearances||[], firstByPerson={}, todayPerfs=[], sameWeek=[], weekYears={}, firstPeople=[], i,p,a,personId,weekKey,out,yearKey;
   ps.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});
   for(i=0;i<ps.length;i++){
     p=ps[i];
@@ -767,23 +781,47 @@ function onThisDayBlock(){
   }
   firstPeople.sort(function(a,b){return personName(a.personId).localeCompare(personName(b.personId));});
   weekKey=weekStartForYearLike(t.date,-1);
-  for(i=0;i<ps.length;i++) if(isInWeek(ps[i].date,weekKey)) sameWeek.push(ps[i]);
+  for(i=0;i<ps.length;i++){
+    if(isInWeek(ps[i].date,weekKey)) sameWeek.push(ps[i]);
+    yearKey=yearOf(ps[i].date);
+    if(yearKey!==String(t.date.getFullYear()) && isInWeek(ps[i].date,weekStartForYearLike(t.date,Number(yearKey)-t.date.getFullYear()))){
+      if(!weekYears[yearKey]) weekYears[yearKey]=[];
+      weekYears[yearKey].push(ps[i]);
+    }
+  }
   sameWeek.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});
   out='<section class="card onThisDay"><div class="moduleTitle"><div><h2>On This Day</h2><p class="tiny">'+esc(monthName(Number(t.month)-1)+' '+Number(t.day))+' across your theatre diary</p></div><span class="chip">today-ish</span></div><div class="otdGrid">';
-  out+='<div class="otdCard"><div class="otdLabel">You saw on this date</div><div class="otdMain">'+todayPerfs.length+' performance'+(todayPerfs.length===1?'':'s')+'</div>'+otdPerfList(todayPerfs,4)+'</div>';
-  out+='<div class="otdCard"><div class="otdLabel">First appearances on this date</div><div class="otdMain">'+firstPeople.length+' performer/creative firsts</div>'+otdPeopleList(firstPeople,6)+'</div>';
-  out+='<div class="otdCard"><div class="otdLabel">Same week last year</div><div class="otdMain">'+sameWeek.length+' performance'+(sameWeek.length===1?'':'s')+'</div><div class="otdSub">Week of '+esc(fmtDate(weekKey))+'</div>'+otdPerfList(sameWeek,4)+'</div>';
+  out+='<div class="otdCard"><div class="otdLabel">You saw on this date</div><div class="otdMain">'+todayPerfs.length+' performance'+(todayPerfs.length===1?'':'s')+'</div>'+otdPerfList(todayPerfs,4,true)+'</div>';
+  out+='<div class="otdCard"><div class="otdLabel">First appearances on this date</div><div class="otdMain">'+firstPeople.length+' performer firsts</div>'+otdPeopleList(firstPeople,6)+'</div>';
+  out+='<div class="otdCard"><div class="otdLabel">Same week last year</div><div class="otdMain">'+sameWeek.length+' performance'+(sameWeek.length===1?'':'s')+'</div><div class="otdSub">Week of '+esc(fmtDate(weekKey))+'</div>'+otdPerfList(sameWeek,4,true)+'</div>';
+  out+='<div class="otdCard"><div class="otdLabel">This week in other years</div>'+otdWeekYearsList(weekYears)+'</div>';
   out+='</div></section>';
   return out;
 }
-function otdPerfList(arr,limit){
-  var out='<div class="otdList">',i,p;
+function otdPerfList(arr,limit,scroll){
+  var out='<div class="otdList '+(scroll?'otdScrollable':'')+'">',i,p;
   if(!arr.length)return '<div class="otdSub">Nothing logged yet. The calendar goblin remains quiet.</div>';
   for(i=0;i<Math.min(arr.length,limit);i++){
     p=arr[i];
     out+='<button class="otdItem" onclick="TD.go(\'perf\','+p.id+')"><div class="otdItemTitle">'+esc(showOf(p))+'</div><div class="otdItemMeta">'+esc(fmtDate(p.date)+' · '+venueOf(p))+'</div></button>';
   }
-  if(arr.length>limit)out+='<div class="otdSub">+'+(arr.length-limit)+' more</div>';
+  if(arr.length>limit)out+='<div class="otdSub">+'+(arr.length-limit)+' more in this cluster</div>';
+  return out+'</div>';
+}
+function otdWeekYearsList(map){
+  var years=keys(map).sort().reverse(), out='<div class="otdList otdScrollable">',i,j,rows,p,total=0;
+  if(!years.length)return '<div class="otdSub">No matching week in other years yet.</div>';
+  for(i=0;i<years.length;i++) total+=map[years[i]].length;
+  out='<div class="otdMain">'+total+' performance'+(total===1?'':'s')+'</div><div class="otdSub">Same calendar week, grouped by year</div><div class="otdList otdScrollable">';
+  for(i=0;i<years.length;i++){
+    rows=map[years[i]].slice().sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});
+    out+='<div class="otdYearGroup"><div class="otdYearHead">'+esc(years[i])+' · '+rows.length+'</div>';
+    for(j=0;j<Math.min(rows.length,4);j++){
+      p=rows[j]; out+='<button class="otdItem" onclick="TD.go(\'perf\','+p.id+')"><div class="otdItemTitle">'+esc(showOf(p))+'</div><div class="otdItemMeta">'+esc(fmtDate(p.date)+' · '+venueOf(p))+'</div></button>';
+    }
+    if(rows.length>4) out+='<div class="otdSub">+'+(rows.length-4)+' more</div>';
+    out+='</div>';
+  }
   return out+'</div>';
 }
 function otdPeopleList(arr,limit){
@@ -900,23 +938,28 @@ function perfPage(id){
 function tagChips(tags){var a=String(tags).split(','),out='',i,t;for(i=0;i<a.length;i++){t=a[i].replace(/^\s+|\s+$/g,'');if(t)out+='<span class="chip purple">'+esc(t)+'</span>';}return out;}
 
 function firstTimeBlock(p){
-  var apps=idx.perfApps[p.id]||[], cr=idx.creativeByPerf[p.id]||[], perfPeople={}, creativePeople={}, i,a,c,out='',names=[];
+  var apps=idx.perfApps[p.id]||[], perfPeople={}, i,a,out='',names=[],ids=[],callbacks=[];
   for(i=0;i<apps.length;i++){a=apps[i]; if(idx.firstPerformerPerf[a.personId]===p.id) perfPeople[a.personId]=1;}
-  for(i=0;i<cr.length;i++){c=cr[i]; if(idx.firstCreativePerf[c.personId]===p.id && !perfPeople[c.personId]) creativePeople[c.personId]=1;}
-  var ids=keys(perfPeople).sort(function(a,b){return personName(a).localeCompare(personName(b));});
+  ids=keys(perfPeople).sort(function(a,b){return personName(a).localeCompare(personName(b));});
   if(ids.length){
     names=[];
     for(i=0;i<Math.min(ids.length,30);i++) names.push('<button class="nameBtn firstSeenChip" onclick="TD.openPerson('+ids[i]+')">'+esc(personName(ids[i]))+'</button>');
     out+='<div class="firstSeenBox"><h3>First time seeing</h3><div class="firstSeenNames">'+names.join('')+'</div>'+(ids.length>30?'<p class="tiny">+'+(ids.length-30)+' more</p>':'')+'</div>';
   }
-  ids=keys(creativePeople).sort(function(a,b){return personName(a).localeCompare(personName(b));});
-  if(ids.length){
+  for(i=0;i<apps.length;i++){
+    a=apps[i];
+    var s=stat(a.personId,p.id);
+    if(s.other>0) callbacks.push({id:a.personId,n:s.other,name:personName(a.personId)});
+  }
+  callbacks.sort(function(a,b){return b.n-a.n||a.name.localeCompare(b.name);});
+  if(callbacks.length){
     names=[];
-    for(i=0;i<Math.min(ids.length,18);i++) names.push('<button class="nameBtn firstSeenChip" onclick="TD.openPerson('+ids[i]+')">'+esc(personName(ids[i]))+'</button>');
-    out+='<div class="firstSeenBox"><h3>First-time creative credits in your diary</h3><div class="firstSeenNames">'+names.join('')+'</div>'+(ids.length>18?'<p class="tiny">+'+(ids.length-18)+' more</p>':'')+'</div>';
+    for(i=0;i<Math.min(callbacks.length,8);i++) names.push('<button class="nameBtn firstSeenChip" onclick="TD.openPerson('+callbacks[i].id+')">'+esc(callbacks[i].name+' · '+callbacks[i].n+' prior')+'</button>');
+    out+='<div class="firstSeenBox"><h3>Cast callbacks</h3><p class="tiny">Most familiar faces in this performance before today.</p><div class="firstSeenNames">'+names.join('')+'</div></div>';
   }
   return out;
 }
+
 
 
 
@@ -1123,7 +1166,7 @@ function creativeBlock(perfId){var arr=idx.creativeByPerf[perfId]||[],byC={},i,c
 function nextPrev(id){var ps=vals(db.performances);ps.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||a.id-b.id;});var i,ix=0;for(i=0;i<ps.length;i++)if(ps[i].id==id){ix=i;break;}return{prev:ps[(ix-1+ps.length)%ps.length].id,next:ps[(ix+1)%ps.length].id};}
 function relatedBlock(p){var same=(idx.showPerfs[p.showId]||[]).slice(),out='',i,count=0;same.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});for(i=0;i<same.length&&count<5;i++){if(same[i].id==p.id)continue;out+='<div class="row"><button class="linkish" onclick="TD.go(\'perf\','+same[i].id+')">'+esc(fmtDate(same[i].date))+'</button><div class="tiny">'+esc(venueOf(same[i]))+'</div></div>';count++;}return out?'<div class="section"><h2>Related Performances</h2><div class="list">'+out+'</div></div>':'';}
 
-function uniquePersonAppearances(personId){var apps=idx.personApps[personId]||[],map={},arr=[],i,a,p,r,k;for(i=0;i<apps.length;i++){a=apps[i];p=by(db.performances,a.performanceId);r=by(db.roles,a.roleId);if(!p)continue;k=String(p.id);if(!map[k])map[k]={perf:p,roles:[],covers:[]};if(r)map[k].roles.push(r.name);if(a.coverLabel||a.coverType)map[k].covers.push(a.coverLabel||a.coverType);}for(k in map)if(Object.prototype.hasOwnProperty.call(map,k))arr.push(map[k]);arr.sort(function(a,b){return String(b.perf.date).localeCompare(String(a.perf.date));});return arr;}
+function uniquePersonAppearances(personId){var apps=idx.personApps[personId]||[],map={},arr=[],i,a,p,r,k,roleName;for(i=0;i<apps.length;i++){a=apps[i];p=by(db.performances,a.performanceId);r=by(db.roles,a.roleId);if(!p)continue;k=String(p.id);if(!map[k])map[k]={perf:p,roles:[],covers:[]};roleName=r?r.name:(a.roleRaw||'');if(roleName)map[k].roles.push(normalizedPersonHistoryRole(roleName,a));if(a.coverLabel||a.coverType)map[k].covers.push(a.coverLabel||a.coverType);}for(k in map)if(Object.prototype.hasOwnProperty.call(map,k))arr.push(map[k]);arr.sort(function(a,b){return String(b.perf.date).localeCompare(String(a.perf.date));});return arr;}
 function renderPanel(personId){
   var p=by(db.people,personId),arr=uniquePersonAppearances(personId),s=stat(personId,null),groups=personRoleGroups(arr),out,i,g,dates,j,max=8;
   out='<aside class="panel"><button class="btn closeBtn" onclick="TD.closePerson()">Close</button><h2>'+esc(p?p.name:'Person')+'</h2><p class="muted">'+s.perfs+' performances · '+s.shows+' shows · '+s.roles+' roles</p><button class="btn" onclick="TD.go(\'person\','+personId+')">Open full profile</button><div class="section list">';
