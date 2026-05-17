@@ -1785,39 +1785,22 @@ function castGridPlain(showId){
 }
 function copyCastGrid(showId){copyText(castGridPlain(showId));alert('Cast grid TSV copied.');}
 function downloadCastGrid(showId){
-  var show=by(db.shows,showId), data=showCastGridData(showId), i,j,html='<html><head><meta charset="utf-8"><title>'+esc(show?show.title:'Cast Grid')+'</title><style>body{font-family:Arial,sans-serif}table{border-collapse:collapse}th,td{border:1px solid #bbb;padding:6px;vertical-align:top}th{background:#111;color:#f4d000}.p{display:inline-block;border-radius:9px;padding:3px 6px;margin:1px}
-
-/* === v24 slim diary rows + cast-style creative team === */
-@media(max-width:760px){
-  .lineList{gap:5px!important}
-  .lineRow{
-    grid-template-columns:62px minmax(0,1fr)!important;
-    gap:6px!important;
-    align-items:center!important;
-    padding:6px 7px!important;
-    min-height:0!important;
+  var show=by(db.shows,showId), data=showCastGridData(showId), i,j;
+  var html='<html><head><meta charset="utf-8"><title>'+esc(show?show.title:'Cast Grid')+'</title><style>body{font-family:Arial,sans-serif}table{border-collapse:collapse}th,td{border:1px solid #bbb;padding:6px;vertical-align:top}th{background:#111;color:#f4d000}.p{display:inline-block;border-radius:9px;padding:3px 6px;margin:1px}</style></head><body><h1>'+esc(show?show.title:'Cast Grid')+'</h1><table><thead><tr><th>Date</th>';
+  for(i=0;i<data.roles.length;i++)html+='<th>'+esc(data.roles[i].name)+'</th>';
+  html+='</tr></thead><tbody>';
+  for(i=0;i<data.rows.length;i++){
+    html+='<tr><td>'+esc(fmtDate(data.rows[i].perf.date))+'</td>';
+    for(j=0;j<data.roles.length;j++){
+      html+='<td>'+((data.rows[i].cells[data.roles[j].key]||[]).map(function(x){return '<span class="p" style="'+castGridPersonStyle(x.colorIndex)+'">'+esc(x.name)+(x.cover?' <em>'+esc(x.cover)+'</em>':'')+'</span>';}).join('')||'')+'</td>';
+    }
+    html+='</tr>';
   }
-  .lineDate{font-size:11px!important;line-height:1.05!important;align-self:start!important;padding-top:1px!important}
-  .lineTitle{font-size:13px!important;line-height:1.08!important;white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-  .lineSub{font-size:11px!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;margin-top:1px!important}
-  .lineBadges{grid-column:2!important;justify-content:flex-start!important;gap:4px!important;margin-top:2px!important}
-  .lineBadges .chip{font-size:9px!important;padding:2px 5px!important}
-}
-.creativeLine .creativeRole{background:#f1ead6!important;color:#111!important}
-.creativeLine .creativePersonCell{background:#fff!important;justify-content:flex-start!important;align-items:center!important}
-.creativeNames{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
-.creativeNameBtn{font-size:12.5px!important;letter-spacing:.035em!important;text-transform:uppercase!important}
-.slashSep{font-size:12px;color:var(--muted);font-weight:800}
-.creativeLine .personInline{margin-top:0!important;border-top:1px solid #000!important}
-@media(max-width:760px){
-  .creativeNameBtn{font-size:11.5px!important;line-height:1.05!important}
-  .creativeNames{gap:4px!important}
-}
-
-</style></head><body><h1>'+esc(show?show.title:'Cast Grid')+'</h1><table><thead><tr><th>Date</th>';
-  for(i=0;i<data.roles.length;i++)html+='<th>'+esc(data.roles[i].name)+'</th>';html+='</tr></thead><tbody>';
-  for(i=0;i<data.rows.length;i++){html+='<tr><td>'+esc(fmtDate(data.rows[i].perf.date))+'</td>';for(j=0;j<data.roles.length;j++){html+='<td>'+((data.rows[i].cells[data.roles[j].key]||[]).map(function(x){return '<span class="p" style="'+castGridPersonStyle(x.colorIndex)+'">'+esc(x.name)+(x.cover?' <em>'+esc(x.cover)+'</em>':'')+'</span>';}).join('')||'')+'</td>';}html+='</tr>';}
-  html+='</tbody></table></body></html>';var blob=new Blob([html],{type:'text/html'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cast-grid-'+(show?show.title:'show').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase()+'.html';a.click();
+  html+='</tbody></table></body></html>';
+  var blob=new Blob([html],{type:'text/html'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='cast-grid-'+(show?show.title:'show').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase()+'.html';
+  a.click();
 }
 function coverHallOfFame(){
   var apps=db.appearances||[], byPerson={}, byRole={}, byShow={}, byType={}, i,a,p,r,label,rows,out='<div class="statSections">';
