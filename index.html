@@ -648,13 +648,34 @@ window.onerror=function(msg,src,line,col,err){showError('Dashboard crashed',Stri
 function esc(s){s=s==null?'':String(s);return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function norm(s){return (s==null?'':String(s)).toLowerCase().replace(/[\u2018\u2019]/g,"'").replace(/[^a-z0-9]+/g,' ').replace(/^\s+|\s+$/g,'');}
 function roleNorm(s){
-  var raw=(s==null?'':String(s));
-  raw=raw.replace(/[‘’]/g,"'").replace(/\s*(?:--|—|–|-)\s*act\s*(?:one|two|1|2)\s*$/i,'').replace(/\s*,?\s*act\s*(?:one|two|1|2)\s*$/i,'');
-  if(/^.+?'s track$/i.test(raw)||/track/i.test(raw)&&/ensemble/i.test(raw)) return 'ensemble';
-  var parts=raw.split('/').map(function(x){return norm(x).replace(/\bensemble\b/g,'').replace(/track/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');}).filter(Boolean);
+  var raw=(s==null?'':String(s)).replace(/[‘’]/g,"'").trim();
+  var key=norm(raw);
+  var alias={
+    'dr dillamond':'doctor dillamond','the wonderful wizard of oz':'the wizard','wonderful wizard of oz':'the wizard','wizard':'the wizard',
+    'elphaba through popular':'elphaba','elphaba after popular':'elphaba','elphaba act 1':'elphaba','elphaba act 2':'elphaba',
+    'mary s husband s assistant kyle':'mary s husband s assistant','anna of cleaves':'anna of cleves','anne boelyn':'anne boleyn','catherine howard':'katherine howard',
+    'shakespeare':'william shakespeare','nurse':'angelique','nurse angelique':'angelique','may francois':'may francois','francois may':'may francois',
+    'j d':'jd','jason dean':'jd','jason j d dean':'jd','veronica':'veronica sawyer','ms fleming':'pauline fleming','miss fleming':'pauline fleming',
+    'madeline ashton':'madeline','helen sharp':'helen','viola van horn':'viola','ernest menville':'ernest',
+    'donna sheridan':'donna','sophie sheridan':'sophie','tanya chesham leigh':'tanya','rosie mulligan':'rosie',
+    'aunt em':'aunt em evillene','evillene':'aunt em evillene','aunt em evillene':'aunt em evillene','wiz':'the wiz',
+    'narrator':'narrator mysterious man','mysterious man':'narrator mysterious man','narrator mysterious man':'narrator mysterious man','cinderella s prince':'wolf cinderella s prince','wolf':'wolf cinderella s prince',
+    'evan':'evan hansen','heidi':'heidi hansen','zoe':'zoe murphy','larry':'larry murphy','cynthia':'cynthia murphy','connor':'connor murphy','jared':'jared kleinman','alana':'alana beck',
+    'jay':'jay gatsby','gatsby':'jay gatsby','daisy':'daisy buchanan','nick':'nick carraway','jordan':'jordan baker','tom':'tom buchanan','wolfsheim':'meyer wolfsheim','myrtle':'myrtle wilson','george':'george wilson',
+    'fate 1':'fate','fate 2':'fate','fate 3':'fate','alexander hamilton':'hamilton','aaron burr':'burr','george washington':'washington','eliza hamilton':'eliza','angelica schuyler':'angelica',
+    'marquis de lafayette thomas jefferson':'lafayette jefferson','hercules mulligan james madison':'mulligan madison','john laurens philip hamilton':'laurens philip',
+    'harold zidler':'zidler','toulouse lautrec':'toulouse'
+  };
+  raw=raw.replace(/\s*(?:--|—|–|-)\s*act\s*(?:one|two|1|2)\s*$/i,'').replace(/\s*,?\s*act\s*(?:one|two|1|2)\s*$/i,'');
+  if(/^.+?'s track$/i.test(raw) || (/\btrack\b/i.test(raw) && /\bensemble\b/i.test(raw))) return 'ensemble';
+  key=norm(raw);
+  if(alias[key]) return alias[key];
+  var parts=raw.split('/').map(function(x){
+    var k=norm(x).replace(/\bensemble\b/g,'').replace(/\btrack\b/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');
+    return alias[k]||k;
+  }).filter(Boolean);
   if(parts.length>1){parts.sort();return parts.join(' / ');}
-  var s2=parts[0]||norm(raw).replace(/\bensemble\b/g,'').replace(/track/g,'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');
-  return s2||'ensemble';
+  return parts[0]||key||'ensemble';
 }
 function vals(o){var a=[],k;for(k in o){if(Object.prototype.hasOwnProperty.call(o,k))a.push(o[k]);}return a;}
 function keys(o){var a=[],k;for(k in o){if(Object.prototype.hasOwnProperty.call(o,k))a.push(k);}return a;}
@@ -681,13 +702,13 @@ function normalizedPersonHistoryRole(roleName,a){
   var raw=String(roleName||'').trim();
   if(!raw) return 'Ensemble';
   if(/^(.+?)['’]s track$/i.test(raw)) return 'Ensemble';
-  if(/track/i.test(raw)&&/ensemble/i.test(raw)) return 'Ensemble';
+  if(/\btrack\b/i.test(raw)&&/ensemble/i.test(raw)) return 'Ensemble';
   return raw;
 }
 function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0||n.indexOf('u s ')===0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0||n.indexOf('s b ')===0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0||n.indexOf('alt ')===0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0||n.indexOf('s w ')===0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0||n.indexOf('e c ')===0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0||n.indexOf('t r ')===0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
-function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v22-matinee-evening-name-cleanup-20260517',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
+function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v26-normalization-merged-20260517',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
 function showError(t,m){document.getElementById('app').innerHTML='<main class="wrap"><section class="card"><h1>'+esc(t)+'</h1><p class="muted">'+esc(m)+'</p></section></main>';}
 
 function buildIndexes(){
@@ -748,7 +769,7 @@ function personButton(personId,currentPerfId){
   return '<span class="personWrap"><span class="personLeft"><button class="nameBtn castPersonName" onclick="TD.togglePersonStats('+personId+','+currentPerfId+')">'+esc(upperName(personName(personId)))+'</button>'+times+'</span>'+flag+'</span>';
 }
 
-function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.random()">Random</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button></div><div class="buildTile">Build v24 · May 17, 2026 · '+esc((db&&db.meta&&db.meta.buildTime)||'')+'</div></div></div>'+inner;}
+function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.random()">Random</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button></div><div class="buildTile">Updated May 17 · '+esc((db&&db.meta&&db.meta.buildTime)||'')+'</div></div></div>'+inner;}
 function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='add')h=addEntryPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
 function go(v,id,replace){state.view=v;state.id=id;state.panel=null;if(!replace){if(state.hIndex<state.history.length-1)state.history=state.history.slice(0,state.hIndex+1);state.history.push({v:v,id:id});state.hIndex=state.history.length-1;}else if(!state.history.length){state.history.push({v:v,id:id});state.hIndex=0;}render();setTimeout(function(){window.scrollTo(0,0);},0);}
 function back(){if(state.hIndex>0){state.hIndex--;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
@@ -1025,6 +1046,13 @@ function inlinePersonCarousel(personId,currentPerfId){
 
 function showTitleForPerf(p){var s=by(db.shows,p.showId);return s?s.title:'';}
 var SHOW_DISPLAY_RULES={
+
+  'the great gatsby':{principalRoles:['jay gatsby','daisy buchanan','nick carraway','jordan baker','myrtle wilson','tom buchanan','george wilson'],principalRolesOnly:true},
+  'the notebook':{principalRoles:['older allie'],principalRolesOnly:true},
+  'sweeney todd':{allNamedPrincipalExceptEnsemble:true},
+  'little shop of horrors':{ensembleStartsAt:6},
+  'aladdin':{ensembleStartsAt:7},
+  'the outsiders':{ensembleStartsAt:7},
   'wicked':{ensembleStartsAt:9},
   '& juliet':{ensembleStartsAt:9},
   'juliet':{ensembleStartsAt:9},
@@ -1060,7 +1088,7 @@ var SHOW_DISPLAY_RULES={
   'schmigadoon!':{ensembleStartsAt:12},
   'schmigadoon':{ensembleStartsAt:12},
   'carousel':{ensembleStartsAt:10},
-  'titanique':{ensembleStartsAt:9},
+  'titanique':{principalExceptRoles:['bv singer','bv singers','background vocalist','background vocalists','background vocals']},
   'kinky boots':{ensembleStartsAt:7},
   'evita':{ensembleStartsAt:6},
   'the 25th annual putnam county spelling bee':{allPrincipal:true},
@@ -1104,10 +1132,16 @@ function roleMatchesAny(roleName,roleList){
   }
   return false;
 }
+function isEnsembleRoleDisplay(roleName){
+  var n=roleNorm(roleName);
+  return n==='ensemble'||/ensemble/i.test(String(roleName||''));
+}
 function castSectionByShowRule(showTitle,roleName,a){
   var rule=getShowDisplayRule(showTitle), i, order=Number(a&&a.displayOrder||0);
   if(!rule)return null;
   if(rule.allPrincipal)return 'principal';
+  if(rule.allNamedPrincipalExceptEnsemble)return isEnsembleRoleDisplay(roleName)?'ensemble':'principal';
+  if(rule.principalExceptRoles)return roleMatchesAny(roleName,rule.principalExceptRoles)?'ensemble':'principal';
   if(rule.principalRoles&&roleMatchesAny(roleName,rule.principalRoles))return 'principal';
   if(rule.specialSections){
     for(i=0;i<rule.specialSections.length;i++){
@@ -1168,7 +1202,7 @@ function castBlock(p){
     }else if(a.appearanceType==='swing'&&isTrack){
       notes+='<div class="row"><strong>'+personButton(a.personId,p.id)+'</strong><div class="tiny">was on for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }else{
-      line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="castOneLine"><span class="roleInline">'+roleLink(r)+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+badge+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
+      line='<div class="castLine '+coverClass+(isOpen?' isOpen':'')+'"><div class="castOneLine"><span class="roleInline">'+roleLink(r)+(a.roleNote?'<span class="trackNote">'+esc(a.roleNote)+'</span>':'')+'</span><span class="castPersonCell">'+personButton(a.personId,p.id)+badge+'</span></div>'+inlinePersonCarousel(a.personId,p.id)+'</div>';
       principal+=line;
       if(a.appearanceType==='swing')notes+='<div class="row"><strong>'+esc(upperName(personName(a.personId)))+'</strong><div class="tiny">listed as swing/special coverage for '+esc(cleanTrackRoleLabel(roleName))+(label?' · '+esc(label):'')+'</div></div>';
     }
