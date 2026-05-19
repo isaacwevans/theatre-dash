@@ -648,6 +648,11 @@ body.compact{font-size:13px;--gap:6px}body.compact .wrap{max-width:1180px;paddin
 .statsDeck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.statMini{border:1px solid rgba(83,58,45,.13);background:rgba(255,255,255,.55);border-radius:14px;padding:10px}.statMini strong{display:block;font-size:18px;line-height:1.05}.statMini span{display:block;margin-top:3px;color:#6b4936;font-size:11px;text-transform:uppercase;letter-spacing:.045em;font-weight:800}@media(max-width:720px){.statsDeck{grid-template-columns:1fr}.buildTile{display:none!important}}
 
 .conductorSection h2{margin-bottom:8px}.conductorLine .creativeRole{background:#efe7d3!important}.tagBadge.verified{background:#e2f6df;color:#205528;border-color:rgba(32,85,40,.35)}
+
+/* === v3.25 creative count bubbles + Annie grid cleanup support === */
+.creativeCountBadge{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;margin-left:.4rem;border-radius:999px;background:#f7df59;color:#17120b;border:1px solid rgba(0,0,0,.18);font-size:.72rem;font-weight:950;box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
+.creativeNames .nameBtn{vertical-align:middle}
+.creativeConnect{display:none!important}
 </style>
 
 <style id="v29-cast-grid-cleanup">
@@ -798,7 +803,7 @@ function normalizedPersonHistoryRole(roleName,a){
 function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0||n.indexOf('u s ')===0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0||n.indexOf('s b ')===0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0||n.indexOf('alt ')===0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0||n.indexOf('s w ')===0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0||n.indexOf('e c ')===0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0||n.indexOf('t r ')===0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
-function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v3.24-conductors-inline-tony',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
+function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v3.25-conductors-grid-creativecounts',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
 function showError(t,m){document.getElementById('app').innerHTML='<main class="wrap"><section class="card"><h1>'+esc(t)+'</h1><p class="muted">'+esc(m)+'</p></section></main>';}
 
 function buildIndexes(){
@@ -1218,7 +1223,7 @@ var SHOW_DISPLAY_RULES={
   'annie':{
     principalRoles:['annie','oliver warbucks','warbucks','miss hannigan','grace farrell','grace','rooster hannigan','rooster','lily st regis','lily','president franklin delano roosevelt','fdr'],
     principalRolesOnly:true,
-    specialSections:[{label:'Orphans',roles:['molly','pepper','july','kate','tessie','duffy','sadie']}]
+    specialSections:[{label:'Orphans',roles:['molly','pepper','july','kate','tessie','duffy']}]
   }
 };
 
@@ -1340,6 +1345,16 @@ function castBlock(p){
   return out;
 }
 function roleLink(r){if(!r)return'';var key=String(r.showId)+'|'+roleNorm(r.name);return '<button class="linkish" onclick="TD.go(\'role\',\''+esc(key)+'\')">'+esc(r.name)+'</button>';}
+function creativeOtherProductionCount(personId,currentPerfId){
+  var cr=idx.creativeByPerson[personId]||[], current=by(db.performances,currentPerfId), showSet={}, i, p;
+  for(i=0;i<cr.length;i++){
+    p=by(db.performances,cr[i].performanceId);
+    if(!p)continue;
+    if(current && String(p.showId)===String(current.showId))continue;
+    showSet[p.showId]=1;
+  }
+  return keys(showSet).length;
+}
 function creativeBlock(perfId){
   var arr=idx.creativeByPerf[perfId]||[],byC={},order=[],i,c,p,out='',credit,peopleHtml,activeInline;
   for(i=0;i<arr.length;i++){
@@ -1347,10 +1362,11 @@ function creativeBlock(perfId){
     if(norm(credit).indexOf('conductor')>=0)continue;
     if(!byC[credit]){byC[credit]=[];order.push(credit);}
     p=by(db.people,c.personId);
+    var count=p?creativeOtherProductionCount(c.personId,perfId):0;
     byC[credit].push({
       personId:c.personId,
       name:p?p.name:c.raw,
-      html:'<button class="nameBtn creativeNameBtn" onclick="TD.toggleCreativeStats('+c.personId+','+perfId+')">'+esc(p?p.name:c.raw)+'</button>'
+      html:'<button class="nameBtn creativeNameBtn" onclick="TD.toggleCreativeStats('+c.personId+','+perfId+')">'+esc(p?p.name:c.raw)+'</button>'+(count?'<span class="creativeCountBadge" title="Other productions seen">'+count+'</span>':'')
     });
   }
   for(i=0;i<order.length;i++){
@@ -1996,17 +2012,7 @@ function statsPage(){
   return '<main class="wrap"><section class="hero"><h1>Stats</h1><div class="statGrid"><div class="stat"><div class="num">'+perfs.length+'</div><div class="lab">performances</div></div><div class="stat"><div class="num">'+vals(db.shows).length+'</div><div class="lab">shows</div></div><div class="stat"><div class="num">'+vals(db.people).length+'</div><div class="lab">people</div></div><div class="stat"><div class="num">'+keys(idx.coverPerf).length+'</div><div class="lab">performances with covers</div></div></div></section><div class="split"><section class="card"><h2>Most Seen Shows</h2>'+simpleRows(topShows,'show')+'</section><aside class="card"><h2>By Year</h2>'+countRows(years,true)+'<div class="section"><h2>By Type</h2>'+countRows(types,false)+'</div></aside></div><section class="card section"><h2>Cover / Understudy Hall of Fame</h2>'+coverHallOfFame()+'</section><section class="card section"><h2>Most Seen Together</h2>'+globalPairingsBlock()+'</section><section class="card section"><h2>Diary Milestones</h2>'+milestonesBlock()+'</section><section class="card section"><h2>Role Families</h2>'+roleFamiliesBlock()+'</section><section class="card section"><h2>Current-ish Snapshot</h2>'+currentSnapshotBlock()+'</section></main>';
 }
 
-function creativeRepeatSummaryForPerf(perfId){
-  var arr=idx.creativeByPerf[perfId]||[], out='', i,c,p,cr,showSet,creditSet,otherShows;
-  for(i=0;i<arr.length;i++){
-    c=arr[i]; p=by(db.people,c.personId); if(!p)continue; cr=idx.creativeByPerson[c.personId]||[];
-    if(cr.length<=1)continue; showSet={}; creditSet={};
-    cr.forEach(function(x){var pp=by(db.performances,x.performanceId); if(pp)showSet[pp.showId]=1; if(x.credit)creditSet[x.credit]=1;});
-    otherShows=keys(showSet).length;
-    out+='<span class="chip">'+esc(p.name)+' · '+cr.length+' credits / '+otherShows+' shows</span>';
-  }
-  return out?'<div class="creativeConnect"><div class="tiny">Creative team seen elsewhere</div>'+out+'</div>':'';
-}
+function creativeRepeatSummaryForPerf(perfId){return '';}
 function creativeCrossoverBlock(personId){
   var perfN=(idx.personPerfSets[personId]?keys(idx.personPerfSets[personId]).length:0), cr=idx.creativeByPerson[personId]||[];
   if(!perfN||!cr.length)return '';
@@ -2306,6 +2312,90 @@ function downloadCastGrid(showId){
   }
   html+='</tbody></table></body></html>';
   var blob=new Blob([html],{type:'text/html'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cast-grid-'+(show?show.title:'show').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase()+'.html';a.click();
+}
+
+
+/* === v3.25 chart-only role normalization overrides === */
+var ANNIE_GRID_ORDER={
+  'annie':1,'oliver warbucks':2,'warbucks':2,'miss hannigan':3,'grace farrell':4,'grace':4,'rooster hannigan':5,'rooster':5,
+  'lily st regis':6,'lily':6,'fdr':7,'president franklin delano roosevelt':7,'franklin delano roosevelt':7,
+  'molly':8,'tessie':9,'pepper':10,'kate':11,'july':12,'duffy':13
+};
+function canonicalAnnieGridRole(roleName){
+  var r=baseRoleNameForCastGrid(roleName), parts=splitRolePartsForRule(r), k=roleNorm(r), i, p;
+  var names=['annie','oliver warbucks','warbucks','miss hannigan','grace farrell','grace','rooster hannigan','rooster','lily st regis','lily','president franklin delano roosevelt','franklin delano roosevelt','fdr','molly','tessie','pepper','kate','july','duffy'];
+  function canon(x){
+    x=roleNorm(x);
+    if(x==='warbucks')return 'Oliver Warbucks';
+    if(x==='grace')return 'Grace Farrell';
+    if(x==='rooster')return 'Rooster Hannigan';
+    if(x==='lily'||x==='lily st regis')return 'Lily St. Regis';
+    if(x==='fdr'||x==='president franklin delano roosevelt'||x==='franklin delano roosevelt')return 'FDR';
+    if(x==='annie')return 'Annie';
+    if(x==='miss hannigan')return 'Miss Hannigan';
+    if(x==='molly')return 'Molly';
+    if(x==='tessie')return 'Tessie';
+    if(x==='pepper')return 'Pepper';
+    if(x==='kate')return 'Kate';
+    if(x==='july')return 'July';
+    if(x==='duffy')return 'Duffy';
+    return null;
+  }
+  if(canon(k))return canon(k);
+  for(i=0;i<parts.length;i++){p=canon(parts[i]);if(p)return p;}
+  return null;
+}
+function canonicalGridRole(showTitle,roleName){
+  var showKey=norm(showTitle), k=gridRoleNormName(roleName), annie;
+  if(showKey==='annie'){annie=canonicalAnnieGridRole(roleName);if(annie)return annie;return baseRoleNameForCastGrid(roleName);}
+  if(showKey==='wicked'){
+    if(k==='the wonderful wizard of oz'||k==='wonderful wizard of oz'||k==='wizard')return 'The Wizard';
+    if(k==='dr dillamond'||k==='dr. dillamond')return 'Doctor Dillamond';
+    if(k==='witch s father'||k==='witch’s father'||k==='witch father'||k==='ozian official'||k==='witch s father ozian official'||k==='witch’s father ozian official'||k==='witch father ozian official')return 'Witch’s Father/Ozian Official';
+    if(k==='witch s mother'||k==='witch’s mother'||k==='witch mother')return 'Witch’s Mother';
+    if(k==='chistery')return 'Chistery';
+    if(k==='midwife')return 'Midwife';
+  }
+  return baseRoleNameForCastGrid(roleName);
+}
+function castGridRoleKeyForShow(showTitle,roleName){return roleNorm(canonicalGridRole(showTitle,roleName));}
+function includeRoleInCastGrid(showTitle,roleName,a){
+  var showKey=norm(showTitle), section, annie;
+  if(!roleName||norm(roleName)==='ensemble'||norm(roleName)==='swing')return false;
+  if(/^note:/i.test(String(roleName)))return false;
+  if(showKey==='annie'){annie=canonicalAnnieGridRole(roleName);return !!annie;}
+  if(showKey==='wicked'&&isWickedNamedEnsembleGridRole(roleName))return true;
+  section=castSectionByShowRule(showTitle,roleName,a);
+  return section!=='ensemble';
+}
+function castGridOrderForShow(showTitle,displayName,defaultOrder){
+  var showKey=norm(showTitle), k=roleNorm(displayName);
+  if(showKey==='annie'&&ANNIE_GRID_ORDER[k])return ANNIE_GRID_ORDER[k];
+  if(showKey==='wicked')return wickedGridOrder(displayName,defaultOrder);
+  return defaultOrder;
+}
+function showCastGridData(showId){
+  var perfs=(idx.showPerfs[showId]||[]).slice().sort(perfCompareAsc), show=by(db.shows,showId), showTitle=show?show.title:'', roleMap={}, roleOrder=[], rows=[], i,j,p,apps,a,r,roleName,key,cell,ord,displayName;
+  for(i=0;i<perfs.length;i++){
+    p=perfs[i];apps=(idx.perfApps[p.id]||[]).slice().sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
+    for(j=0;j<apps.length;j++){
+      a=apps[j];r=by(db.roles,a.roleId);roleName=r?r.name:(a.roleRaw||'');
+      if(!includeRoleInCastGrid(showTitle,roleName,a))continue;
+      displayName=canonicalGridRole(showTitle,roleName);key=castGridRoleKeyForShow(showTitle,roleName);ord=castGridOrderForShow(showTitle,displayName,Number(a.displayOrder||9999));
+      if(!roleMap[key]){roleMap[key]={key:key,name:displayName,order:ord};roleOrder.push(key);}else if(ord<roleMap[key].order){roleMap[key].order=ord;roleMap[key].name=displayName;}
+    }
+  }
+  roleOrder.sort(function(x,y){return(roleMap[x].order-roleMap[y].order)||roleMap[x].name.localeCompare(roleMap[y].name);});
+  for(i=0;i<perfs.length;i++){
+    p=perfs[i];cell={};apps=(idx.perfApps[p.id]||[]).slice().sort(function(a,b){return(a.displayOrder||0)-(b.displayOrder||0);});
+    for(j=0;j<apps.length;j++){
+      a=apps[j];r=by(db.roles,a.roleId);roleName=r?r.name:(a.roleRaw||'');key=castGridRoleKeyForShow(showTitle,roleName);if(!roleMap[key])continue;
+      if(!cell[key])cell[key]=[];
+      cell[key].push({personId:a.personId,name:personName(a.personId),cover:coverName(a.coverLabel||a.coverType||'')||(a.appearanceType==='swing'?'Swing':'')});
+    }
+    rows.push({perf:p,cells:cell});
+  }
+  return{roles:roleOrder.map(function(k){return roleMap[k];}),rows:rows,colorMap:{}};
 }
 
 window.TD={go:function(v,id){go(v,id,false)},back:back,forward:forward,
