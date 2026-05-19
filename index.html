@@ -665,6 +665,9 @@ body.compact{font-size:13px;--gap:6px}body.compact .wrap{max-width:1180px;paddin
 .castGridCell--mixed-cover .castGridCellInner{background:#f7ead4;border-left:5px solid #9a6a2f}
 .castGrid td.castGridEmpty{color:#aaa!important;text-align:center!important;padding:7px 8px!important}
 .castGrid th{white-space:normal!important;line-height:1.05}
+
+/* === v33 audit + creative connection framework === */
+.auditGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.auditItem{border:1px solid rgba(0,0,0,.16);background:rgba(255,255,255,.72);border-radius:14px;padding:12px}.auditItem h3{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.08em}.auditFlag{display:inline-block;border-radius:999px;border:1px solid rgba(0,0,0,.22);padding:3px 7px;margin:2px;font-size:11px;font-weight:850;text-transform:uppercase;background:#fff}.auditFlag.warn{background:#fff4b8}.auditFlag.bad{background:#ffe1e1}.auditFlag.good{background:#e2f6df}.miniTable{width:100%;border-collapse:collapse}.miniTable td,.miniTable th{border-bottom:1px solid rgba(0,0,0,.12);padding:7px 5px;text-align:left;font-size:12px;vertical-align:top}.miniTable th{text-transform:uppercase;letter-spacing:.08em;font-size:10px;color:var(--muted)}.creativeConnect{margin-top:6px}.creativeConnect .chip{margin-right:4px;margin-bottom:4px}.tagBadge{display:inline-block;border-radius:999px;background:#efe7d3;border:1px solid rgba(0,0,0,.18);padding:2px 7px;margin:2px;font-size:11px;font-weight:850;text-transform:uppercase}.tagBadge.tony{background:#f7e28b}.tagBadge.debut{background:#dbeafe}.tagBadge.seat{background:#eadcff}
 </style>
 </head>
 <body>
@@ -741,7 +744,7 @@ function normalizedPersonHistoryRole(roleName,a){
 function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0||n.indexOf('u s ')===0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0||n.indexOf('s b ')===0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0||n.indexOf('alt ')===0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0||n.indexOf('s w ')===0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0||n.indexOf('e c ')===0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0||n.indexOf('t r ')===0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
-function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v27-titanique-normalized-20260517',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
+function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v3.22-conductors-markers',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
 function showError(t,m){document.getElementById('app').innerHTML='<main class="wrap"><section class="card"><h1>'+esc(t)+'</h1><p class="muted">'+esc(m)+'</p></section></main>';}
 
 function buildIndexes(){
@@ -803,7 +806,7 @@ function personButton(personId,currentPerfId){
 }
 
 function shell(inner){return '<div class="topbar"><div class="topin"><button class="brand" onclick="TD.go(\'home\',null)">Theatre Diary</button><div class="nav"><button class="btn" onclick="TD.go(\'home\',null)">Home</button><button class="btn" onclick="TD.random()">Random</button><button class="btn" onclick="TD.diary()">Diary</button><button class="btn" onclick="TD.back()">Back</button><button class="btn" onclick="TD.forward()">Forward</button><button class="btn" onclick="TD.go(\'people\',null)">People</button><button class="btn" onclick="TD.go(\'shows\',null)">Shows</button><button class="btn" onclick="TD.go(\'roles\',null)">Roles</button><button class="btn" onclick="TD.go(\'covers\',null)">Covers</button><button class="btn" onclick="TD.go(\'stats\',null)">Stats</button><button class="btn" onclick="TD.go(\'add\',null)">Add Entry</button><button class="btn" onclick="TD.toggleDensity()">'+(state.density==='compact'?'Comfy':'Compact')+'</button></div><div class="buildTile">updated '+esc((db&&db.meta&&(db.meta.lastUpdated||db.meta.updated))||'')+'</div></div></div>'+inner;}
-function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='add')h=addEntryPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
+function render(){document.body.className=state.density==='compact'?'compact':'';var h=''; if(state.view==='home')h=home(); else if(state.view==='perf')h=perfPage(state.id); else if(state.view==='person')h=personPage(state.id); else if(state.view==='show')h=showPage(state.id); else if(state.view==='venue')h=venuePage(state.id); else if(state.view==='people')h=peoplePage(); else if(state.view==='shows')h=showsPage(); else if(state.view==='roles')h=rolesPage(); else if(state.view==='role')h=rolePage(state.id); else if(state.view==='covers')h=coversPage(); else if(state.view==='stats')h=statsPage(); else if(state.view==='audit')h=auditPage(); else if(state.view==='add')h=addEntryPage(); else if(state.view==='edits')h=editsPage(); else h=home(); document.getElementById('app').innerHTML=shell(h);}
 function go(v,id,replace){state.view=v;state.id=id;state.panel=null;if(!replace){if(state.hIndex<state.history.length-1)state.history=state.history.slice(0,state.hIndex+1);state.history.push({v:v,id:id});state.hIndex=state.history.length-1;}else if(!state.history.length){state.history.push({v:v,id:id});state.hIndex=0;}render();setTimeout(function(){window.scrollTo(0,0);},0);}
 function back(){if(state.hIndex>0){state.hIndex--;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
 function forward(){if(state.hIndex<state.history.length-1){state.hIndex++;var h=state.history[state.hIndex];state.view=h.v;state.id=h.id;state.panel=null;render();setTimeout(function(){window.scrollTo(0,0);},0);}}
@@ -1024,15 +1027,15 @@ function conductorBlock(perfId){
 
 function perfPage(id){
   var p=by(db.performances,id); if(!p)return '<main class="wrap"><section class="card"><h1>Performance not found</h1></section></main>';
-  var np=nextPrev(id), e=edits[String(id)]||{}, note=e.notes!=null?e.notes:(p.notes||''), privateNote=e.privateNote||'', tags=e.tags||'', rating=e.rating||'';
+  var np=nextPrev(id), e=edits[String(id)]||{}, note=e.notes!=null?e.notes:(p.notes||''), privateNote=e.privateNote||'', tags=(p.tags||'')+(e.tags?((p.tags?', ':'')+e.tags):''), rating=e.rating||'';
   return '<main class="wrap"><section class="hero"><div class="tiny">'+esc(p.type||'')+' · '+esc(p.time||'')+'</div><h1>'+esc(showOf(p))+'</h1><p class="muted">'+esc(fmtDate(p.date))+' · '+esc(venueOf(p))+'</p><div class="chips">'+showNumberChips(p)+(idx.coverPerf[p.id]?'<span class="chip cover">covers/special appearances</span>':'')+(rating?'<span class="chip good">'+esc(rating)+' ★</span>':'')+(tags?tagChips(tags):'')+'</div>'+conductorBlock(id)+'<div class="toolbar"><button class="btn" onclick="TD.go(\'perf\','+np.prev+')">Previous</button><button class="btn" onclick="TD.go(\'perf\','+np.next+')">Next</button><button class="btn" onclick="TD.go(\'show\','+p.showId+')">Show Page</button><button class="btn" onclick="TD.go(\'venue\','+p.venueId+')">Venue Page</button><button class="btn" onclick="TD.copyPerf('+id+',\'plain\')">Copy Info</button><button class="btn" onclick="TD.copyPerf('+id+',\'cast\')">Copy Cast</button><button class="btn" onclick="TD.copyPerf('+id+',\'html\')">Copy Formatted</button></div></section>'+
   '<section class="card"><h2>Cast</h2>'+castBlock(p)+firstTimeBlock(p)+'</section>'+
-  '<section class="card section"><h2>Creative Team</h2>'+creativeBlock(id)+'</section>'+
+  '<section class="card section"><h2>Creative Team</h2>'+creativeBlock(id)+creativeRepeatSummaryForPerf(id)+'</section>'+
   '<section class="card section">'+relatedBlock(p)+'</section>'+
   '<section class="notesBottom"><details><summary class="muted">Notes, edits, and raw source</summary>'+(note?'<div class="noteBox">'+esc(note)+'</div>':'')+'<div class="notesGrid"><div><label class="tiny">Public/source note</label><textarea class="textarea" oninput="TD.saveField('+id+',\'notes\',this.value)">'+esc(note)+'</textarea></div><div><label class="tiny">Private note</label><textarea class="textarea" oninput="TD.saveField('+id+',\'privateNote\',this.value)">'+esc(privateNote)+'</textarea></div><div><label class="tiny">Tags</label><input class="input smallInput" value="'+esc(tags)+'" oninput="TD.saveField('+id+',\'tags\',this.value)"></div><div><label class="tiny">Rating / vibe</label><input class="input smallInput" value="'+esc(rating)+'" oninput="TD.saveField('+id+',\'rating\',this.value)" placeholder="5, loved, chaotic, etc."></div></div><p class="tiny">Saved in this browser. Use Edits to export/import.</p><button class="btn" onclick="TD.go(\'edits\',null)">Edits</button><details class="section"><summary class="muted">Raw cast text</summary><pre>'+esc(sourceCast(p))+'</pre></details></details></section></main>';
 }
 function tagChipClass(t){var n=norm(t);if(n.indexOf('tony')>=0||n.indexOf('award')>=0||n.indexOf('nominee')>=0||n.indexOf('winner')>=0)return 'tony';if(n.indexOf('debut')>=0||n.indexOf('final')>=0||n.indexOf('first time')>=0)return 'milestone';if(n.indexOf('front row')>=0||n.indexOf('lottery')>=0||n.indexOf('rush')>=0||n.indexOf('comp')>=0||n.indexOf('opening')>=0||n.indexOf('closing')>=0||n.indexOf('preview')>=0||n.indexOf('talkback')>=0)return 'experience';if(n.indexOf('verified')>=0)return 'verified';return 'purple';}
-function tagChips(tags){var a=String(tags).split(','),out='',i,t,cls;for(i=0;i<a.length;i++){t=a[i].replace(/^\s+|\s+$/g,'');if(t){cls=tagChipClass(t);out+='<span class="chip '+cls+'">'+esc(t)+'</span>';}}return out;}
+function tagChips(tags){var a=Array.isArray(tags)?tags:String(tags).split(','),out='',i,t,cls;for(i=0;i<a.length;i++){t=a[i].replace(/^\s+|\s+$/g,'');if(t){cls=tagChipClass(t);out+='<span class="chip '+cls+'">'+esc(t)+'</span>';}}return out;}
 
 function firstTimeBlock(p){
   var apps=idx.perfApps[p.id]||[], perfPeople={}, i,a,out='',names=[],ids=[],callbacks=[];
@@ -1150,7 +1153,7 @@ var SHOW_DISPLAY_RULES={
   'legally blonde: the musical':{ensembleStartsAt:19},
   'mean girls':{ensembleStartsAt:11},
   'beauty and the beast':{ensembleStartsAt:12},
-  'rodgers & hammerstein's cinderella':{ensembleStartsAt:10},
+  "rodgers & hammerstein's cinderella":{ensembleStartsAt:10},
   'cinderella':{ensembleStartsAt:10},
   'sister act':{ensembleStartsAt:12},
   'pippin':{ensembleStartsAt:9},
@@ -1348,6 +1351,7 @@ function personPage(id){
   out+='<div class="split"><section class="card"><div class="moduleTitle"><h2>'+(state.personLayout==='grouped'?'Roles in your diary':'Chronology')+'</h2><span class="chip">'+arr.length+' appearances</span></div>';
   out+=state.personLayout==='grouped'?groupedPersonAppearances(id,arr):chronologicalPersonAppearances(id,arr);
   out+='</section><aside class="card"><h2>Career in your diary</h2>'+personTimeline(arr)+'<div class="section"><h2>Creative Credits</h2>'+creativePersonBlock(cr)+'</div></aside></div>';
+  out+=creativeCrossoverBlock(id);
   out+='<section id="connections" class="card section"><div class="moduleTitle"><h2>Relationship map</h2><span class="chip">toward the bottom, as requested</span></div>'+relationshipMap(id)+'</section></main>';
   return out;
 }
@@ -1769,10 +1773,10 @@ function understudyBoard(p){
 }
 function perfPage(id){
   var p=by(db.performances,id); if(!p)return '<main class="wrap"><section class="card"><h1>Performance not found</h1></section></main>';
-  var np=nextPrev(id), e=edits[String(id)]||{}, note=e.notes!=null?e.notes:(p.notes||''), privateNote=e.privateNote||'', tags=e.tags||'', rating=e.rating||'';
+  var np=nextPrev(id), e=edits[String(id)]||{}, note=e.notes!=null?e.notes:(p.notes||''), privateNote=e.privateNote||'', tags=(p.tags||'')+(e.tags?((p.tags?', ':'')+e.tags):''), rating=e.rating||'';
   return '<main class="wrap"><section class="hero"><div class="tiny">'+esc(p.type||'')+' · '+esc(p.time||'')+'</div><h1>'+esc(showOf(p))+'</h1><p class="muted">'+esc(fmtDate(p.date))+' · '+esc(venueOf(p))+'</p><div class="chips">'+showNumberChips(p)+(idx.coverPerf[p.id]?'<span class="chip cover">covers/special appearances</span>':'')+(rating?'<span class="chip good">'+esc(rating)+' ★</span>':'')+(tags?tagChips(tags):'')+'</div>'+conductorBlock(id)+'<div class="toolbar"><button class="btn" onclick="TD.go(\'perf\','+np.prev+')">Previous</button><button class="btn" onclick="TD.go(\'perf\','+np.next+')">Next</button><button class="btn" onclick="TD.go(\'show\','+p.showId+')">Show Page</button><button class="btn" onclick="TD.go(\'venue\','+p.venueId+')">Venue Page</button><button class="btn" onclick="TD.copyPerf('+id+',\'plain\')">Copy Info</button><button class="btn" onclick="TD.copyPerf('+id+',\'cast\')">Copy Cast</button><button class="btn" onclick="TD.copyPerf('+id+',\'html\')">Copy Formatted</button></div></section>'+ 
   '<section class="card"><h2>Cast</h2>'+castBlock(p)+understudyBoard(p)+firstTimeBlock(p)+'</section>'+ 
-  '<section class="card section"><h2>Creative Team</h2>'+creativeBlock(id)+'</section>'+ 
+  '<section class="card section"><h2>Creative Team</h2>'+creativeBlock(id)+creativeRepeatSummaryForPerf(id)+'</section>'+ 
   '<section class="card section">'+relatedBlock(p)+'</section>'+ 
   '<section class="notesBottom"><details><summary class="muted">Notes, edits, and raw source</summary>'+(note?'<div class="noteBox">'+esc(note)+'</div>':'')+'<div class="notesGrid"><div><label class="tiny">Public/source note</label><textarea class="textarea" oninput="TD.saveField('+id+',\'notes\',this.value)">'+esc(note)+'</textarea></div><div><label class="tiny">Private note</label><textarea class="textarea" oninput="TD.saveField('+id+',\'privateNote\',this.value)">'+esc(privateNote)+'</textarea></div><div><label class="tiny">Tags</label><input class="input smallInput" value="'+esc(tags)+'" oninput="TD.saveField('+id+',\'tags\',this.value)"></div><div><label class="tiny">Rating / vibe</label><input class="input smallInput" value="'+esc(rating)+'" oninput="TD.saveField('+id+',\'rating\',this.value)" placeholder="5, loved, chaotic, etc."></div></div><p class="tiny">Saved in this browser. Use Edits to export/import.</p><button class="btn" onclick="TD.go(\'edits\',null)">Edits</button><details class="section"><summary class="muted">Raw cast text</summary><pre>'+esc(sourceCast(p))+'</pre></details></details></section></main>';
 }
@@ -1820,6 +1824,7 @@ function personPage(id){
   out+='<div class="split"><section class="card"><div class="moduleTitle"><h2>'+(state.personLayout==='grouped'?'Roles in your diary':'Chronology')+'</h2><span class="chip">'+arr.length+' appearances</span></div>';
   out+=state.personLayout==='grouped'?groupedPersonAppearances(id,arr):chronologicalPersonAppearances(id,arr);
   out+='</section><aside class="card"><h2>Career in your diary</h2>'+personTimeline(arr)+'<div class="section"><h2>Creative Credits</h2>'+creativePersonBlock(cr)+'</div></aside></div>';
+  out+=creativeCrossoverBlock(id);
   out+='<section id="connections" class="card section"><div class="moduleTitle"><h2>Relationship map</h2><span class="chip">co-star constellations</span></div>'+relationshipMap(id)+'</section></main>';
   return out;
 }
@@ -1932,6 +1937,67 @@ function statsPage(){
   var perfs=vals(db.performances),years={},types={},i,p,topShows=[],sid;for(i=0;i<perfs.length;i++){p=perfs[i];years[yearOf(p.date)]=(years[yearOf(p.date)]||0)+1;types[p.type||'Unknown']=(types[p.type||'Unknown']||0)+1;}for(sid in idx.showPerfs)if(Object.prototype.hasOwnProperty.call(idx.showPerfs,sid))topShows.push({id:sid,n:idx.showPerfs[sid].length,title:(by(db.shows,sid)||{}).title});topShows.sort(function(a,b){return b.n-a.n||a.title.localeCompare(b.title);});
   return '<main class="wrap"><section class="hero"><h1>Stats</h1><div class="statGrid"><div class="stat"><div class="num">'+perfs.length+'</div><div class="lab">performances</div></div><div class="stat"><div class="num">'+vals(db.shows).length+'</div><div class="lab">shows</div></div><div class="stat"><div class="num">'+vals(db.people).length+'</div><div class="lab">people</div></div><div class="stat"><div class="num">'+keys(idx.coverPerf).length+'</div><div class="lab">performances with covers</div></div></div></section><div class="split"><section class="card"><h2>Most Seen Shows</h2>'+simpleRows(topShows,'show')+'</section><aside class="card"><h2>By Year</h2>'+countRows(years,true)+'<div class="section"><h2>By Type</h2>'+countRows(types,false)+'</div></aside></div><section class="card section"><h2>Cover / Understudy Hall of Fame</h2>'+coverHallOfFame()+'</section><section class="card section"><h2>Most Seen Together</h2>'+globalPairingsBlock()+'</section><section class="card section"><h2>Diary Milestones</h2>'+milestonesBlock()+'</section><section class="card section"><h2>Role Families</h2>'+roleFamiliesBlock()+'</section><section class="card section"><h2>Current-ish Snapshot</h2>'+currentSnapshotBlock()+'</section></main>';
 }
+
+function creativeRepeatSummaryForPerf(perfId){
+  var arr=idx.creativeByPerf[perfId]||[], out='', i,c,p,cr,showSet,creditSet,otherShows;
+  for(i=0;i<arr.length;i++){
+    c=arr[i]; p=by(db.people,c.personId); if(!p)continue; cr=idx.creativeByPerson[c.personId]||[];
+    if(cr.length<=1)continue; showSet={}; creditSet={};
+    cr.forEach(function(x){var pp=by(db.performances,x.performanceId); if(pp)showSet[pp.showId]=1; if(x.credit)creditSet[x.credit]=1;});
+    otherShows=keys(showSet).length;
+    out+='<span class="chip">'+esc(p.name)+' · '+cr.length+' credits / '+otherShows+' shows</span>';
+  }
+  return out?'<div class="creativeConnect"><div class="tiny">Creative team seen elsewhere</div>'+out+'</div>':'';
+}
+function creativeCrossoverBlock(personId){
+  var perfN=(idx.personPerfSets[personId]?keys(idx.personPerfSets[personId]).length:0), cr=idx.creativeByPerson[personId]||[];
+  if(!perfN||!cr.length)return '';
+  var creditSet={}, i; for(i=0;i<cr.length;i++)creditSet[cr[i].credit||'Creative']=1;
+  return '<section class="card section"><h2>Performer / Creative Crossover</h2><p class="muted">This person appears both onstage and in creative credits in your diary.</p><div class="chips"><span class="chip good">'+perfN+' performer appearances</span><span class="chip">'+cr.length+' creative credits</span><span class="chip">'+esc(keys(creditSet).join(' / '))+'</span></div></section>';
+}
+function auditCreativeRows(){
+  var rows=[], cr=db.creativeCredits||[], i,c,p,person,credit,nc,flags,badCredits=['fight','movement','intimacy','dramaturg','dramaturgy','consultant','specialty'],musicish=['arrangement','arrangements','orchestration','orchestrations','music supervision','vocal','conductor','musical coordinator','associate md'], designish=['scenic','costume','lighting','sound','projection','video','hair','wig','makeup','puppet'];
+  for(i=0;i<cr.length;i++){
+    c=cr[i]; p=by(db.performances,c.performanceId); person=by(db.people,c.personId); credit=String(c.credit||''); nc=norm(credit); flags=[];
+    if(!p)flags.push('missing performance');
+    if(!person)flags.push('missing person');
+    if(!credit)flags.push('blank credit');
+    if(nc.indexOf('fight')>=0 && nc.indexOf('movement')>=0){}
+    if(nc==='specialty design' || nc==='fight/movement') flags.push('generic bucket');
+    if(nc.indexOf('dramaturg')>=0 && nc.indexOf('specialty')<0) flags.push('dramaturg not specialty');
+    if(nc.indexOf('resident dramaturg')>=0) flags.push('possible specialty');
+    if(nc.indexOf('conductor')>=0 && (!c.verified&&!c.conductorVerified)) flags.push('conductor unverified');
+    if(flags.length) rows.push({c:c,p:p,person:person,flags:flags});
+  }
+  return rows;
+}
+function auditDuplicatePeople(){
+  var people=vals(db.people), map={}, rows=[], i,p,k;
+  for(i=0;i<people.length;i++){p=people[i]; k=norm(String(p.name||'').replace(/(jr|sr|iii|ii)\.?/ig,'').replace(/[^a-z0-9 ]/g,' ')); if(!map[k])map[k]=[]; map[k].push(p);}
+  for(k in map)if(Object.prototype.hasOwnProperty.call(map,k)&&map[k].length>1)rows.push(map[k]);
+  rows.sort(function(a,b){return b.length-a.length||a[0].name.localeCompare(b[0].name);});
+  return rows;
+}
+function auditTrackRoles(){
+  var rows=[], k,r; for(k in db.roles)if(Object.prototype.hasOwnProperty.call(db.roles,k)){r=db.roles[k]; if(/track/i.test(r.name||'')) rows.push(r);}
+  rows.sort(function(a,b){return (by(db.shows,a.showId)||{}).title.localeCompare((by(db.shows,b.showId)||{}).title)||String(a.name).localeCompare(String(b.name));}); return rows;
+}
+function auditPage(){
+  var creative=auditCreativeRows(), dups=auditDuplicatePeople(), tracks=auditTrackRoles(), noCreative=[], sid, perfs, i,p, cc, out='<main class="wrap"><section class="hero"><h1>Audit</h1><p class="muted">Data-quality radar: useful flags, not automatic truth. This is for spotting paste drift, missing credits, and normalization goblins.</p><div class="auditGrid"><div class="auditItem"><h3>Creative flags</h3><div class="bigMini">'+creative.length+'</div></div><div class="auditItem"><h3>Duplicate-ish people</h3><div class="bigMini">'+dups.length+'</div></div><div class="auditItem"><h3>Track roles left</h3><div class="bigMini">'+tracks.length+'</div></div></div></section>';
+  perfs=vals(db.performances);
+  for(i=0;i<perfs.length;i++){p=perfs[i]; cc=idx.creativeByPerf[p.id]||[]; if(!cc.length) noCreative.push(p);}
+  out+='<section class="card section"><h2>Creative Alignment Flags</h2><table class="miniTable"><thead><tr><th>Performance</th><th>Credit</th><th>Person</th><th>Flags</th></tr></thead><tbody>';
+  creative.slice(0,120).forEach(function(row){out+='<tr><td><button class="linkish" onclick="TD.go(&quot;perf&quot;,'+row.p.id+')">'+esc(showOf(row.p))+'</button><div class="tiny">'+esc(fmtDate(row.p.date))+'</div></td><td>'+esc(row.c.credit||'')+'</td><td>'+esc(row.person?row.person.name:'')+'</td><td>'+row.flags.map(function(f){return '<span class="auditFlag warn">'+esc(f)+'</span>';}).join('')+'</td></tr>';});
+  out+='</tbody></table>'+(creative.length>120?'<p class="muted">Showing first 120.</p>':'')+'</section>';
+  out+='<section class="card section"><h2>Missing Creative Team</h2><p class="muted">Performances with zero creative credits.</p><div class="list">';
+  noCreative.slice(0,80).forEach(function(p){out+='<div class="row"><button class="linkish" onclick="TD.go(&quot;perf&quot;,'+p.id+')">'+esc(showOf(p))+'</button><div class="tiny">'+esc(fmtDate(p.date)+' · '+venueOf(p))+'</div></div>';});
+  out+='</div></section><section class="card section"><h2>Duplicate-ish People</h2><div class="list">';
+  dups.slice(0,60).forEach(function(group){out+='<div class="row"><strong>'+group.map(function(p){return esc(p.name);}).join(' / ')+'</strong><div class="tiny">Same simplified name key. Review before merging.</div></div>';});
+  out+='</div></section><section class="card section"><h2>Track Roles Remaining</h2><div class="list">';
+  tracks.slice(0,80).forEach(function(r){var s=by(db.shows,r.showId); out+='<div class="row"><strong>'+esc(r.name)+'</strong><div class="tiny">'+esc(s?s.title:'Unknown show')+'</div></div>';});
+  out+='</div></section></main>'; return out;
+}
+
 function randomMode(mode){
   var ps=vals(db.performances), pool=[], i,p,personIds,personId,arr;
   if(mode==='cover') pool=ps.filter(function(x){return idx.coverPerf[x.id];});
