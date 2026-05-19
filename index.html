@@ -647,6 +647,7 @@ body.compact{font-size:13px;--gap:6px}body.compact .wrap{max-width:1180px;paddin
 .chip.verified{background:#dff5e8!important;color:#20523a!important;border-color:#89c5a0!important;font-weight:900!important}
 .statsDeck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.statMini{border:1px solid rgba(83,58,45,.13);background:rgba(255,255,255,.55);border-radius:14px;padding:10px}.statMini strong{display:block;font-size:18px;line-height:1.05}.statMini span{display:block;margin-top:3px;color:#6b4936;font-size:11px;text-transform:uppercase;letter-spacing:.045em;font-weight:800}@media(max-width:720px){.statsDeck{grid-template-columns:1fr}.buildTile{display:none!important}}
 
+.conductorSection h2{margin-bottom:8px}.conductorLine .creativeRole{background:#efe7d3!important}.tagBadge.verified{background:#e2f6df;color:#205528;border-color:rgba(32,85,40,.35)}
 </style>
 
 <style id="v29-cast-grid-cleanup">
@@ -668,6 +669,59 @@ body.compact{font-size:13px;--gap:6px}body.compact .wrap{max-width:1180px;paddin
 
 /* === v33 audit + creative connection framework === */
 .auditGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.auditItem{border:1px solid rgba(0,0,0,.16);background:rgba(255,255,255,.72);border-radius:14px;padding:12px}.auditItem h3{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.08em}.auditFlag{display:inline-block;border-radius:999px;border:1px solid rgba(0,0,0,.22);padding:3px 7px;margin:2px;font-size:11px;font-weight:850;text-transform:uppercase;background:#fff}.auditFlag.warn{background:#fff4b8}.auditFlag.bad{background:#ffe1e1}.auditFlag.good{background:#e2f6df}.miniTable{width:100%;border-collapse:collapse}.miniTable td,.miniTable th{border-bottom:1px solid rgba(0,0,0,.12);padding:7px 5px;text-align:left;font-size:12px;vertical-align:top}.miniTable th{text-transform:uppercase;letter-spacing:.08em;font-size:10px;color:var(--muted)}.creativeConnect{margin-top:6px}.creativeConnect .chip{margin-right:4px;margin-bottom:4px}.tagBadge{display:inline-block;border-radius:999px;background:#efe7d3;border:1px solid rgba(0,0,0,.18);padding:2px 7px;margin:2px;font-size:11px;font-weight:850;text-transform:uppercase}.tagBadge.tony{background:#f7e28b}.tagBadge.debut{background:#dbeafe}.tagBadge.seat{background:#eadcff}
+
+/* === v3.24 Tony-adjacent polish + inline conductor block === */
+:root{
+  --tony-gold:#b68a2a;
+  --tony-gold-soft:#f4e0a1;
+  --tony-burgundy:#661d36;
+  --tony-plum:#3f274a;
+  --tony-navy:#14233f;
+}
+body{
+  background:
+    radial-gradient(circle at 12% 0%, rgba(182,138,42,.16), transparent 28%),
+    radial-gradient(circle at 90% 8%, rgba(102,29,54,.12), transparent 30%),
+    linear-gradient(180deg,#fbf7ee 0%,#f4ecd9 42%,#efe7d3 100%)!important;
+}
+.hero,.card{
+  border-color:rgba(102,29,54,.18)!important;
+  box-shadow:0 14px 32px rgba(20,35,63,.08)!important;
+}
+.navbar,.topbar,.siteHeader{
+  border-bottom-color:rgba(182,138,42,.35)!important;
+}
+.btn.active,.pillBtn.active,.tab.active{
+  background:linear-gradient(135deg,var(--tony-burgundy),var(--tony-plum))!important;
+  color:#fff!important;
+  border-color:rgba(182,138,42,.55)!important;
+}
+.chip.tony,.tagBadge.tony{
+  background:linear-gradient(135deg,#fff8d6,var(--tony-gold-soft))!important;
+  color:#51310c!important;
+  border-color:rgba(182,138,42,.65)!important;
+}
+.coverBadge,.tagBadge{
+  box-shadow:0 1px 0 rgba(255,255,255,.55) inset;
+}
+.conductorInlineSection{
+  margin-top:12px!important;
+  border-top:2px solid rgba(182,138,42,.45)!important;
+  padding-top:10px!important;
+}
+.conductorInlineSection h3{
+  color:var(--tony-burgundy)!important;
+  letter-spacing:.12em!important;
+}
+.conductorInlineSection .conductorLine .roleInline{
+  background:linear-gradient(135deg,#fff8d6,#f1e1af)!important;
+  color:#4d3216!important;
+  border-color:rgba(182,138,42,.5)!important;
+}
+.conductorInlineSection .castPersonCell{
+  background:#fffdf7!important;
+}
+
 </style>
 </head>
 <body>
@@ -744,7 +798,7 @@ function normalizedPersonHistoryRole(roleName,a){
 function coverName(v){v=v==null?'':String(v);var n=norm(v);if(!n)return '';if(n==='u s'||n==='us'||n.indexOf('understudy')>=0||n.indexOf('u s ')===0)return 'Understudy';if(n==='s b'||n==='sb'||n.indexOf('standby')>=0||n.indexOf('s b ')===0)return 'Standby';if(n==='alt'||n.indexOf('alternate')>=0||n.indexOf('alt ')===0)return 'Alternate';if(n==='s w'||n==='sw'||n.indexOf('swing')>=0||n.indexOf('s w ')===0)return 'Swing';if(n==='e c'||n==='ec'||n.indexOf('emergency')>=0||n.indexOf('e c ')===0)return 'Emergency cover';if(n==='t r'||n==='tr'||n.indexOf('temporary')>=0||n.indexOf('t r ')===0)return 'Temporary replacement';if(n.indexOf('special')>=0)return 'Special appearance';return v.replace(/^\*+\s*/,'').replace(/\s+/g,' ');}
 function ordinal(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 
-function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v3.22-conductors-markers',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
+function load(){var xhr=new XMLHttpRequest();xhr.open('GET','theatre-data.json?v=v3.24-conductors-inline-tony',true);xhr.onreadystatechange=function(){if(xhr.readyState===4){if(xhr.status>=200&&xhr.status<300){try{db=JSON.parse(xhr.responseText);buildIndexes();go('home',null,true);}catch(e){showError('Could not parse theatre-data.json',e.message);}}else showError('Could not load theatre-data.json','HTTP status '+xhr.status+'.');}};xhr.onerror=function(){showError('Could not load theatre-data.json','Network error.');};xhr.send();}
 function showError(t,m){document.getElementById('app').innerHTML='<main class="wrap"><section class="card"><h1>'+esc(t)+'</h1><p class="muted">'+esc(m)+'</p></section></main>';}
 
 function buildIndexes(){
@@ -1013,22 +1067,25 @@ function hasNote(p){var e=edits[String(p.id)]||{};return !!(e.notes||e.privateNo
 
 
 function conductorBlock(perfId){
-  var arr=idx.creativeByPerf[perfId]||[], out='', seen={}, i,c,p,credit,n,verified;
+  var arr=idx.creativeByPerf[perfId]||[], rows='', seen={}, i,c,p,credit,n,verified,label,personHtml,key;
   for(i=0;i<arr.length;i++){
     c=arr[i]; credit=String(c.credit||''); n=norm(credit);
     if(n==='conductor'||n==='conducted by'||n.indexOf('conductor')>=0){
-      p=by(db.people,c.personId); if(!p||seen[p.id])continue; seen[p.id]=1;
       verified=!!(c.verified||c.conductorVerified||c.verifiedConductor);
-      out+='<span class="chip conductor">Conducted by '+esc(p.name)+'</span>'+(verified?'<span class="chip verified">verified</span>':'');
+      if(!verified)continue;
+      p=by(db.people,c.personId); if(!p)continue; key=p.id+'|'+n; if(seen[key])continue; seen[key]=1;
+      label=(n.indexOf('piano')>=0)?'Piano-Conductor':'Conductor';
+      personHtml='<button class="nameBtn creativeNameBtn" onclick="TD.go(\'person\','+p.id+')">'+esc(p.name)+'</button><span class="tagBadge verified">Verified</span>'+(label==='Piano-Conductor'?'<span class="tagBadge tony">Piano-Conductor</span>':'');
+      rows+='<div class="castLine creativeLine conductorLine"><div class="castOneLine"><span class="roleInline creativeRole"><span class="roleMain">'+esc(label)+'</span></span><span class="castPersonCell creativePersonCell"><span class="creativeNames">'+personHtml+'</span></span></div></div>';
     }
   }
-  return out?'<div class="chips conductorChips">'+out+'</div>':'';
+  return rows?'<div class="ensembleInlineSection conductorInlineSection"><h3>Conducted By</h3>'+rows+'</div>':'';
 }
 
 function perfPage(id){
   var p=by(db.performances,id); if(!p)return '<main class="wrap"><section class="card"><h1>Performance not found</h1></section></main>';
   var np=nextPrev(id), e=edits[String(id)]||{}, note=e.notes!=null?e.notes:(p.notes||''), privateNote=e.privateNote||'', tags=(p.tags||'')+(e.tags?((p.tags?', ':'')+e.tags):''), rating=e.rating||'';
-  return '<main class="wrap"><section class="hero"><div class="tiny">'+esc(p.type||'')+' · '+esc(p.time||'')+'</div><h1>'+esc(showOf(p))+'</h1><p class="muted">'+esc(fmtDate(p.date))+' · '+esc(venueOf(p))+'</p><div class="chips">'+showNumberChips(p)+(idx.coverPerf[p.id]?'<span class="chip cover">covers/special appearances</span>':'')+(rating?'<span class="chip good">'+esc(rating)+' ★</span>':'')+(tags?tagChips(tags):'')+'</div>'+conductorBlock(id)+'<div class="toolbar"><button class="btn" onclick="TD.go(\'perf\','+np.prev+')">Previous</button><button class="btn" onclick="TD.go(\'perf\','+np.next+')">Next</button><button class="btn" onclick="TD.go(\'show\','+p.showId+')">Show Page</button><button class="btn" onclick="TD.go(\'venue\','+p.venueId+')">Venue Page</button><button class="btn" onclick="TD.copyPerf('+id+',\'plain\')">Copy Info</button><button class="btn" onclick="TD.copyPerf('+id+',\'cast\')">Copy Cast</button><button class="btn" onclick="TD.copyPerf('+id+',\'html\')">Copy Formatted</button></div></section>'+
+  return '<main class="wrap"><section class="hero"><div class="tiny">'+esc(p.type||'')+' · '+esc(p.time||'')+'</div><h1>'+esc(showOf(p))+'</h1><p class="muted">'+esc(fmtDate(p.date))+' · '+esc(venueOf(p))+'</p><div class="chips">'+showNumberChips(p)+(idx.coverPerf[p.id]?'<span class="chip cover">covers/special appearances</span>':'')+(rating?'<span class="chip good">'+esc(rating)+' ★</span>':'')+(tags?tagChips(tags):'')+'</div><div class="toolbar"><button class="btn" onclick="TD.go(\'perf\','+np.prev+')">Previous</button><button class="btn" onclick="TD.go(\'perf\','+np.next+')">Next</button><button class="btn" onclick="TD.go(\'show\','+p.showId+')">Show Page</button><button class="btn" onclick="TD.go(\'venue\','+p.venueId+')">Venue Page</button><button class="btn" onclick="TD.copyPerf('+id+',\'plain\')">Copy Info</button><button class="btn" onclick="TD.copyPerf('+id+',\'cast\')">Copy Cast</button><button class="btn" onclick="TD.copyPerf('+id+',\'html\')">Copy Formatted</button></div></section>'+
   '<section class="card"><h2>Cast</h2>'+castBlock(p)+firstTimeBlock(p)+'</section>'+
   '<section class="card section"><h2>Creative Team</h2>'+creativeBlock(id)+creativeRepeatSummaryForPerf(id)+'</section>'+
   '<section class="card section">'+relatedBlock(p)+'</section>'+
@@ -1278,7 +1335,7 @@ function castBlock(p){
     for(j=0;j<plainEnsembleRows.length;j++)ensembleSection+=plainEnsembleRows[j].html;
     ensembleSection+='</div>';
   }
-  var out='<div class="castArea"><div class="principalCast">'+principal+customSection+ensembleSection+'</div></div>';
+  var out='<div class="castArea"><div class="principalCast">'+principal+customSection+ensembleSection+conductorBlock(p.id)+'</div></div>';
   if(notes)out+='<div class="section"><h3>Coverage Notes</h3><div class="list">'+notes+'</div></div>';
   return out;
 }
@@ -1287,6 +1344,7 @@ function creativeBlock(perfId){
   var arr=idx.creativeByPerf[perfId]||[],byC={},order=[],i,c,p,out='',credit,peopleHtml,activeInline;
   for(i=0;i<arr.length;i++){
     c=arr[i]; credit=c.credit||'Creative';
+    if(norm(credit).indexOf('conductor')>=0)continue;
     if(!byC[credit]){byC[credit]=[];order.push(credit);}
     p=by(db.people,c.personId);
     byC[credit].push({
@@ -1774,7 +1832,7 @@ function understudyBoard(p){
 function perfPage(id){
   var p=by(db.performances,id); if(!p)return '<main class="wrap"><section class="card"><h1>Performance not found</h1></section></main>';
   var np=nextPrev(id), e=edits[String(id)]||{}, note=e.notes!=null?e.notes:(p.notes||''), privateNote=e.privateNote||'', tags=(p.tags||'')+(e.tags?((p.tags?', ':'')+e.tags):''), rating=e.rating||'';
-  return '<main class="wrap"><section class="hero"><div class="tiny">'+esc(p.type||'')+' · '+esc(p.time||'')+'</div><h1>'+esc(showOf(p))+'</h1><p class="muted">'+esc(fmtDate(p.date))+' · '+esc(venueOf(p))+'</p><div class="chips">'+showNumberChips(p)+(idx.coverPerf[p.id]?'<span class="chip cover">covers/special appearances</span>':'')+(rating?'<span class="chip good">'+esc(rating)+' ★</span>':'')+(tags?tagChips(tags):'')+'</div>'+conductorBlock(id)+'<div class="toolbar"><button class="btn" onclick="TD.go(\'perf\','+np.prev+')">Previous</button><button class="btn" onclick="TD.go(\'perf\','+np.next+')">Next</button><button class="btn" onclick="TD.go(\'show\','+p.showId+')">Show Page</button><button class="btn" onclick="TD.go(\'venue\','+p.venueId+')">Venue Page</button><button class="btn" onclick="TD.copyPerf('+id+',\'plain\')">Copy Info</button><button class="btn" onclick="TD.copyPerf('+id+',\'cast\')">Copy Cast</button><button class="btn" onclick="TD.copyPerf('+id+',\'html\')">Copy Formatted</button></div></section>'+ 
+  return '<main class="wrap"><section class="hero"><div class="tiny">'+esc(p.type||'')+' · '+esc(p.time||'')+'</div><h1>'+esc(showOf(p))+'</h1><p class="muted">'+esc(fmtDate(p.date))+' · '+esc(venueOf(p))+'</p><div class="chips">'+showNumberChips(p)+(idx.coverPerf[p.id]?'<span class="chip cover">covers/special appearances</span>':'')+(rating?'<span class="chip good">'+esc(rating)+' ★</span>':'')+(tags?tagChips(tags):'')+'</div><div class="toolbar"><button class="btn" onclick="TD.go(\'perf\','+np.prev+')">Previous</button><button class="btn" onclick="TD.go(\'perf\','+np.next+')">Next</button><button class="btn" onclick="TD.go(\'show\','+p.showId+')">Show Page</button><button class="btn" onclick="TD.go(\'venue\','+p.venueId+')">Venue Page</button><button class="btn" onclick="TD.copyPerf('+id+',\'plain\')">Copy Info</button><button class="btn" onclick="TD.copyPerf('+id+',\'cast\')">Copy Cast</button><button class="btn" onclick="TD.copyPerf('+id+',\'html\')">Copy Formatted</button></div></section>'+ 
   '<section class="card"><h2>Cast</h2>'+castBlock(p)+understudyBoard(p)+firstTimeBlock(p)+'</section>'+ 
   '<section class="card section"><h2>Creative Team</h2>'+creativeBlock(id)+creativeRepeatSummaryForPerf(id)+'</section>'+ 
   '<section class="card section">'+relatedBlock(p)+'</section>'+ 
